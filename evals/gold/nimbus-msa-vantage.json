@@ -1,0 +1,24 @@
+{
+  "doc_id": "nimbus-msa-vantage",
+  "fields": {
+    "customer": "Vantage Freight Systems, Inc.",
+    "supplier": "Nimbus Analytics, Inc.",
+    "agreement_type": "master_agreement",
+    "currency": "USD",
+    "effective_date": "2025-04-07",
+    "stated_term_months": 36,
+    "termination_for_convenience": null,
+    "termination_notice_days": 90,
+    "net_days": 45,
+    "total_fixed_consideration": null
+  },
+  "obligations": [
+    {
+      "kind": "saas_subscription",
+      "stated_price": "264000"
+    }
+  ],
+  "judgments": [
+    "enforceable_term"
+  ]
+}
