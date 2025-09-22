@@ -1,0 +1,11 @@
+# Normalise text to LF in the repository and on checkout, everywhere.
+* text=auto eol=lf
+
+# And keep git's hands off the things that are not text. Without this, a clone
+# on a machine with core.autocrlf=true -- the Windows default -- rewrites every
+# LF inside the corpus PDFs as CRLF. The files still open, which is the
+# unpleasant part: pdfplumber reads them, the pipeline runs, the eval prints
+# the same scores, and the only visible symptom is that twelve tracked files
+# show as modified in a fresh clone that nobody has touched.
+*.pdf binary
+*.png binary
