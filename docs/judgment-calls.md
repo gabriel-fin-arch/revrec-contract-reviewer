@@ -197,9 +197,13 @@ collectibility assessment is a credit judgment about the customer, and nothing
 in this pipeline looks at a customer's credit.
 
 **Recognition over time versus at a point in time.** This is a check, not a
-flag. Where the contract contains language about how control transfers, that
-language is extracted and cited; where it contains none, the check *fails* and
-says so. That is a finding about the drafting rather than a judgment call — a
-local team's over-time conclusion may well be right, but this document does not
-support it, and the difference between "unsupported" and "requires judgment" is
-worth keeping.
+flag, and it has three outcomes rather than two. Where the contract contains
+language about how control transfers, that language is extracted and cited and
+the check passes. Where an extractor read the contract and found none, the check
+*fails* — a finding about the drafting rather than a judgment call, because the
+local team's over-time conclusion may well be right and this document does not
+support it. Where no extractor attempted the question at all, the check is *not
+applicable*, and the distinction matters: absence says nothing about the
+contract, and reporting it as a failure would blame the document for what the
+reader never tried. The offline extractor never attempts it, which is why it
+reports not applicable on every contract in the corpus.
