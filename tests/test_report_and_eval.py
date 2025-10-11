@@ -131,3 +131,14 @@ def test_a_gold_record_with_no_contract_is_an_error(corpus_dir: Path, tmp_path: 
         assert "contract-that-does-not-exist" in str(error)
     else:
         raise AssertionError("a gold record with no PDF should not be silently skipped")
+
+
+def test_generated_files_use_lf_on_every_platform(tmp_path: Path, helix: ContractDocument):
+    """These files are committed. Written with the platform line ending, a
+    contributor on Windows regenerates them and gets a diff touching every line
+    of every file, with no actual change in any of them."""
+    write_gold(tmp_path)
+    memo_path, json_path = write_review(_review(helix), tmp_path)
+
+    for path in (tmp_path / "nimbus-of-helix.json", memo_path, json_path):
+        assert b"\r\n" not in path.read_bytes(), path.name
