@@ -25,6 +25,7 @@ from pydantic import BaseModel
 
 from revrec_contract_reviewer.corpus.library import CORPUS
 from revrec_contract_reviewer.corpus.spec import ContractSpec
+from revrec_contract_reviewer.fileio import write_lf
 
 # The scalar fields the harness scores. Kept as an explicit list rather than
 # introspected off the model: adding a field to the extraction should not
@@ -93,10 +94,9 @@ def write_gold(out_dir: Path) -> list[Path]:
     out_dir.mkdir(parents=True, exist_ok=True)
     written = []
     for record in build_gold():
-        target = out_dir / f"{record.doc_id}.json"
-        target.write_text(
+        target = write_lf(
+            out_dir / f"{record.doc_id}.json",
             json.dumps(record.model_dump(), indent=2, ensure_ascii=False) + "\n",
-            encoding="utf-8",
         )
         written.append(target)
     return written
