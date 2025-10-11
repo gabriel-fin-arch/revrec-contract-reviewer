@@ -15,7 +15,7 @@ from __future__ import annotations
 
 from decimal import Decimal
 
-from revrec_contract_reviewer.models.extraction import ContractExtraction
+from revrec_contract_reviewer.models.extraction import ContractExtraction, RecognitionPattern
 from revrec_contract_reviewer.models.review import CheckOutcome, ReviewCheck
 
 # The fee schedule is compared to the stated total at the cent. There is no
@@ -155,21 +155,47 @@ def _recognition_pattern(extraction: ContractExtraction) -> ReviewCheck:
             detail="No performance obligations were identified in this document.",
         )
 
-    undetermined = [ob.label for ob in extraction.obligations if not ob.recognition.is_known]
-    if not undetermined:
+    # Three outcomes, because there are genuinely three situations, and an
+    # earlier two-way version collapsed two of them and reported green on all
+    # twelve contracts while every obligation in them was undetermined.
+    #
+    #   read, and the contract says      -> passed
+    #   read, and the contract is silent -> failed: a finding about the drafting
+    #   not read at all                  -> not applicable
+    #
+    # The third is the one that matters. UNDETERMINED is an assertion about the
+    # contract; absence is an assertion about nothing. Reporting a failure for
+    # absence would be blaming the document for what the extractor didn't do.
+    silent = [
+        ob.label
+        for ob in extraction.obligations
+        if ob.recognition.is_known and ob.recognition.value is RecognitionPattern.UNDETERMINED
+    ]
+    unread = [ob.label for ob in extraction.obligations if not ob.recognition.is_known]
+
+    if silent:
         return ReviewCheck(
             name="Recognition pattern evidenced for each obligation",
-            outcome=CheckOutcome.PASSED,
-            detail="Each obligation has language in the contract bearing on how control transfers.",
+            outcome=CheckOutcome.FAILED,
+            detail=(
+                f"The contract says nothing about how control transfers for: {', '.join(silent)}. "
+                f"That is a finding about the drafting rather than a fault in the reading -- but it means "
+                f"the local team's over-time or point-in-time conclusion is not supported by this document."
+            ),
+        )
+    if unread:
+        return ReviewCheck(
+            name="Recognition pattern evidenced for each obligation",
+            outcome=CheckOutcome.NOT_APPLICABLE,
+            detail=(
+                f"No reading of how control transfers was attempted for: {', '.join(unread)}. The offline "
+                f"extractor does not attempt it; run the model extractor to get an answer here."
+            ),
         )
     return ReviewCheck(
         name="Recognition pattern evidenced for each obligation",
-        outcome=CheckOutcome.FAILED,
-        detail=(
-            f"The contract says nothing about how control transfers for: {', '.join(undetermined)}. "
-            f"That is a finding about the drafting, not a fault in the reading -- but it means the local "
-            f"team's over-time or point-in-time conclusion is not supported by this document."
-        ),
+        outcome=CheckOutcome.PASSED,
+        detail="Each obligation has language in the contract bearing on how control transfers.",
     )
 
 
