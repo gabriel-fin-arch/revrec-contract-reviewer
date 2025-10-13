@@ -59,9 +59,14 @@ def _enforceable_term(extraction: ContractExtraction) -> JudgmentFlag | None:
                 f"{compensation.value}"
             )
         else:
+            # Carefully not "the document states no compensation". Nothing here
+            # established that; what happened is that no compensation clause was
+            # extracted, and those are different claims. The first would have a
+            # reviewer conclude the termination right is free, on the strength
+            # of a clause the reader never found.
             trigger = (
-                "Termination for convenience is available and the document states no compensation for the "
-                "unexpired term."
+                "Termination for convenience is available. No compensation for the unexpired term was found "
+                "in the document -- which is not the same as the document saying none is owed."
             )
 
     return JudgmentFlag(
