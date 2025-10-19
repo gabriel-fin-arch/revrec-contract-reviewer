@@ -128,6 +128,12 @@ that is measured. A reviewer that flags something on every contract is not a
 reviewer; it is a smoke alarm with a stuck button, and a controller stops
 reading it inside a month.
 
+Across a folder, the same output is a worklist — ordered by everything needing
+attention, failed checks included, so a contract the pipeline could not read
+does not sink to the bottom looking like a clean one:
+
+![Run worklist](docs/images/worklist.png)
+
 ## Results
 
 The pipeline is scored against a committed gold set. Full methodology, and an
@@ -143,7 +149,7 @@ Offline rule-based extractor, 12 contracts:
 | Performance obligations | 0.79 | 0.75 | 0.77 |
 | Judgment flags | 0.95 | 0.83 | 0.88 |
 
-Citations re-resolved against the source: **210/210 (100%)**.
+Citations re-resolved against the source: **191/191 (100%)**.
 
 Those are the numbers for regular expressions, and they are published as the
 baseline the model has to beat — a model extractor that can't beat regexes on a
