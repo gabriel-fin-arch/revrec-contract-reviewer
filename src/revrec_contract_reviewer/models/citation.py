@@ -25,6 +25,13 @@ class Citation(BaseModel):
     start: int = Field(ge=0, description="Character offset of the quote in the document's raw text.")
     end: int = Field(gt=0)
     quote: str = Field(min_length=1, description="The source text as it appears in the document.")
+    clause: str | None = Field(
+        default=None,
+        description=(
+            "The clause the quote falls in, as printed -- '3 Termination'. Optional because a quote can land "
+            "in text the segmenter did not attribute to any clause."
+        ),
+    )
 
     @model_validator(mode="after")
     def _span_is_coherent(self) -> Citation:
@@ -33,7 +40,14 @@ class Citation(BaseModel):
         return self
 
     def label(self) -> str:
-        """Short human reference, the way it appears in the memo: `p.4`."""
+        """Short human reference, the way it appears in the memo.
+
+        Clause first, because that is how people argue about contracts --
+        nobody says "the bit on page two", they say "section 3.2". The page
+        number stays alongside it, since that is what you scroll to.
+        """
+        if self.clause:
+            return f"{self.clause} · p.{self.page}"
         return f"p.{self.page}"
 
     def excerpt(self, limit: int = 220) -> str:
