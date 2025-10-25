@@ -147,9 +147,27 @@ built on an incomplete reading.
 ## Reproducibility
 
 The corpus PDFs are generated, not stored by hand, and generation is
-byte-reproducible: `reportlab`'s creation timestamp and document id are both
-disabled. A rebuild never shows up as a diff, and the gold set's page numbers
-stay meaningful.
+byte-reproducible. Two settings get it there, and the second one is the one I
+did not expect to need.
+
+`reportlab`'s `invariant` disables the creation timestamp and the random
+document id, which is what makes two runs on one machine agree.
+
+Page compression is then turned off as well. That is not about file size. The
+page streams are deflated through zlib, and zlib makes no promise of identical
+output across versions — Python 3.11 and 3.14 compress the same page to 2050 and
+2059 bytes. Identical content, different file. Left on, every contributor
+running a different interpreter opens a fresh clone, regenerates, and finds
+twelve modified PDFs they never touched — and, because the gold set is keyed by
+page, any real drift would be hiding inside that noise. Uncompressed streams
+cost about three kilobytes a contract.
+
+The same failure has a text-file twin, handled in `fileio.write_lf`: generated
+files that are committed are written with explicit LF, because `Path.write_text`
+emits CRLF on Windows. And a binary twin, handled in `.gitattributes`: with
+`core.autocrlf=true`, git rewrites the LF bytes inside a committed PDF on
+checkout. All three produce the same symptom — a clean clone that is
+inexplicably dirty — and all three are silent until someone looks.
 
 The gold set is written to `evals/gold/` and committed rather than computed at
 run time. A gold set that regenerates itself from the code being evaluated can
