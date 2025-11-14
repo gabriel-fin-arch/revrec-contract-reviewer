@@ -38,7 +38,12 @@ class FactRow:
     @property
     def display(self) -> str:
         if self.field.value is None:
-            return "not stated"
+            # "not found", not "not stated". The second is a claim about the
+            # contract, and an absent field does not support it -- nothing here
+            # can tell a silent document apart from one nobody read properly.
+            # Same mistake as a check that reported green because a value was
+            # grounded, without asking what the value said.
+            return "not found"
         value = self.field.value
         if isinstance(value, bool):
             return "yes" if value else "no"
