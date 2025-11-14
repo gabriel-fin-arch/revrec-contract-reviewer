@@ -55,8 +55,8 @@
         "false_positives": 1,
         "false_negatives": 2
       },
-      "citations_total": 23,
-      "citations_resolved": 23,
+      "citations_total": 24,
+      "citations_resolved": 24,
       "dropped_for_no_evidence": 0,
       "mistakes": [
         "termination_for_convenience: missed (gold True, status absent)",
@@ -125,8 +125,8 @@
         "false_positives": 0,
         "false_negatives": 0
       },
-      "citations_total": 6,
-      "citations_resolved": 6,
+      "citations_total": 7,
+      "citations_resolved": 7,
       "dropped_for_no_evidence": 0,
       "mistakes": [
         "currency: missed (gold 'USD', status absent)"
@@ -154,8 +154,8 @@
         "false_positives": 0,
         "false_negatives": 0
       },
-      "citations_total": 13,
-      "citations_resolved": 13,
+      "citations_total": 14,
+      "citations_resolved": 14,
       "dropped_for_no_evidence": 0,
       "mistakes": [
         "obligation missed: saas_subscription at 264000 (x1)"
@@ -183,8 +183,8 @@
         "false_positives": 0,
         "false_negatives": 0
       },
-      "citations_total": 23,
-      "citations_resolved": 23,
+      "citations_total": 25,
+      "citations_resolved": 25,
       "dropped_for_no_evidence": 0,
       "mistakes": []
     },
@@ -210,8 +210,8 @@
         "false_positives": 0,
         "false_negatives": 1
       },
-      "citations_total": 26,
-      "citations_resolved": 26,
+      "citations_total": 29,
+      "citations_resolved": 29,
       "dropped_for_no_evidence": 0,
       "mistakes": [
         "judgment expected but not raised: distinct_uncertain"
@@ -239,8 +239,8 @@
         "false_positives": 0,
         "false_negatives": 0
       },
-      "citations_total": 19,
-      "citations_resolved": 19,
+      "citations_total": 22,
+      "citations_resolved": 22,
       "dropped_for_no_evidence": 0,
       "mistakes": []
     },
@@ -266,8 +266,8 @@
         "false_positives": 0,
         "false_negatives": 0
       },
-      "citations_total": 21,
-      "citations_resolved": 21,
+      "citations_total": 23,
+      "citations_resolved": 23,
       "dropped_for_no_evidence": 0,
       "mistakes": []
     },
@@ -293,8 +293,8 @@
         "false_positives": 0,
         "false_negatives": 0
       },
-      "citations_total": 14,
-      "citations_resolved": 14,
+      "citations_total": 16,
+      "citations_resolved": 16,
       "dropped_for_no_evidence": 0,
       "mistakes": []
     },
@@ -320,8 +320,8 @@
         "false_positives": 0,
         "false_negatives": 0
       },
-      "citations_total": 22,
-      "citations_resolved": 22,
+      "citations_total": 25,
+      "citations_resolved": 25,
       "dropped_for_no_evidence": 0,
       "mistakes": []
     },
@@ -347,8 +347,8 @@
         "false_positives": 0,
         "false_negatives": 0
       },
-      "citations_total": 9,
-      "citations_resolved": 9,
+      "citations_total": 10,
+      "citations_resolved": 10,
       "dropped_for_no_evidence": 0,
       "mistakes": [
         "net_days: missed (gold 30, status absent)",
@@ -377,7 +377,7 @@
     "false_positives": 1,
     "false_negatives": 4
   },
-  "citations_total": 191,
-  "citations_resolved": 191,
+  "citations_total": 210,
+  "citations_resolved": 210,
   "dropped_for_no_evidence": 0
 }
