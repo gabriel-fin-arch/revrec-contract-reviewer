@@ -86,6 +86,14 @@ _NET_DAYS = re.compile(
     re.IGNORECASE,
 )
 _NOTICE_DAYS = re.compile(r"\((\d+)\) days'? written notice", re.IGNORECASE)
+_BILLING = re.compile(
+    r"invoiced (annually|quarterly|monthly|in full)(?: in (advance|arrears))?",
+    re.IGNORECASE,
+)
+# A duration printed inside a fee line: "Platform subscription, Tier 3 (36
+# months)", "Premium Support, 36 months". A perpetual licence has none, which is
+# the answer rather than a gap.
+_ROW_MONTHS = re.compile(r"(\d+)\s*months?\b", re.IGNORECASE)
 _AMENDS = re.compile(r"amends ((?:Order Form|Agreement|Clinical Services Agreement)[^,.]{0,60})", re.IGNORECASE)
 
 # A fee line, once the layout is gone: description, then one or two amounts.
@@ -329,11 +337,13 @@ def _obligations(reader: Reader) -> list[WireObligation]:
         # clause heading after it -- technically a true quote, and useless as
         # evidence for one line of it.
         quote = reader.raw(match.start(), match.end())
+        months = _ROW_MONTHS.search(item)
         obligations.append(
             WireObligation(
                 label=item,
                 kind=_kind_for(item),
                 quotes=[quote],
+                duration_months=Claim(value=months.group(1), quotes=[quote]) if months else None,
                 stated_price=Claim(value=agreed, quotes=[quote]),
                 list_price=Claim(value=listed, quotes=[quote]) if listed else None,
                 # No recognition claim at all. An earlier version reported
@@ -458,6 +468,16 @@ def _renewal(reader: Reader) -> tuple[Claim | None, Claim | None, Claim | None]:
     return term, price, discounted
 
 
+def _billing_frequency(reader: Reader) -> Claim | None:
+    match = _BILLING.search(reader.text)
+    if match is None:
+        return None
+    cadence = match.group(1).lower()
+    timing = match.group(2)
+    value = f"{cadence} in {timing.lower()}" if timing else cadence
+    return Claim(value=value, quotes=[reader.sentence(match.start(), match.end())])
+
+
 def extract(document: ContractDocument) -> WireExtraction:
     """Read `document` with rules only. No network, no model, no API key."""
     reader = Reader(document)
@@ -492,6 +512,7 @@ def extract(document: ContractDocument) -> WireExtraction:
         termination_for_convenience=tfc,
         termination_notice_days=notice,
         net_days=reader.first(_NET_DAYS),
+        billing_frequency=_billing_frequency(reader),
         payment_spread_months=spread,
         renewal_term_months=renewal_term,
         renewal_price=renewal_price,
