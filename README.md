@@ -100,9 +100,15 @@ being asked to tune it.
 
 There is no confidence score anywhere in the codebase. Fields have one of three
 states — `extracted`, `ambiguous`, `absent` — and each drives a different
-action. `absent` on a termination clause is a drafting gap to raise with legal.
-`ambiguous` on the same clause means two clauses contradict each other and
-someone has to decide which governs. A blended 0.4 would have hidden both.
+action. `extracted` means read the citation and move on. `ambiguous` means two
+clauses contradict each other and someone has to decide which governs. `absent`
+means go and read the document yourself, because nothing here covers it. A
+blended 0.4 would have hidden the difference between the last two.
+
+`absent` is careful not to claim the contract is silent, and the memo words it
+as "not found" for that reason. An extractor that never looks for a field
+produces exactly the same absence as a contract that never mentions one, and the
+tool cannot tell them apart.
 
 More in [docs/architecture.md](docs/architecture.md).
 
@@ -149,7 +155,7 @@ Offline rule-based extractor, 12 contracts:
 | Performance obligations | 0.79 | 0.75 | 0.77 |
 | Judgment flags | 0.95 | 0.83 | 0.88 |
 
-Citations re-resolved against the source: **191/191 (100%)**.
+Citations re-resolved against the source: **210/210 (100%)**.
 
 Those are the numbers for regular expressions, and they are published as the
 baseline the model has to beat. A model extractor that can't beat regexes on a
@@ -215,7 +221,7 @@ No agent framework. This is a pipeline with one model call in it, and wrapping
 that in a graph would have added a dependency and a diagram without adding a
 capability.
 
-117 tests. CI runs ruff, the test suite, and then the whole pipeline offline
+120 tests. CI runs ruff, the test suite, and then the whole pipeline offline
 over the corpus; the eval step exits non-zero if any citation in any memo stops
 resolving against its source document, which is the one regression that would
 leave the tool untrustworthy while still looking like it worked.
