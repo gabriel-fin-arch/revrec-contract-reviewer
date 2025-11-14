@@ -7,12 +7,19 @@ to know is which of three situations they're in:
 
   extracted  the document says it, and here is where
   ambiguous  the document says it in more than one place, and the places disagree
-  absent     the document does not address this at all
+  absent     no supported reading -- nothing was found
 
-Those three drive genuinely different actions. `absent` on a termination clause is
-a drafting gap to raise with legal; `ambiguous` on the same clause is an order form
-overriding an MSA and someone has to decide which governs. A single blended score
-would have flattened both into "0.4, take a look".
+Those three drive genuinely different actions. `extracted` means read the citation
+and move on. `ambiguous` means two clauses contradict each other and somebody has
+to decide which governs. `absent` means go and look at the document yourself,
+because this one is not covered. A single blended score would have flattened the
+last two into "0.4, take a look".
+
+Note what `absent` deliberately does not claim: that the contract is silent. It
+only says nothing was found, and the difference matters, because an extractor
+that never looks for a field produces exactly the same absence as a contract that
+never mentions one. Anything reported to a reviewer from this state is worded
+accordingly.
 """
 
 from __future__ import annotations
