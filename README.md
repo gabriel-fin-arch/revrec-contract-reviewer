@@ -146,7 +146,10 @@ The pipeline is scored against a committed gold set. Full methodology, and an
 honest account of what a synthetic corpus can and cannot tell you, in
 [docs/evaluation.md](docs/evaluation.md).
 
-Offline rule-based extractor, 12 contracts:
+Offline rule-based extractor, 12 contracts. The model extractor's accuracy on
+this corpus is **not yet measured** — see [the note in
+docs/evaluation.md](docs/evaluation.md#running-the-model-extractor) for what is
+and isn't established about that path.
 
 | Measure | Precision | Recall | F1 |
 |---|---|---|---|
