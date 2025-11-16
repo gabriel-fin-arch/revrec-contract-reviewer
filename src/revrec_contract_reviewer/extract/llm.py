@@ -23,7 +23,7 @@ import os
 
 import anthropic
 
-from revrec_contract_reviewer.extract.schema import WireExtraction
+from revrec_contract_reviewer.extract.schema import FIELD_GUIDANCE, WireExtraction
 from revrec_contract_reviewer.models.document import ContractDocument
 
 DEFAULT_MODEL = "claude-opus-5"
@@ -45,6 +45,12 @@ field rather than inferring a sensible answer from context. Silence is a valid a
 Where the contract addresses something in two places and the two disagree, set conflicting to true, \
 quote both passages, and say what the conflict is -- do not pick a winner silently.
 
+A specific and important case of that second rule: **do not calculate a value.** Report a number \
+only where the document prints that number. An annual fee of 264,000 on a thirty-six month term does \
+not let you report a total of 792,000; a start date and an end date do not let you report a term in \
+months. Both of those are arithmetic you performed, and quoting the figures you multiplied does not \
+make the product something the contract says. If the document does not print it, omit the field.
+
 Some specific guidance, because these are where a careful reader and a hasty one diverge:
 
 - Report the term the document states, even where a termination clause makes that term look \
@@ -58,6 +64,13 @@ name of a product is not evidence of a recognition pattern.
 - Only report integration_language where the contract actually describes one promise as customising, \
 integrating with, or depending on another. Do not supply it because the arrangement looks like it \
 might be.
+- A milestone payment schedule is a schedule, not a list of performance obligations. Do not turn each \
+milestone row into a separate promise unless the contract describes them as separately deliverable.
+
+The contract terms go in `fields`, one entry per term you can find and quote, each naming the term \
+it is about. Omit any term the document does not address. What the terms mean:
+
+{field_guidance}
 """
 
 USER_TEMPLATE = """Below is the full text of {doc_id}, as extracted from the PDF. Page breaks are \
@@ -68,6 +81,19 @@ marked. Quote from this text exactly as it appears here.
 </contract>
 
 Extract the contract's terms."""
+
+
+def _field_guidance() -> str:
+    """The per-term guidance, rendered from FIELD_GUIDANCE.
+
+    Built from the same dict the schema documents itself with, so the prompt and
+    the schema cannot describe a term differently -- which they would, within
+    about two edits, if the prompt carried its own copy.
+    """
+    return "\n".join(f"- `{field.value}`: {text}" for field, text in FIELD_GUIDANCE.items())
+
+
+SYSTEM = SYSTEM_PROMPT.format(field_guidance=_field_guidance())
 
 
 def available() -> bool:
@@ -104,7 +130,7 @@ def extract(document: ContractDocument, client: anthropic.Anthropic | None = Non
         system=[
             {
                 "type": "text",
-                "text": SYSTEM_PROMPT,
+                "text": SYSTEM,
                 # The instructions and the schema are identical for every
                 # contract in a run; only the document below them changes.
                 "cache_control": {"type": "ephemeral"},
