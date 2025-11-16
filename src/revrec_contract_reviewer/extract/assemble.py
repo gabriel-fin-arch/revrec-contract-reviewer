@@ -9,7 +9,8 @@ happened to run.
 from __future__ import annotations
 
 from revrec_contract_reviewer.extract.grounding import Grounder
-from revrec_contract_reviewer.extract.schema import WireExtraction
+from revrec_contract_reviewer.extract.schema import ContractField as F
+from revrec_contract_reviewer.extract.schema import WireExtraction, one
 from revrec_contract_reviewer.models.document import ContractDocument
 from revrec_contract_reviewer.models.extraction import (
     AgreementType,
@@ -47,11 +48,11 @@ def assemble(
                 label=proposed.label,
                 kind=proposed.kind,
                 evidence=evidence,
-                stated_price=ground.money_field(proposed.stated_price),
-                list_price=ground.money_field(proposed.list_price),
-                duration_months=ground.count_field(proposed.duration_months),
-                recognition=ground.enum_field(proposed.recognition, RecognitionPattern),
-                integration_language=ground.text_field(proposed.integration_language),
+                stated_price=ground.money_field(one(proposed.stated_price)),
+                list_price=ground.money_field(one(proposed.list_price)),
+                duration_months=ground.count_field(one(proposed.duration_months)),
+                recognition=ground.enum_field(one(proposed.recognition), RecognitionPattern),
+                integration_language=ground.text_field(one(proposed.integration_language)),
             )
         )
 
@@ -66,48 +67,48 @@ def assemble(
                 kind=proposed.kind,
                 description=proposed.description,
                 evidence=evidence,
-                cap=ground.money_field(proposed.cap),
+                cap=ground.money_field(one(proposed.cap)),
                 estimable_from_contract=proposed.estimable_from_contract,
             )
         )
 
     term = ContractTerm(
-        effective_date=ground.date_field(wire.effective_date),
-        stated_term_months=ground.count_field(wire.stated_term_months),
-        auto_renews=ground.flag_field(wire.auto_renews),
-        termination_for_convenience=ground.flag_field(wire.termination_for_convenience),
-        termination_notice_days=ground.count_field(wire.termination_notice_days),
-        termination_compensation=ground.text_field(wire.termination_compensation),
+        effective_date=ground.date_field(wire.claim_for(F.EFFECTIVE_DATE)),
+        stated_term_months=ground.count_field(wire.claim_for(F.STATED_TERM_MONTHS)),
+        auto_renews=ground.flag_field(wire.claim_for(F.AUTO_RENEWS)),
+        termination_for_convenience=ground.flag_field(wire.claim_for(F.TERMINATION_FOR_CONVENIENCE)),
+        termination_notice_days=ground.count_field(wire.claim_for(F.TERMINATION_NOTICE_DAYS)),
+        termination_compensation=ground.text_field(wire.claim_for(F.TERMINATION_COMPENSATION)),
     )
 
     payment = PaymentTerms(
-        net_days=ground.count_field(wire.net_days),
-        billing_frequency=ground.text_field(wire.billing_frequency),
-        upfront_fee=ground.money_field(wire.upfront_fee),
-        upfront_fee_refundable=ground.flag_field(wire.upfront_fee_refundable),
-        payment_spread_months=ground.count_field(wire.payment_spread_months),
+        net_days=ground.count_field(wire.claim_for(F.NET_DAYS)),
+        billing_frequency=ground.text_field(wire.claim_for(F.BILLING_FREQUENCY)),
+        upfront_fee=ground.money_field(wire.claim_for(F.UPFRONT_FEE)),
+        upfront_fee_refundable=ground.flag_field(wire.claim_for(F.UPFRONT_FEE_REFUNDABLE)),
+        payment_spread_months=ground.count_field(wire.claim_for(F.PAYMENT_SPREAD_MONTHS)),
     )
 
     renewal = RenewalOption(
-        renewal_term_months=ground.count_field(wire.renewal_term_months),
-        renewal_price=ground.money_field(wire.renewal_price),
-        described_as_discounted=ground.flag_field(wire.renewal_described_as_discounted),
+        renewal_term_months=ground.count_field(wire.claim_for(F.RENEWAL_TERM_MONTHS)),
+        renewal_price=ground.money_field(wire.claim_for(F.RENEWAL_PRICE)),
+        described_as_discounted=ground.flag_field(wire.claim_for(F.RENEWAL_DESCRIBED_AS_DISCOUNTED)),
     )
 
     return ContractExtraction(
         doc_id=document.doc_id,
-        agreement_type=ground.enum_field(wire.agreement_type, AgreementType),
-        customer=ground.text_field(wire.customer),
-        supplier=ground.text_field(wire.supplier),
-        amends=ground.text_field(wire.amends),
-        currency=ground.text_field(wire.currency),
-        total_fixed_consideration=ground.money_field(wire.total_fixed_consideration),
+        agreement_type=ground.enum_field(wire.claim_for(F.AGREEMENT_TYPE), AgreementType),
+        customer=ground.text_field(wire.claim_for(F.CUSTOMER)),
+        supplier=ground.text_field(wire.claim_for(F.SUPPLIER)),
+        amends=ground.text_field(wire.claim_for(F.AMENDS)),
+        currency=ground.text_field(wire.claim_for(F.CURRENCY)),
+        total_fixed_consideration=ground.money_field(wire.claim_for(F.TOTAL_FIXED_CONSIDERATION)),
         term=term,
         payment=payment,
         renewal=renewal,
         obligations=obligations,
         variable_consideration=variable,
-        third_party_components=ground.text_field(wire.third_party_components),
+        third_party_components=ground.text_field(wire.claim_for(F.THIRD_PARTY_COMPONENTS)),
         extractor=extractor,
         model=model,
         # Read last: every field above has been built by this point, so the
