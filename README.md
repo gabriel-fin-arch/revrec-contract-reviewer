@@ -146,26 +146,37 @@ The pipeline is scored against a committed gold set. Full methodology, and an
 honest account of what a synthetic corpus can and cannot tell you, in
 [docs/evaluation.md](docs/evaluation.md).
 
-Offline rule-based extractor, 12 contracts. The model extractor's accuracy on
-this corpus is **not yet measured** — see [the note in
-docs/evaluation.md](docs/evaluation.md#running-the-model-extractor) for what is
-and isn't established about that path.
+12 contracts, precision / recall. The offline regexes are the baseline the model
+has to beat; a model extractor that can't beat regexes on a corpus this clean
+isn't earning its cost.
 
-| Measure | Precision | Recall | F1 |
-|---|---|---|---|
-| Contract fields | 1.00 | 0.91 | 0.95 |
-| Silence on unstated fields | 1.00 | 1.00 | 1.00 |
-| Performance obligations | 0.79 | 0.75 | 0.77 |
-| Judgment flags | 0.95 | 0.83 | 0.88 |
+| Measure | Rules | Claude Opus 5 |
+|---|---|---|
+| Contract fields | 1.00 / 0.91 | 1.00 / **0.97** |
+| Silence on unstated fields | 1.00 / 1.00 | 1.00 / 1.00 |
+| Performance obligations | 0.79 / 0.75 | **0.83** / **0.95** |
+| Judgment flags | **0.95** / 0.83 | 0.76 / **0.96** |
 
-Citations re-resolved against the source: **210/210 (100%)**.
+Citations re-resolved against the source: **100%** on both runs (210 and 325).
+Saved runs in [`evals/results/`](evals/results/).
 
-Those are the numbers for regular expressions, and they are published as the
-baseline the model has to beat. A model extractor that can't beat regexes on a
-corpus this clean isn't earning its cost. The recall gaps are all in the same
-place: contracts that state their fees in prose rather than a fee table, and
-the one clinical services agreement that grants a termination right without
-using the words "for convenience". Every individual miss is listed by:
+The model wins on recall everywhere, and it is not close — every gap the regexes
+had closes. **It also drops judgment precision from 0.95 to 0.76**, mostly by
+reading integration language more liberally than the taxonomy intends. That
+trade is the wrong way round for this product: a reviewer's trust is spent by
+false positives long before it is spent by misses. I would not ship the model
+path to a controller without tightening that definition first, and
+[docs/evaluation.md](docs/evaluation.md) says so at length rather than rounding
+it off.
+
+The harness also caught the failure worth knowing about. The first model run
+reported a transaction price of 792,000 for a contract stating no total, and a
+six-month term for one stating no term. Both were correct arithmetic — an annual
+fee times a term, a start date to an end date — and both cited the figures they
+were computed from, so every quote resolved and grounding passed them. **That is
+the documented limit of grounding met in the wild: it catches invention, not
+derivation.** A prompt rule against calculating values took silence precision
+from 0.90 back to 1.00.
 
 ```bash
 uv run revrec eval --extractor rules --mistakes
