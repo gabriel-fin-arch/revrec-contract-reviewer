@@ -57,8 +57,8 @@ against forty places in a contract, which is evidence of nothing.
 ### What grounding does not do
 
 It does not check whether the value is *right*. A real quote paired with a
-misread number gets through. That is deliberate, and the two failure modes are
-kept apart because they are fixed in different places:
+misread number gets through. That is deliberate, and the failure modes are kept
+apart because they are fixed in different places:
 
 - an **ungrounded** field is a model asserting something the document never
   said, and no amount of prompting makes that acceptable;
@@ -67,6 +67,21 @@ kept apart because they are fixed in different places:
 Conflating them would let a hallucinated citation hide inside an accuracy
 percentage. Misreadings are measured by the eval harness; inventions are
 structurally impossible to publish.
+
+There is a third mode, and I did not anticipate it — the eval found it on the
+first real model run. A **derived** field is a value the model computed from
+figures it then cited. Asked for the transaction price of a contract that states
+an annual fee and a term, it multiplied the two, reported the product, and
+quoted the clause containing both. The quote resolves. Grounding passes it.
+Nothing about the citation is false; what was manufactured is the inference
+drawn from it.
+
+So the honest statement of what this control does is narrower than "no
+hallucinated facts": **it catches invention, not derivation.** A prompt rule
+against calculating values mitigates it and does not close it, because the
+schema has no way to express "this number was printed" as distinct from "this
+number is true". The eval harness is what would catch the next one, which is
+most of the argument for having one.
 
 Drops are counted, not swallowed. `dropped_for_no_evidence` appears on the
 extraction and on the face of the memo, because a run where it climbs needs
