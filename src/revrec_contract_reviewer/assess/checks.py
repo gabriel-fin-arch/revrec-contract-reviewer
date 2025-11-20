@@ -1,4 +1,4 @@
-"""Deterministic checks -- the things a reviewer ticks off without thinking.
+"""Deterministic checks: the things a reviewer ticks off without thinking.
 
 Every check here has a right answer that follows from the extraction alone. No
 model is consulted and none of the `detail` strings are generated: they are
@@ -6,7 +6,7 @@ written by the check that failed, from the numbers that made it fail.
 
 The footing check is the one that earns its place. Whatever else a reviewer
 believes about a contract, the fee schedule adds up or it doesn't, and when it
-doesn't the cause is almost always that the extraction missed a line -- not that
+doesn't the cause is almost always that the extraction missed a line, not that
 the contract is wrong. It is the cheapest available signal that everything below
 it in the memo is built on an incomplete reading.
 """
@@ -22,7 +22,7 @@ from revrec_contract_reviewer.models.review import CheckOutcome, ReviewCheck
 # tolerance because there is nothing for a tolerance to absorb: both numbers are
 # printed in the same table, in the same currency, and a difference of any size
 # means a line was misread. This is not an intercompany balance translated at
-# two different rates -- it is arithmetic on one page.
+# two different rates. It is arithmetic on one page.
 FOOTING_TOLERANCE = Decimal("0")
 
 
@@ -97,7 +97,7 @@ def _effective_date(extraction: ContractExtraction) -> ReviewCheck:
         name="Effective date identified",
         outcome=CheckOutcome.FAILED,
         detail=(
-            "No effective date could be read from the document. Contract inception drives the whole model -- "
+            "No effective date could be read from the document. Contract inception drives the whole model: "
             "the enforceable term, the discount rate for any financing component, and the period the "
             "obligations sit in."
         ),
@@ -179,7 +179,7 @@ def _recognition_pattern(extraction: ContractExtraction) -> ReviewCheck:
             outcome=CheckOutcome.FAILED,
             detail=(
                 f"The contract says nothing about how control transfers for: {', '.join(silent)}. "
-                f"That is a finding about the drafting rather than a fault in the reading -- but it means "
+                f"That is a finding about the drafting rather than a fault in the reading, but it means "
                 f"the local team's over-time or point-in-time conclusion is not supported by this document."
             ),
         )

@@ -679,7 +679,7 @@ NIMBUS_SOW_TESSELLATE = ContractSpec(
     commentary=(
         "Variable consideration in both directions -- a bonus for early delivery and a penalty for late -- on a "
         "single performance obligation. Because there is only one obligation there is nothing to allocate, so no "
-        "SSP question arises, which is the point: the corpus should not produce the same three flags on every "
+        "SSP question arises. The corpus should not produce the same three flags on every "
         "document."
     ),
 )
@@ -858,7 +858,7 @@ NIMBUS_OF_PINEGROVE = ContractSpec(
     commentary=(
         "One obligation, sold at list, renewing at list, no services, no variability, no termination right. "
         "Nothing to allocate and nothing to judge. Most SaaS revenue looks like this, and a reviewer that raises "
-        "a flag here is one a controller will stop reading within a month -- which is why it is measured."
+        "a flag here is one a controller will stop reading within a month, so it gets measured."
     ),
 )
 
@@ -1053,7 +1053,7 @@ NIMBUS_OF_QUARRY = ContractSpec(
     commentary=(
         "Deliberately the mirror image of the Beacon third-party line. Here Nimbus takes inventory risk, sets "
         "the price, installs, and stands behind the warranty -- indicators pointing to principal. Same flag, "
-        "opposite likely conclusion, which is the argument for raising the question rather than answering it: a "
+        "opposite likely conclusion. That is the case for raising the question rather than answering it: a "
         "rule that keyed on the phrase 'third party' would have got one of these two badly wrong."
     ),
 )
