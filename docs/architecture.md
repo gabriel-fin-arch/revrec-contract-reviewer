@@ -138,8 +138,8 @@ not a rule about language models.
 The rules extractor exists for two reasons: a fresh clone runs end to end with
 no API key, and the eval harness gets a floor to measure against. It is not the
 product. It works because the corpus is internally consistent, and it stops
-working on anyone else's template — which is the honest argument for the model
-path, and a better one than a benchmark number.
+working on anyone else's template. That is the honest case for the model path,
+and a better one than a benchmark number.
 
 `--extractor llm` raises rather than falling back. Silently handing someone
 regular expressions inside a review that looks fine is the worst outcome

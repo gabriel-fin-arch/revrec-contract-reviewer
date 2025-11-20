@@ -57,7 +57,7 @@ The one contract in the corpus where an obligation transfers at a point in time.
 
 ### `nimbus-sow-tessellate`
 
-Variable consideration in both directions -- a bonus for early delivery and a penalty for late -- on a single performance obligation. Because there is only one obligation there is nothing to allocate, so no SSP question arises, which is the point: the corpus should not produce the same three flags on every document.
+Variable consideration in both directions -- a bonus for early delivery and a penalty for late -- on a single performance obligation. Because there is only one obligation there is nothing to allocate, so no SSP question arises. The corpus should not produce the same three flags on every document.
 
 ### `nimbus-of-northgate`
 
@@ -65,7 +65,7 @@ Payment stretched over five years with an express statement that the price does 
 
 ### `nimbus-of-pinegrove`
 
-One obligation, sold at list, renewing at list, no services, no variability, no termination right. Nothing to allocate and nothing to judge. Most SaaS revenue looks like this, and a reviewer that raises a flag here is one a controller will stop reading within a month -- which is why it is measured.
+One obligation, sold at list, renewing at list, no services, no variability, no termination right. Nothing to allocate and nothing to judge. Most SaaS revenue looks like this, and a reviewer that raises a flag here is one a controller will stop reading within a month, so it gets measured.
 
 ### `nimbus-msa-vantage`
 
@@ -73,7 +73,7 @@ Section 3.2 grants a termination right for convenience and Section 5.1 says none
 
 ### `nimbus-of-quarry`
 
-Deliberately the mirror image of the Beacon third-party line. Here Nimbus takes inventory risk, sets the price, installs, and stands behind the warranty -- indicators pointing to principal. Same flag, opposite likely conclusion, which is the argument for raising the question rather than answering it: a rule that keyed on the phrase 'third party' would have got one of these two badly wrong.
+Deliberately the mirror image of the Beacon third-party line. Here Nimbus takes inventory risk, sets the price, installs, and stands behind the warranty -- indicators pointing to principal. Same flag, opposite likely conclusion. That is the case for raising the question rather than answering it: a rule that keyed on the phrase 'third party' would have got one of these two badly wrong.
 
 ### `meridian-msa-aster`
 
