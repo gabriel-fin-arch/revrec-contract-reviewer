@@ -17,10 +17,10 @@ ran — `pipeline.py` is deliberately boring for that reason.
 
 ## Why there is no agent framework
 
-The first project I built in this space is a LangGraph agent, and the graph
-earned its place there: intercompany matching has a genuine human-in-the-loop
-interrupt in the middle of it, where a reviewer's decision goes back into the
-run and changes what happens next.
+My other project in this space is a LangGraph agent, and the graph earned its
+place there: intercompany matching has a genuine human-in-the-loop interrupt in
+the middle of it, where a reviewer's decision goes back into the run and changes
+what happens next.
 
 This is not that. It is a straight line: read a document, extract from it,
 check the extraction, write a memo. There is no interrupt, no branch that
