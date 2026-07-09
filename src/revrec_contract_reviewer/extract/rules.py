@@ -104,7 +104,16 @@ _FEE_LINE = re.compile(
 # Wording that grants a termination right without cause, and wording that denies
 # one. Both are searched: a document matching each is not undecided, it is
 # contradictory, and that distinction is why FieldStatus has an AMBIGUOUS member.
-_TFC_GRANTED = re.compile(r"may (?:additionally )?terminate[^.]{0,140}?for convenience", re.IGNORECASE)
+# The lookbehind matters more than it looks. "Neither party may terminate this
+# Order Form for convenience" contains "may terminate ... for convenience"
+# verbatim, so without it the clearest denial in the corpus reads as a grant --
+# and, because the denial pattern matches the same sentence, the field comes out
+# ambiguous rather than merely wrong. A contradiction invented out of one
+# unambiguous sentence is worse than a miss: it sends a reviewer to read a
+# clause that says exactly what it appears to say.
+_TFC_GRANTED = re.compile(
+    r"(?<!Neither party )may (?:additionally )?terminate[^.]{0,140}?for convenience", re.IGNORECASE
+)
 _TFC_DENIED = re.compile(
     r"(?:may not terminate[^.]{0,140}?for convenience"
     r"|has no right to terminate[^.]{0,140}?for convenience"
