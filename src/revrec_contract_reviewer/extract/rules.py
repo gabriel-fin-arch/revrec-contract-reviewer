@@ -303,7 +303,11 @@ def _obligations(reader: Reader) -> list[WireObligation]:
     for item, agreed, listed, match in _fee_rows(reader):
         if item.lower().startswith("total"):
             continue
-        quote = reader.sentence(match.start(), match.end())
+        # The row itself, not the sentence around it. A fee table contains no
+        # full stops, so sentence expansion swallows the entire table and the
+        # clause heading after it -- technically a true quote, and useless as
+        # evidence for one line of it.
+        quote = reader.raw(match.start(), match.end())
         obligations.append(
             WireObligation(
                 label=item,
@@ -322,7 +326,7 @@ def _obligations(reader: Reader) -> list[WireObligation]:
 def _total(reader: Reader) -> Claim | None:
     for item, agreed, _listed, match in _fee_rows(reader):
         if item.lower().startswith("total"):
-            return Claim(value=agreed, quotes=[reader.sentence(match.start(), match.end())])
+            return Claim(value=agreed, quotes=[reader.raw(match.start(), match.end())])
     return None
 
 
