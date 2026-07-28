@@ -1,0 +1,17 @@
+{
+  "doc_id": "nimbus-msa-calderwood",
+  "fields": {
+    "customer": "Calderwood Logistics Group, Inc.",
+    "supplier": "Nimbus Analytics, Inc.",
+    "agreement_type": "master_agreement",
+    "currency": "USD",
+    "effective_date": "2025-01-15",
+    "stated_term_months": null,
+    "termination_for_convenience": false,
+    "termination_notice_days": null,
+    "net_days": 30,
+    "total_fixed_consideration": null
+  },
+  "obligations": [],
+  "judgments": []
+}

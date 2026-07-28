@@ -1,0 +1,34 @@
+{
+  "doc_id": "nimbus-of-calderwood-2025",
+  "fields": {
+    "customer": "Calderwood Logistics Group, Inc.",
+    "supplier": "Nimbus Analytics, Inc.",
+    "agreement_type": "order_form",
+    "currency": "USD",
+    "effective_date": "2025-03-03",
+    "stated_term_months": 36,
+    "termination_for_convenience": false,
+    "termination_notice_days": null,
+    "net_days": 30,
+    "total_fixed_consideration": "689000"
+  },
+  "obligations": [
+    {
+      "kind": "saas_subscription",
+      "stated_price": "540000"
+    },
+    {
+      "kind": "implementation",
+      "stated_price": "95000"
+    },
+    {
+      "kind": "support",
+      "stated_price": "54000"
+    }
+  ],
+  "judgments": [
+    "distinct_uncertain",
+    "material_right",
+    "ssp_not_observable"
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "doc_id": "nimbus-of-quarry",
+  "fields": {
+    "customer": "Quarry Industrial Supply Co.",
+    "supplier": "Nimbus Analytics, Inc.",
+    "agreement_type": "order_form",
+    "currency": "USD",
+    "effective_date": "2025-09-22",
+    "stated_term_months": 36,
+    "termination_for_convenience": null,
+    "termination_notice_days": null,
+    "net_days": 30,
+    "total_fixed_consideration": "520000"
+  },
+  "obligations": [
+    {
+      "kind": "saas_subscription",
+      "stated_price": "396000"
+    },
+    {
+      "kind": "support",
+      "stated_price": "36000"
+    },
+    {
+      "kind": "third_party_resale",
+      "stated_price": "88000"
+    }
+  ],
+  "judgments": [
+    "principal_vs_agent",
+    "ssp_not_observable",
+    "variable_consideration_constraint"
+  ]
+}

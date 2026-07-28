@@ -1,0 +1,22 @@
+{
+  "doc_id": "nimbus-of-pinegrove",
+  "fields": {
+    "customer": "Pinegrove Dental Partners, LLC",
+    "supplier": "Nimbus Analytics, Inc.",
+    "agreement_type": "order_form",
+    "currency": "USD",
+    "effective_date": "2025-02-18",
+    "stated_term_months": 12,
+    "termination_for_convenience": false,
+    "termination_notice_days": null,
+    "net_days": 30,
+    "total_fixed_consideration": "14400"
+  },
+  "obligations": [
+    {
+      "kind": "saas_subscription",
+      "stated_price": "14400"
+    }
+  ],
+  "judgments": []
+}

@@ -1,0 +1,24 @@
+{
+  "doc_id": "meridian-change-order-03",
+  "fields": {
+    "customer": "Aster Therapeutics AB",
+    "supplier": "Meridian Clinical Partners, S.L.",
+    "agreement_type": "amendment",
+    "currency": "EUR",
+    "effective_date": "2026-01-14",
+    "stated_term_months": null,
+    "termination_for_convenience": null,
+    "termination_notice_days": null,
+    "net_days": 45,
+    "total_fixed_consideration": "340000"
+  },
+  "obligations": [
+    {
+      "kind": "clinical_services",
+      "stated_price": "340000"
+    }
+  ],
+  "judgments": [
+    "contract_modification"
+  ]
+}

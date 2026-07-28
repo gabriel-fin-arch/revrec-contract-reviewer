@@ -1,0 +1,30 @@
+{
+  "doc_id": "nimbus-of-northgate",
+  "fields": {
+    "customer": "Northgate Financial Services, Inc.",
+    "supplier": "Nimbus Analytics, Inc.",
+    "agreement_type": "order_form",
+    "currency": "USD",
+    "effective_date": "2025-10-09",
+    "stated_term_months": 60,
+    "termination_for_convenience": false,
+    "termination_notice_days": null,
+    "net_days": 30,
+    "total_fixed_consideration": "1200000"
+  },
+  "obligations": [
+    {
+      "kind": "saas_subscription",
+      "stated_price": "1050000"
+    },
+    {
+      "kind": "support",
+      "stated_price": "150000"
+    }
+  ],
+  "judgments": [
+    "significant_financing",
+    "ssp_not_observable",
+    "variable_consideration_constraint"
+  ]
+}
