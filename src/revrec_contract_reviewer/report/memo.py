@@ -20,6 +20,7 @@ from typing import Any
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
+from revrec_contract_reviewer.fileio import write_lf
 from revrec_contract_reviewer.models.extraction import ContractExtraction
 from revrec_contract_reviewer.models.fields import ExtractedField, FieldStatus
 from revrec_contract_reviewer.models.review import ContractReview
@@ -144,19 +145,14 @@ def write_review(review: ContractReview, out_dir: Path) -> tuple[Path, Path]:
     """Write the memo and the machine-readable form. Returns both paths."""
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    memo_path = out_dir / f"{review.doc_id}.html"
-    memo_path.write_text(render_memo(review), encoding="utf-8")
-
-    json_path = out_dir / f"{review.doc_id}.json"
-    json_path.write_text(
+    memo_path = write_lf(out_dir / f"{review.doc_id}.html", render_memo(review))
+    json_path = write_lf(
+        out_dir / f"{review.doc_id}.json",
         json.dumps(review.model_dump(mode="json"), indent=2, ensure_ascii=False),
-        encoding="utf-8",
     )
     return memo_path, json_path
 
 
 def write_index(reviews: list[ContractReview], out_dir: Path) -> Path:
     out_dir.mkdir(parents=True, exist_ok=True)
-    index_path = out_dir / "index.html"
-    index_path.write_text(render_index(reviews), encoding="utf-8")
-    return index_path
+    return write_lf(out_dir / "index.html", render_index(reviews))

@@ -14,6 +14,7 @@ from dotenv import load_dotenv
 from revrec_contract_reviewer.corpus import generate_corpus
 from revrec_contract_reviewer.evaluate import markdown_table, run_eval, write_gold
 from revrec_contract_reviewer.extract import ExtractorChoice
+from revrec_contract_reviewer.fileio import write_lf
 from revrec_contract_reviewer.pipeline import review_contract, review_directory
 from revrec_contract_reviewer.report import write_index, write_review
 
@@ -96,8 +97,7 @@ def eval_command(
     if save:
         results_dir = Path("evals/results")
         results_dir.mkdir(parents=True, exist_ok=True)
-        target = results_dir / f"{report.extractor}.json"
-        target.write_text(report.model_dump_json(indent=2) + "\n", encoding="utf-8")
+        target = write_lf(results_dir / f"{report.extractor}.json", report.model_dump_json(indent=2) + "\n")
         typer.echo(f"\nSaved to {target}")
 
     if show_mistakes:
