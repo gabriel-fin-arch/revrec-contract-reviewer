@@ -101,6 +101,10 @@ _FEE_LINE = re.compile(
     r"(?: (?:USD|GBP|EUR) ?(?P<second>[\d,]+))?(?![\d,])"
 )
 
+# The header row of a fee table, which is the only marker left once the grid is
+# flattened into a line of text.
+_FEE_HEADER = re.compile(r"\b(?:Item|Milestone) (?:List Rate )?Fee\b")
+
 # Wording that grants a termination right without cause, and wording that denies
 # one. Both are searched: a document matching each is not undecided, it is
 # contradictory, and that distinction is why FieldStatus has an AMBIGUOUS member.
@@ -283,9 +287,25 @@ def _termination_for_convenience(reader: Reader) -> tuple[Claim | None, Claim | 
 
 
 def _fee_rows(reader: Reader) -> list[tuple[str, str, str | None, re.Match[str]]]:
-    """Every parsed fee line: (item, agreed amount, list amount, match)."""
-    rows = []
-    for match in _FEE_LINE.finditer(reader.text):
+    """Every parsed fee line inside the fee table: (item, agreed, list, match).
+
+    Scoped to the table rather than run over the whole document, and the scoping
+    is what makes the output usable. Prose contains amounts too -- "the balance
+    of USD 900,000 in four (4) equal annual instalments of USD 225,000" parses
+    as a perfectly good fee line, and taking it produced a performance
+    obligation labelled "USD 900,000 in four (4) equal annual i" priced at
+    225,000, which is not a promise to the customer and never was.
+
+    Once the layout is gone a table has exactly two landmarks: the header row,
+    and the total row that closes it. Reading between them is the whole
+    heuristic.
+    """
+    header = _FEE_HEADER.search(reader.text)
+    if header is None:
+        return []
+
+    rows: list[tuple[str, str, str | None, re.Match[str]]] = []
+    for match in _FEE_LINE.finditer(reader.text, header.end()):
         item = match.group("item").strip()
         first = match.group("first").replace(",", "")
         second = match.group("second")
@@ -295,6 +315,8 @@ def _fee_rows(reader: Reader) -> list[tuple[str, str, str | None, re.Match[str]]
             # Two amounts on one line is a list-rate column followed by the
             # agreed fee. The right-hand number is what the customer pays.
             rows.append((item, second.replace(",", ""), first, match))
+        if item.lower().startswith("total"):
+            break
     return rows
 
 
