@@ -1,0 +1,383 @@
+{
+  "extractor": "rules",
+  "model": null,
+  "per_contract": [
+    {
+      "doc_id": "meridian-change-order-03",
+      "fields": {
+        "true_positives": 5,
+        "false_positives": 0,
+        "false_negatives": 2
+      },
+      "silence": {
+        "true_positives": 3,
+        "false_positives": 0,
+        "false_negatives": 0
+      },
+      "obligations": {
+        "true_positives": 0,
+        "false_positives": 0,
+        "false_negatives": 1
+      },
+      "judgments": {
+        "true_positives": 1,
+        "false_positives": 0,
+        "false_negatives": 0
+      },
+      "citations_total": 6,
+      "citations_resolved": 6,
+      "dropped_for_no_evidence": 0,
+      "mistakes": [
+        "net_days: missed (gold 45, status absent)",
+        "total_fixed_consideration: missed (gold '340000', status absent)",
+        "obligation missed: clinical_services at 340000 (x1)"
+      ]
+    },
+    {
+      "doc_id": "meridian-msa-aster",
+      "fields": {
+        "true_positives": 7,
+        "false_positives": 0,
+        "false_negatives": 2
+      },
+      "silence": {
+        "true_positives": 1,
+        "false_positives": 0,
+        "false_negatives": 0
+      },
+      "obligations": {
+        "true_positives": 0,
+        "false_positives": 4,
+        "false_negatives": 1
+      },
+      "judgments": {
+        "true_positives": 2,
+        "false_positives": 1,
+        "false_negatives": 2
+      },
+      "citations_total": 27,
+      "citations_resolved": 27,
+      "dropped_for_no_evidence": 0,
+      "mistakes": [
+        "termination_for_convenience: missed (gold True, status absent)",
+        "termination_notice_days: missed (gold 30, status absent)",
+        "obligation not in gold: clinical_services at 120000 (x1)",
+        "obligation not in gold: clinical_services at 260000 (x1)",
+        "obligation not in gold: clinical_services at 210000 (x1)",
+        "obligation not in gold: clinical_services at 180000 (x1)",
+        "obligation missed: clinical_services at 770000 (x1)",
+        "judgment raised but not expected: ssp_not_observable",
+        "judgment expected but not raised: distinct_uncertain",
+        "judgment expected but not raised: enforceable_term"
+      ]
+    },
+    {
+      "doc_id": "nimbus-amendment-orchid",
+      "fields": {
+        "true_positives": 6,
+        "false_positives": 0,
+        "false_negatives": 2
+      },
+      "silence": {
+        "true_positives": 2,
+        "false_positives": 0,
+        "false_negatives": 0
+      },
+      "obligations": {
+        "true_positives": 0,
+        "false_positives": 0,
+        "false_negatives": 1
+      },
+      "judgments": {
+        "true_positives": 1,
+        "false_positives": 0,
+        "false_negatives": 1
+      },
+      "citations_total": 9,
+      "citations_resolved": 9,
+      "dropped_for_no_evidence": 0,
+      "mistakes": [
+        "stated_term_months: missed (gold 14, status absent)",
+        "total_fixed_consideration: missed (gold '48000', status absent)",
+        "obligation missed: saas_subscription at 48000 (x1)",
+        "judgment expected but not raised: ssp_not_observable"
+      ]
+    },
+    {
+      "doc_id": "nimbus-msa-calderwood",
+      "fields": {
+        "true_positives": 6,
+        "false_positives": 0,
+        "false_negatives": 1
+      },
+      "silence": {
+        "true_positives": 3,
+        "false_positives": 0,
+        "false_negatives": 0
+      },
+      "obligations": {
+        "true_positives": 0,
+        "false_positives": 0,
+        "false_negatives": 0
+      },
+      "judgments": {
+        "true_positives": 0,
+        "false_positives": 0,
+        "false_negatives": 0
+      },
+      "citations_total": 6,
+      "citations_resolved": 6,
+      "dropped_for_no_evidence": 0,
+      "mistakes": [
+        "currency: missed (gold 'USD', status absent)"
+      ]
+    },
+    {
+      "doc_id": "nimbus-msa-vantage",
+      "fields": {
+        "true_positives": 8,
+        "false_positives": 0,
+        "false_negatives": 0
+      },
+      "silence": {
+        "true_positives": 2,
+        "false_positives": 0,
+        "false_negatives": 0
+      },
+      "obligations": {
+        "true_positives": 0,
+        "false_positives": 0,
+        "false_negatives": 1
+      },
+      "judgments": {
+        "true_positives": 1,
+        "false_positives": 0,
+        "false_negatives": 0
+      },
+      "citations_total": 13,
+      "citations_resolved": 13,
+      "dropped_for_no_evidence": 0,
+      "mistakes": [
+        "obligation missed: saas_subscription at 264000 (x1)"
+      ]
+    },
+    {
+      "doc_id": "nimbus-of-beacon",
+      "fields": {
+        "true_positives": 8,
+        "false_positives": 0,
+        "false_negatives": 0
+      },
+      "silence": {
+        "true_positives": 2,
+        "false_positives": 0,
+        "false_negatives": 0
+      },
+      "obligations": {
+        "true_positives": 4,
+        "false_positives": 0,
+        "false_negatives": 0
+      },
+      "judgments": {
+        "true_positives": 2,
+        "false_positives": 0,
+        "false_negatives": 0
+      },
+      "citations_total": 27,
+      "citations_resolved": 27,
+      "dropped_for_no_evidence": 0,
+      "mistakes": []
+    },
+    {
+      "doc_id": "nimbus-of-calderwood-2025",
+      "fields": {
+        "true_positives": 9,
+        "false_positives": 0,
+        "false_negatives": 0
+      },
+      "silence": {
+        "true_positives": 1,
+        "false_positives": 0,
+        "false_negatives": 0
+      },
+      "obligations": {
+        "true_positives": 3,
+        "false_positives": 0,
+        "false_negatives": 0
+      },
+      "judgments": {
+        "true_positives": 2,
+        "false_positives": 0,
+        "false_negatives": 1
+      },
+      "citations_total": 29,
+      "citations_resolved": 29,
+      "dropped_for_no_evidence": 0,
+      "mistakes": [
+        "judgment expected but not raised: distinct_uncertain"
+      ]
+    },
+    {
+      "doc_id": "nimbus-of-helix",
+      "fields": {
+        "true_positives": 10,
+        "false_positives": 0,
+        "false_negatives": 0
+      },
+      "silence": {
+        "true_positives": 0,
+        "false_positives": 0,
+        "false_negatives": 0
+      },
+      "obligations": {
+        "true_positives": 2,
+        "false_positives": 0,
+        "false_negatives": 0
+      },
+      "judgments": {
+        "true_positives": 3,
+        "false_positives": 0,
+        "false_negatives": 0
+      },
+      "citations_total": 21,
+      "citations_resolved": 21,
+      "dropped_for_no_evidence": 0,
+      "mistakes": []
+    },
+    {
+      "doc_id": "nimbus-of-northgate",
+      "fields": {
+        "true_positives": 9,
+        "false_positives": 0,
+        "false_negatives": 0
+      },
+      "silence": {
+        "true_positives": 1,
+        "false_positives": 0,
+        "false_negatives": 0
+      },
+      "obligations": {
+        "true_positives": 2,
+        "false_positives": 0,
+        "false_negatives": 0
+      },
+      "judgments": {
+        "true_positives": 3,
+        "false_positives": 0,
+        "false_negatives": 0
+      },
+      "citations_total": 23,
+      "citations_resolved": 23,
+      "dropped_for_no_evidence": 0,
+      "mistakes": []
+    },
+    {
+      "doc_id": "nimbus-of-pinegrove",
+      "fields": {
+        "true_positives": 9,
+        "false_positives": 0,
+        "false_negatives": 0
+      },
+      "silence": {
+        "true_positives": 1,
+        "false_positives": 0,
+        "false_negatives": 0
+      },
+      "obligations": {
+        "true_positives": 1,
+        "false_positives": 0,
+        "false_negatives": 0
+      },
+      "judgments": {
+        "true_positives": 0,
+        "false_positives": 0,
+        "false_negatives": 0
+      },
+      "citations_total": 15,
+      "citations_resolved": 15,
+      "dropped_for_no_evidence": 0,
+      "mistakes": []
+    },
+    {
+      "doc_id": "nimbus-of-quarry",
+      "fields": {
+        "true_positives": 8,
+        "false_positives": 0,
+        "false_negatives": 0
+      },
+      "silence": {
+        "true_positives": 2,
+        "false_positives": 0,
+        "false_negatives": 0
+      },
+      "obligations": {
+        "true_positives": 3,
+        "false_positives": 0,
+        "false_negatives": 0
+      },
+      "judgments": {
+        "true_positives": 3,
+        "false_positives": 0,
+        "false_negatives": 0
+      },
+      "citations_total": 25,
+      "citations_resolved": 25,
+      "dropped_for_no_evidence": 0,
+      "mistakes": []
+    },
+    {
+      "doc_id": "nimbus-sow-tessellate",
+      "fields": {
+        "true_positives": 5,
+        "false_positives": 0,
+        "false_negatives": 2
+      },
+      "silence": {
+        "true_positives": 3,
+        "false_positives": 0,
+        "false_negatives": 0
+      },
+      "obligations": {
+        "true_positives": 0,
+        "false_positives": 0,
+        "false_negatives": 1
+      },
+      "judgments": {
+        "true_positives": 1,
+        "false_positives": 0,
+        "false_negatives": 0
+      },
+      "citations_total": 9,
+      "citations_resolved": 9,
+      "dropped_for_no_evidence": 0,
+      "mistakes": [
+        "net_days: missed (gold 30, status absent)",
+        "total_fixed_consideration: missed (gold '240000', status absent)",
+        "obligation missed: professional_services at 240000 (x1)"
+      ]
+    }
+  ],
+  "fields": {
+    "true_positives": 90,
+    "false_positives": 0,
+    "false_negatives": 9
+  },
+  "silence": {
+    "true_positives": 21,
+    "false_positives": 0,
+    "false_negatives": 0
+  },
+  "obligations": {
+    "true_positives": 15,
+    "false_positives": 4,
+    "false_negatives": 5
+  },
+  "judgments": {
+    "true_positives": 19,
+    "false_positives": 1,
+    "false_negatives": 4
+  },
+  "citations_total": 210,
+  "citations_resolved": 210,
+  "dropped_for_no_evidence": 0
+}
