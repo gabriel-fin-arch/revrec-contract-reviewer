@@ -5,7 +5,7 @@
 ASC 606 contract review for group-level revenue assurance. It reads executed
 contract PDFs, extracts the facts that drive revenue recognition, tests them
 against the five-step model, and writes a review memo in which **every value is
-followed by the words it came from and the page they are on**.
+followed by the words it came from, the clause they sit in and the page**.
 
 It does not conclude the accounting. What it does is put the eight judgments a
 contract actually forces in front of the person who can make them, with the
@@ -152,11 +152,11 @@ Offline rule-based extractor, 12 contracts:
 Citations re-resolved against the source: **191/191 (100%)**.
 
 Those are the numbers for regular expressions, and they are published as the
-baseline the model has to beat — a model extractor that can't beat regexes on a
+baseline the model has to beat. A model extractor that can't beat regexes on a
 corpus this clean isn't earning its cost. The recall gaps are all in the same
 place: contracts that state their fees in prose rather than a fee table, and
 the one clinical services agreement that grants a termination right without
-using the words "for convenience". Reproduce either run with:
+using the words "for convenience". Every individual miss is listed by:
 
 ```bash
 uv run revrec eval --extractor rules --mistakes
@@ -201,9 +201,9 @@ Stated plainly, because an honest scope is more credible than an inflated one.
 
 ## The corpus
 
-Twelve synthetic contracts — ten SaaS and software, two clinical services —
-built around specific ASC 606 questions, plus two built around none. Every
-party, product, price and person is invented. See
+Twelve synthetic contracts: ten SaaS and software, two clinical services. Ten of
+them are built around a specific ASC 606 question and two are deliberately built
+around none. Every party, product, price and person is invented. See
 [corpus/README.md](corpus/README.md) for what each one is there to exercise.
 
 ## Stack
@@ -214,6 +214,15 @@ reportlab · pytest · ruff.
 No agent framework. This is a pipeline with one model call in it, and wrapping
 that in a graph would have added a dependency and a diagram without adding a
 capability.
+
+117 tests. CI runs ruff, the test suite, and then the whole pipeline offline
+over the corpus; the eval step exits non-zero if any citation in any memo stops
+resolving against its source document, which is the one regression that would
+leave the tool untrustworthy while still looking like it worked.
+
+```bash
+uv run pytest -q
+```
 
 ## Licence
 
