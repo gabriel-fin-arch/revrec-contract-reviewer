@@ -17,7 +17,7 @@ from __future__ import annotations
 
 from enum import StrEnum
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 from revrec_contract_reviewer.models.citation import Citation
 
@@ -96,6 +96,25 @@ class JudgmentFlag(BaseModel):
     trigger: str = Field(description="What in the document caused this to be raised.")
     evidence: list[Citation] = Field(description="Where in the contract the trigger was found.")
     affects: list[str] = Field(default=[], description="Obligation labels whose accounting this decision changes.")
+
+    @model_validator(mode="after")
+    def _evidence_is_unique(self) -> JudgmentFlag:
+        """Collapse citations that point at the same span.
+
+        A flag raised from several obligations gathers a citation from each, and
+        when those obligations came off one fee table they all resolve to the
+        same run of text. Printing it three times makes the memo look like it
+        found three pieces of evidence when it found one.
+        """
+        seen: set[tuple[int, int]] = set()
+        unique: list[Citation] = []
+        for citation in self.evidence:
+            key = (citation.start, citation.end)
+            if key not in seen:
+                seen.add(key)
+                unique.append(citation)
+        self.evidence = unique
+        return self
 
     @property
     def step(self) -> int:
