@@ -103,3 +103,45 @@ def test_a_missing_claim_is_absent_without_counting_as_a_drop(helix: ContractDoc
 
     assert field.status is FieldStatus.ABSENT
     assert ground.dropped == 0
+
+
+def test_a_citation_carries_the_clause_it_falls_in(helix: ContractDocument):
+    """The reason segmentation exists. "p.1" tells a reviewer almost nothing;
+    "3 Termination" is how they would refer to it themselves."""
+    ground = Grounder(helix)
+
+    citation = ground.citations_for(
+        ["Either party may terminate this Order Form at any time for convenience"]
+    )[0]
+
+    assert citation.clause == "3 Termination"
+    assert citation.label() == "3 Termination · p.1"
+
+
+def test_a_quote_in_the_preamble_is_labelled_as_such(helix: ContractDocument):
+    ground = Grounder(helix)
+
+    citation = ground.citations_for(["This Order Form is made on 12 June 2025"])[0]
+
+    assert citation.clause == "Preamble"
+
+
+def test_a_variable_consideration_term_with_no_evidence_is_dropped(helix: ContractDocument):
+    from revrec_contract_reviewer.extract import assemble
+    from revrec_contract_reviewer.extract.schema import WireExtraction, WireVariableConsideration
+    from revrec_contract_reviewer.models.extraction import VariableConsiderationKind
+
+    invented = WireExtraction(
+        variable_consideration=[
+            WireVariableConsideration(
+                kind=VariableConsiderationKind.VOLUME_REBATE,
+                description="A rebate nobody wrote down",
+                quotes=["Customer shall receive a rebate of fifteen percent on renewal"],
+            )
+        ]
+    )
+
+    extraction = assemble(helix, invented, extractor="llm", model="stub")
+
+    assert extraction.variable_consideration == []
+    assert extraction.dropped_for_no_evidence == 1
