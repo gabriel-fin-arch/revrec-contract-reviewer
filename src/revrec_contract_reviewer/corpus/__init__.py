@@ -7,6 +7,7 @@ from pathlib import Path
 from revrec_contract_reviewer.corpus.library import CORPUS, spec_by_id
 from revrec_contract_reviewer.corpus.render import render_contract
 from revrec_contract_reviewer.corpus.spec import ContractSpec
+from revrec_contract_reviewer.fileio import write_lf
 
 __all__ = ["CORPUS", "ContractSpec", "generate_corpus", "render_contract", "spec_by_id"]
 
@@ -59,15 +60,13 @@ def write_index(out_dir: Path) -> Path:
     contract it describes in library.py, and a hand-kept copy of it in markdown
     would be wrong within two edits.
     """
-    target = out_dir / "README.md"
     body = (
         _INDEX_HEADER
         + _index_rows()
         + "\n\n## What each one is for\n\n"
         + _index_commentary()
     )
-    target.write_text(body, encoding="utf-8")
-    return target
+    return write_lf(out_dir / "README.md", body)
 
 
 def generate_corpus(out_dir: Path) -> list[Path]:
