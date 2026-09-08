@@ -142,3 +142,15 @@ def test_generated_files_use_lf_on_every_platform(tmp_path: Path, helix: Contrac
 
     for path in (tmp_path / "nimbus-of-helix.json", memo_path, json_path):
         assert b"\r\n" not in path.read_bytes(), path.name
+
+
+def test_a_document_that_could_not_be_read_does_not_sink_to_the_bottom(documents, tmp_path: Path):
+    """It raises no judgments, so ordering by judgment count alone put it last,
+    next to the clean contract and looking exactly like it."""
+    reviews = [_review(document) for document in documents.values()]
+    index = write_index(reviews, tmp_path).read_text(encoding="utf-8")
+
+    failing = next(r for r in reviews if r.failed_checks() and not r.flags)
+    clean = next(r for r in reviews if not r.needs_review())
+
+    assert index.index(failing.doc_id) < index.index(clean.doc_id)

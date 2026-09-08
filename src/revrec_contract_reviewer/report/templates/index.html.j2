@@ -4,8 +4,10 @@
 {% block body %}
 <h1>Contract review</h1>
 <p class="lede">
-  {{ reviews | length }} contracts reviewed &middot; {{ total_flags }} matters for judgment &middot;
-  {{ total_failed }} failed checks &middot; {{ clean | length }} needing nothing.
+  {{ reviews | length }} contracts reviewed &middot;
+  {{ total_flags }} matter{{ '' if total_flags == 1 else 's' }} for judgment &middot;
+  {{ total_failed }} failed check{{ '' if total_failed == 1 else 's' }} &middot;
+  {{ clean | length }} needing no attention.
 </p>
 
 <h2>Worklist</h2>
