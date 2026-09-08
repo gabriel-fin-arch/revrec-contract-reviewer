@@ -53,7 +53,7 @@ than by reading the code. `revrec eval` exits non-zero if it ever drops below
 | Performance obligations | 0.79 | 0.75 | 0.77 |
 | Judgment flags | 0.95 | 0.83 | 0.88 |
 
-Citations re-resolved: 210/210 (100%). Claims dropped for no evidence: 0.
+Citations re-resolved: 191/191 (100%). Claims dropped for no evidence: 0.
 
 Saved run: [`evals/results/rules.json`](../evals/results/rules.json).
 
