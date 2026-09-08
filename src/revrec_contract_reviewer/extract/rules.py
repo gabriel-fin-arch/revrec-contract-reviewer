@@ -41,7 +41,6 @@ from revrec_contract_reviewer.models.document import ContractDocument
 from revrec_contract_reviewer.models.extraction import (
     AgreementType,
     ObligationKind,
-    RecognitionPattern,
     VariableConsiderationKind,
 )
 
@@ -337,9 +336,14 @@ def _obligations(reader: Reader) -> list[WireObligation]:
                 quotes=[quote],
                 stated_price=Claim(value=agreed, quotes=[quote]),
                 list_price=Claim(value=listed, quotes=[quote]) if listed else None,
-                # The rules extractor cannot read how control passes. That is a
-                # property of the prose, not of the fee line it matched.
-                recognition=Claim(value=RecognitionPattern.UNDETERMINED.value, quotes=[quote]),
+                # No recognition claim at all. An earlier version reported
+                # UNDETERMINED here, cited to the fee row -- a quote that
+                # resolves perfectly and supports nothing, because a line in a
+                # price table is not evidence about how control transfers. That
+                # is the failure grounding cannot catch: the citation is real,
+                # the inference from it is invented. Saying nothing is the
+                # honest output, and it lets the check downstream tell
+                # "the contract is silent" apart from "nobody read it".
             )
         )
     return obligations
