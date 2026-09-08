@@ -189,3 +189,56 @@ def test_the_quiet_contract_stays_quiet(pinegrove):
     assert review.flags == []
     assert review.failed_checks() == []
     assert not review.needs_review()
+
+
+def test_an_affirmed_silence_fails_the_recognition_check(citation: Citation):
+    """UNDETERMINED is an assertion about the contract: someone read it and it
+    does not say. That is a finding, and the check has to report it."""
+    from revrec_contract_reviewer.models.extraction import RecognitionPattern
+
+    obligation = _priced(ObligationKind.SAAS_SUBSCRIPTION, "288000", citation)
+    obligation.recognition = ExtractedField[RecognitionPattern].found(
+        RecognitionPattern.UNDETERMINED, [citation]
+    )
+    extraction = ContractExtraction(doc_id="x", extractor="rules", obligations=[obligation])
+
+    check = _check(extraction, "Recognition pattern")
+    assert check.outcome is CheckOutcome.FAILED
+    assert obligation.label in check.detail
+
+
+def test_no_reading_at_all_is_not_applicable_rather_than_a_failure(citation: Citation):
+    """Absence asserts nothing about the contract. Failing here would blame the
+    document for what the extractor never attempted -- and since the offline
+    extractor never attempts it, the check would have been red on everything."""
+    extraction = ContractExtraction(
+        doc_id="x",
+        extractor="rules",
+        obligations=[_priced(ObligationKind.SAAS_SUBSCRIPTION, "288000", citation)],
+    )
+
+    check = _check(extraction, "Recognition pattern")
+    assert check.outcome is CheckOutcome.NOT_APPLICABLE
+    assert "model extractor" in check.detail
+
+
+def test_an_over_time_recognition_passes_it(citation: Citation):
+    from revrec_contract_reviewer.models.extraction import RecognitionPattern
+
+    obligation = _priced(ObligationKind.SAAS_SUBSCRIPTION, "288000", citation)
+    obligation.recognition = ExtractedField[RecognitionPattern].found(
+        RecognitionPattern.OVER_TIME, [citation]
+    )
+    extraction = ContractExtraction(doc_id="x", extractor="rules", obligations=[obligation])
+
+    assert _check(extraction, "Recognition pattern").outcome is CheckOutcome.PASSED
+
+
+def test_the_termination_trigger_does_not_assert_a_negative_it_never_established(citation: Citation):
+    extraction = ContractExtraction(doc_id="x", extractor="rules")
+    extraction.term.termination_for_convenience = ExtractedField[bool].found(True, [citation])
+
+    trigger = raise_flags(extraction)[0].trigger
+
+    assert "was found in the document" in trigger
+    assert "the document states no compensation" not in trigger
