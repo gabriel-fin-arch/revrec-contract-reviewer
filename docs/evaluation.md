@@ -97,8 +97,15 @@ argument for it than a headline number would be.
 
 ## Running the model extractor
 
-The published numbers above are the offline baseline, because it is the one
-that runs in CI with no key. To produce the model figures:
+**As published, only the offline baseline has been measured.** The model path is
+covered by unit tests against a stub client — that it is handed the same text
+grounding will search, that its output goes through the same gate, that a
+fabricated quote from it is dropped exactly like one from a rule — but its
+accuracy on this corpus is not yet a number I have run, so there is no table for
+it here. An unmeasured claim is worse than an absent one, and the absence is the
+honest state of it.
+
+To produce the model figures:
 
 ```bash
 export ANTHROPIC_API_KEY=...
