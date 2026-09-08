@@ -1,0 +1,129 @@
+{% extends "base.html.j2" %}
+{% block title %}ASC 606 review -- {{ review.doc_id }}{% endblock %}
+
+{% block body %}
+<h1>{{ review.doc_id }}</h1>
+<p class="lede">
+  ASC 606 review.
+  {{ flags | length }} matter{{ '' if flags | length == 1 else 's' }} for judgment,
+  {{ review.failed_checks() | length }} failed check{{ '' if review.failed_checks() | length == 1 else 's' }}.
+</p>
+<div class="meta">
+  {% if extraction.customer.is_known %}<span>Customer <b>{{ extraction.customer.value }}</b></span>{% endif %}
+  {% if extraction.supplier.is_known %}<span>Supplier <b>{{ extraction.supplier.value }}</b></span>{% endif %}
+  {% if extraction.currency.is_known %}<span>Currency <b>{{ extraction.currency.value }}</b></span>{% endif %}
+  <span>Extractor <b>{{ extraction.extractor }}{% if extraction.model %} ({{ extraction.model }}){% endif %}</b></span>
+  {% if extraction.dropped_for_no_evidence %}
+  <span>Dropped for no evidence <b>{{ extraction.dropped_for_no_evidence }}</b></span>
+  {% endif %}
+</div>
+
+<h2>Matters for judgment</h2>
+{% if not flags %}
+<p class="empty">Nothing in this document requires a judgment that the document itself cannot settle.</p>
+{% endif %}
+{% for flag in flags %}
+<div class="flag">
+  <div class="step">Step {{ flag.step }} &middot; {{ flag.judgment_type.value.replace('_', ' ') }}</div>
+  <h3>{{ flag.question }}</h3>
+  <p>{{ flag.trigger }}</p>
+  {% if flag.affects %}
+  <p><span class="tag">affects</span> {{ flag.affects | join('; ') }}</p>
+  {% endif %}
+  {% for citation in flag.evidence %}
+  <blockquote>{{ citation | excerpt }}<cite>{{ citation.label() }}</cite></blockquote>
+  {% endfor %}
+  <p class="why"><b>Why this is not answered here:</b> {{ flag.why_a_human }}</p>
+</div>
+{% endfor %}
+
+<h2>Checks</h2>
+<table>
+  <thead><tr><th>Check</th><th>Result</th><th>Detail</th></tr></thead>
+  <tbody>
+  {% for check in review.checks %}
+  <tr>
+    <td>{{ check.name }}</td>
+    <td><span class="tag {{ check.outcome.value }}">{{ check.outcome.value.replace('_', ' ') }}</span></td>
+    <td>{{ check.detail }}</td>
+  </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+<h2>Step 2 &middot; Performance obligations</h2>
+{% if not extraction.obligations %}
+<p class="empty">No performance obligations were identified in this document.</p>
+{% else %}
+<table>
+  <thead>
+    <tr><th>Promise</th><th>Type</th><th class="num">Stated price</th><th class="num">List rate</th><th>Recognition</th></tr>
+  </thead>
+  <tbody>
+  {% for obligation in extraction.obligations %}
+  <tr>
+    <td>
+      {{ obligation.label }}
+      {% for citation in obligation.evidence[:1] %}
+      <blockquote>{{ citation | excerpt }}<cite>{{ citation.label() }}</cite></blockquote>
+      {% endfor %}
+      {% if obligation.integration_language.is_known %}
+      <blockquote>{{ obligation.integration_language.value }}</blockquote>
+      {% endif %}
+    </td>
+    <td>{{ obligation.kind.value.replace('_', ' ') }}</td>
+    <td class="num">{% if obligation.stated_price.is_known %}{{ obligation.stated_price.value }}{% else %}<span class="absent">--</span>{% endif %}</td>
+    <td class="num">{% if obligation.list_price.is_known %}{{ obligation.list_price.value }}{% else %}<span class="absent">--</span>{% endif %}</td>
+    <td>{% if obligation.recognition.is_known %}{{ obligation.recognition.value.value.replace('_', ' ') }}{% else %}<span class="absent">not evidenced</span>{% endif %}</td>
+  </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+
+<h2>Step 3 &middot; Variable consideration</h2>
+{% if not extraction.variable_consideration %}
+<p class="empty">The transaction price is fixed by the document.</p>
+{% else %}
+<table>
+  <thead><tr><th>Term</th><th>Type</th><th class="num">Cap</th><th>Fixed by the contract</th></tr></thead>
+  <tbody>
+  {% for term in extraction.variable_consideration %}
+  <tr>
+    <td>
+      {{ term.description }}
+      {% for citation in term.evidence[:1] %}
+      <blockquote>{{ citation | excerpt }}<cite>{{ citation.label() }}</cite></blockquote>
+      {% endfor %}
+    </td>
+    <td>{{ term.kind.value.replace('_', ' ') }}</td>
+    <td class="num">{% if term.cap.is_known %}{{ term.cap.value }}{% else %}<span class="absent">none stated</span>{% endif %}</td>
+    <td>{{ 'yes' if term.estimable_from_contract else 'no' }}</td>
+  </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+
+<h2>Supporting schedule</h2>
+{% for group in groups %}
+<h3>{{ group.step }} &middot; {{ group.title }}</h3>
+<table>
+  <tbody>
+  {% for row in group.rows %}
+  <tr>
+    <td style="width:15rem">{{ row.label }}</td>
+    <td>
+      <span{% if row.is_absent %} class="absent"{% endif %}>{{ row.display }}</span>
+      {% if not row.is_absent %}<span class="tag {{ row.status }}">{{ row.status }}</span>{% endif %}
+      {% if row.field.note %}<div class="empty">{{ row.field.note }}</div>{% endif %}
+      {% for citation in row.field.citations %}
+      <blockquote>{{ citation | excerpt }}<cite>{{ citation.label() }}</cite></blockquote>
+      {% endfor %}
+    </td>
+  </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endfor %}
+{% endblock %}
