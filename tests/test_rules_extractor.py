@@ -104,3 +104,26 @@ def test_the_rules_extractor_never_asserts_without_evidence(documents):
         ):
             if field.is_known:
                 assert field.citations, f"{document.doc_id} asserted a value with no citation"
+
+
+def test_billing_frequency_is_read_from_the_invoicing_clause(calderwood_order: ContractDocument):
+    assert _extract(calderwood_order).payment.billing_frequency.value == "annually in advance"
+
+
+def test_a_perpetual_licence_has_no_duration_and_that_is_the_answer(documents):
+    """Not a gap. The fee row prints months for everything with a term, and a
+    perpetual licence has none by definition."""
+    extraction = _extract(documents["nimbus-of-beacon"])
+
+    licence = extraction_by_kind(extraction, "software_license")
+    support = extraction_by_kind(extraction, "support")
+
+    assert licence.duration_months.status is FieldStatus.ABSENT
+    assert support.duration_months.value == 12
+
+
+def test_a_duration_carries_the_fee_row_it_was_read_from(helix: ContractDocument):
+    subscription = extraction_by_kind(_extract(helix), "saas_subscription")
+
+    assert subscription.duration_months.value == 24
+    assert "24 months" in subscription.duration_months.citations[0].quote
