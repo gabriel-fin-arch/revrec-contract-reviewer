@@ -134,7 +134,22 @@ def render_index(reviews: list[ContractReview]) -> str:
     """The run index -- one row per contract, for someone triaging a portfolio."""
     template = _environment().get_template("index.html.j2")
     return template.render(
-        reviews=sorted(reviews, key=lambda review: (-len(review.flags), review.doc_id)),
+        # Ordered by everything that needs attention, failed checks included,
+        # not by judgment count alone. A contract the pipeline could not read
+        # raises no judgments, so under the old ordering it sank to the bottom
+        # of the worklist and sat there looking exactly like the clean one --
+        # "0 judgments" reads as nothing to do, whether that is because there is
+        # nothing to decide or because nobody managed to read the document.
+        # Failed checks break ties, because a failed check means everything else
+        # in that memo is built on a reading that did not hold up.
+        reviews=sorted(
+            reviews,
+            key=lambda review: (
+                -(len(review.flags) + len(review.failed_checks())),
+                -len(review.failed_checks()),
+                review.doc_id,
+            ),
+        ),
         total_flags=sum(len(review.flags) for review in reviews),
         total_failed=sum(len(review.failed_checks()) for review in reviews),
         clean=[review for review in reviews if not review.needs_review()],

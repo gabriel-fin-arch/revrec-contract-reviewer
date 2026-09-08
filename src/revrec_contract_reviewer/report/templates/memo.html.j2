@@ -117,9 +117,16 @@
       <span{% if row.is_absent %} class="absent"{% endif %}>{{ row.display }}</span>
       {% if not row.is_absent %}<span class="tag {{ row.status }}">{{ row.status }}</span>{% endif %}
       {% if row.field.note %}<div class="empty">{{ row.field.note }}</div>{% endif %}
-      {% for citation in row.field.citations %}
+      {# Capped at three. A quote resolves against every place it occurs, which
+         is what makes an ambiguous field show both of its clauses -- but a
+         phrase repeated six times in one contract would otherwise print six
+         identical blockquotes and look like six findings. #}
+      {% for citation in row.field.citations[:3] %}
       <blockquote>{{ citation | excerpt }}<cite>{{ citation.label() }}</cite></blockquote>
       {% endfor %}
+      {% if row.field.citations | length > 3 %}
+      <div class="empty">and {{ row.field.citations | length - 3 }} further occurrence(s) in the document</div>
+      {% endif %}
     </td>
   </tr>
   {% endfor %}
