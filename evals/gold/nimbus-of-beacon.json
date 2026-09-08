@@ -1,0 +1,37 @@
+{
+  "doc_id": "nimbus-of-beacon",
+  "fields": {
+    "customer": "Beacon Municipal Utilities Authority",
+    "supplier": "Nimbus Analytics, Inc.",
+    "agreement_type": "order_form",
+    "currency": "USD",
+    "effective_date": "2025-05-20",
+    "stated_term_months": 12,
+    "termination_for_convenience": null,
+    "termination_notice_days": null,
+    "net_days": 45,
+    "total_fixed_consideration": "435000"
+  },
+  "obligations": [
+    {
+      "kind": "software_license",
+      "stated_price": "310000"
+    },
+    {
+      "kind": "support",
+      "stated_price": "62000"
+    },
+    {
+      "kind": "training",
+      "stated_price": "18000"
+    },
+    {
+      "kind": "third_party_resale",
+      "stated_price": "45000"
+    }
+  ],
+  "judgments": [
+    "principal_vs_agent",
+    "ssp_not_observable"
+  ]
+}

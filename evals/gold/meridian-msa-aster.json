@@ -1,0 +1,27 @@
+{
+  "doc_id": "meridian-msa-aster",
+  "fields": {
+    "customer": "Aster Therapeutics AB",
+    "supplier": "Meridian Clinical Partners, S.L.",
+    "agreement_type": "master_agreement",
+    "currency": "EUR",
+    "effective_date": "2025-03-03",
+    "stated_term_months": null,
+    "termination_for_convenience": true,
+    "termination_notice_days": 30,
+    "net_days": 45,
+    "total_fixed_consideration": "770000"
+  },
+  "obligations": [
+    {
+      "kind": "clinical_services",
+      "stated_price": "770000"
+    }
+  ],
+  "judgments": [
+    "distinct_uncertain",
+    "enforceable_term",
+    "principal_vs_agent",
+    "variable_consideration_constraint"
+  ]
+}

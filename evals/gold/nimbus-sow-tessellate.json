@@ -1,0 +1,24 @@
+{
+  "doc_id": "nimbus-sow-tessellate",
+  "fields": {
+    "customer": "Tessellate Media LLC",
+    "supplier": "Nimbus Analytics, Inc.",
+    "agreement_type": "statement_of_work",
+    "currency": "USD",
+    "effective_date": "2025-08-04",
+    "stated_term_months": null,
+    "termination_for_convenience": null,
+    "termination_notice_days": null,
+    "net_days": 30,
+    "total_fixed_consideration": "240000"
+  },
+  "obligations": [
+    {
+      "kind": "professional_services",
+      "stated_price": "240000"
+    }
+  ],
+  "judgments": [
+    "variable_consideration_constraint"
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "doc_id": "nimbus-of-helix",
+  "fields": {
+    "customer": "Helix Robotics Limited",
+    "supplier": "Nimbus Analytics Ltd",
+    "agreement_type": "order_form",
+    "currency": "GBP",
+    "effective_date": "2025-06-12",
+    "stated_term_months": 24,
+    "termination_for_convenience": true,
+    "termination_notice_days": 60,
+    "net_days": 30,
+    "total_fixed_consideration": "312000"
+  },
+  "obligations": [
+    {
+      "kind": "saas_subscription",
+      "stated_price": "288000"
+    },
+    {
+      "kind": "support",
+      "stated_price": "24000"
+    }
+  ],
+  "judgments": [
+    "enforceable_term",
+    "ssp_not_observable",
+    "variable_consideration_constraint"
+  ]
+}
