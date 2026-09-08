@@ -17,8 +17,12 @@
 
 - The rules extractor only reads fees laid out in a table; three contracts
   state theirs in prose and lose their totals. See `docs/evaluation.md`.
-- `duration_months` and `billing_frequency` are in the schema and the memo but
-  no extractor fills them yet.
+- `upfront_fee` and `upfront_fee_refundable` are in the schema and the memo, and
+  only the model extractor fills them. The offline path leaves them empty, and
+  the memo says "not found" rather than "not stated" for exactly this reason.
 - Running headers are not detected, only page-number footers. No document in
   the corpus has one, and handling something untested would be a claim the
   tests could not back.
+- The eval scores ten scalar fields. `billing_frequency`, `duration_months` and
+  the renewal terms appear in the memo but are not scored, so their accuracy is
+  asserted by tests rather than measured across the corpus.
