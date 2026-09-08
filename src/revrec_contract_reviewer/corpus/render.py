@@ -18,6 +18,15 @@ from reportlab import rl_config
 # turns both off. Set before the platypus imports below pick up the config.
 rl_config.invariant = 1
 
+# And no compression, which is not about file size. reportlab deflates page
+# streams through zlib, and zlib does not promise identical output across
+# versions -- Python 3.11 and 3.14 compress the same page to 2050 and 2059
+# bytes. Identical content, different file, and every contributor on a
+# different interpreter sees twelve modified PDFs they never touched. Storing
+# the streams uncompressed costs a few kilobytes each and makes the corpus
+# genuinely reproducible rather than reproducible-on-my-machine.
+rl_config.pageCompression = 0
+
 from reportlab.lib import colors  # noqa: E402
 from reportlab.lib.enums import TA_JUSTIFY  # noqa: E402
 from reportlab.lib.pagesizes import LETTER  # noqa: E402
