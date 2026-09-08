@@ -939,8 +939,11 @@ NIMBUS_MSA_VANTAGE = ContractSpec(
         currency="USD",
         effective_date=date(2025, 4, 7),
         stated_term_months=36,
+        # None because the two clauses contradict each other -- the right answer
+        # is ambiguous, not a value. The notice period is a separate question
+        # and the document does state it, so that one is scored as stated.
         termination_for_convenience=None,
-        termination_notice_days=None,
+        termination_notice_days=90,
         net_days=45,
         total_fixed_consideration=None,
         obligations=(TruthObligation(ObligationKind.SAAS_SUBSCRIPTION, Decimal("264000")),),
