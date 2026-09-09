@@ -32,9 +32,12 @@ import re
 
 from revrec_contract_reviewer.extract.schema import (
     Claim,
+    ContractField,
+    FieldClaim,
     WireExtraction,
     WireObligation,
     WireVariableConsideration,
+    maybe,
 )
 from revrec_contract_reviewer.ingest.text import NormalizedText
 from revrec_contract_reviewer.models.document import ContractDocument
@@ -343,9 +346,9 @@ def _obligations(reader: Reader) -> list[WireObligation]:
                 label=item,
                 kind=_kind_for(item),
                 quotes=[quote],
-                duration_months=Claim(value=months.group(1), quotes=[quote]) if months else None,
-                stated_price=Claim(value=agreed, quotes=[quote]),
-                list_price=Claim(value=listed, quotes=[quote]) if listed else None,
+                duration_months=maybe(Claim(value=months.group(1), quotes=[quote]) if months else None),
+                stated_price=maybe(Claim(value=agreed, quotes=[quote])),
+                list_price=maybe(Claim(value=listed, quotes=[quote]) if listed else None),
                 # No recognition claim at all. An earlier version reported
                 # UNDETERMINED here, cited to the fee row -- a quote that
                 # resolves perfectly and supports nothing, because a line in a
@@ -478,6 +481,25 @@ def _billing_frequency(reader: Reader) -> Claim | None:
     return Claim(value=value, quotes=[reader.sentence(match.start(), match.end())])
 
 
+def _field_claims(**claims: Claim | None) -> list[FieldClaim]:
+    """Turn the optional claims the rules produced into the wire's flat list.
+
+    Keyword names are the enum values, so a typo is a KeyError here rather than
+    a term that silently never reaches the memo.
+    """
+    return [
+        FieldClaim(
+            field=ContractField(name),
+            value=claim.value,
+            quotes=claim.quotes,
+            conflicting=claim.conflicting,
+            note=claim.note,
+        )
+        for name, claim in claims.items()
+        if claim is not None
+    ]
+
+
 def extract(document: ContractDocument) -> WireExtraction:
     """Read `document` with rules only. No network, no model, no API key."""
     reader = Reader(document)
@@ -501,23 +523,25 @@ def extract(document: ContractDocument) -> WireExtraction:
         third_party = Claim(value=" ".join(quote.split())[:300], quotes=[quote])
 
     return WireExtraction(
-        agreement_type=_agreement_type(reader),
-        customer=customer,
-        supplier=supplier,
-        amends=reader.first(_AMENDS),
-        currency=reader.first(_CURRENCY),
-        total_fixed_consideration=_total(reader),
-        effective_date=_effective_date(reader),
-        stated_term_months=reader.first(_TERM_MONTHS),
-        termination_for_convenience=tfc,
-        termination_notice_days=notice,
-        net_days=reader.first(_NET_DAYS),
-        billing_frequency=_billing_frequency(reader),
-        payment_spread_months=spread,
-        renewal_term_months=renewal_term,
-        renewal_price=renewal_price,
-        renewal_described_as_discounted=renewal_discounted,
-        third_party_components=third_party,
+        fields=_field_claims(
+            agreement_type=_agreement_type(reader),
+            customer=customer,
+            supplier=supplier,
+            amends=reader.first(_AMENDS),
+            currency=reader.first(_CURRENCY),
+            total_fixed_consideration=_total(reader),
+            effective_date=_effective_date(reader),
+            stated_term_months=reader.first(_TERM_MONTHS),
+            termination_for_convenience=tfc,
+            termination_notice_days=notice,
+            net_days=reader.first(_NET_DAYS),
+            billing_frequency=_billing_frequency(reader),
+            payment_spread_months=spread,
+            renewal_term_months=renewal_term,
+            renewal_price=renewal_price,
+            renewal_described_as_discounted=renewal_discounted,
+            third_party_components=third_party,
+        ),
         obligations=_obligations(reader),
         variable_consideration=_variable_consideration(reader),
     )
