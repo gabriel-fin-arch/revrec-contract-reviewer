@@ -72,12 +72,14 @@ class Grounder:
             if len(NormalizedText.normalize(trimmed)) < MIN_QUOTE_LENGTH:
                 continue
             for start, end in self._text.find_all(trimmed):
+                clause = self.document.clause_for_offset(start)
                 citations.append(
                     Citation(
                         page=self.document.page_for_offset(start),
                         start=start,
                         end=end,
                         quote=self.document.text[start:end],
+                        clause=clause.reference() if clause else None,
                     )
                 )
         return citations
