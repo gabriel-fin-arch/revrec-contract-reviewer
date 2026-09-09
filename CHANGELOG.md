@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+- Measured the model extractor against the gold set for the first time. It beats
+  the regex baseline on recall everywhere and loses judgment precision, 0.95 to
+  0.76; `docs/evaluation.md` has the comparison and does not round the loss off.
+- The wire schema is a flat list of claims that name their own field. One named
+  optional field per contract term does not compile as a strict output schema --
+  twenty-one of them exceeded both the union-parameter cap and the grammar size
+  limit, and splitting the request in two did not help either.
+- Added a prompt rule against deriving values by calculation, after the first
+  real run reported a transaction price it had multiplied out and a term it had
+  counted between two dates, citing the inputs in both cases. Grounding cannot
+  catch that: the citations resolve.
+
 - Eval harness reports precision and recall for contract fields, silence on
   unstated fields, performance obligations and judgment flags, and re-resolves
   every citation against its source document.

@@ -95,26 +95,94 @@ of promises, and telling those apart needs the clause above the table.
 Every one of these is a case for the model extractor, and they are a better
 argument for it than a headline number would be.
 
-## Running the model extractor
+## Model extractor — Claude Opus 5
 
-**As published, only the offline baseline has been measured.** The model path is
-covered by unit tests against a stub client — that it is handed the same text
-grounding will search, that its output goes through the same gate, that a
-fabricated quote from it is dropped exactly like one from a rule — but its
-accuracy on this corpus is not yet a number I have run, so there is no table for
-it here. An unmeasured claim is worse than an absent one, and the absence is the
-honest state of it.
+Same 12 contracts, same gold set.
 
-To produce the model figures:
+| Measure | Precision | Recall | F1 |
+|---|---|---|---|
+| Contract fields | 1.00 | 0.97 | 0.98 |
+| Silence on unstated fields | 1.00 | 1.00 | 1.00 |
+| Performance obligations | 0.83 | 0.95 | 0.88 |
+| Judgment flags | 0.76 | 0.96 | 0.85 |
 
-```bash
-export ANTHROPIC_API_KEY=...
-uv run revrec eval --extractor llm --save --mistakes
-```
+Citations re-resolved: 325/325 (100%). Claims dropped for no evidence: 2.
 
-That writes `evals/results/llm.json`. Publishing a number without a saved run
-behind it is how benchmark tables become fiction, so the artifact is the
-deliverable, not the table.
+Saved run: [`evals/results/llm.json`](../evals/results/llm.json). Reproduce with
+`ANTHROPIC_API_KEY` set and `uv run revrec eval --extractor llm --save --mistakes`
+— about four minutes and a couple of dollars.
+
+### Against the baseline
+
+| Measure | Rules | Model |
+|---|---|---|
+| Contract fields | 1.00 / 0.91 | 1.00 / **0.97** |
+| Silence | 1.00 / 1.00 | 1.00 / 1.00 |
+| Performance obligations | 0.79 / 0.75 | **0.83** / **0.95** |
+| Judgment flags | **0.95** / 0.83 | 0.76 / **0.96** |
+
+The model wins on recall everywhere and it is not close: obligations from 0.75
+to 0.95, judgments from 0.83 to 0.96. Every gap the regexes had — fees stated in
+prose, a termination right that never says "for convenience", integration
+language buried in a scope clause — closes.
+
+**And judgment precision drops from 0.95 to 0.76.** Seven of the twelve
+contracts get a flag they should not. Six of those seven are
+`distinct_uncertain` or a second-order effect of finding an extra obligation:
+the model reads integration language more liberally than the taxonomy intends,
+and every extra obligation it finds also raises the allocation question.
+
+That trade is the wrong way round for this product and I would not ship the
+model path as-is to a controller. A reviewer's trust is spent by false positives
+long before it is spent by misses, and a tool that raises a spurious judgment on
+more than half the portfolio gets ignored inside a month — which is the same
+argument the corpus's two deliberately quiet contracts exist to test. The fix is
+not a threshold; it is a tighter definition of what counts as integration
+language, and that is a domain question, not a prompting one.
+
+### The most useful thing the harness found
+
+The first model run reported a transaction price of 792,000 for the Vantage
+master agreement, which states no total, and a six-month term for the Tessellate
+statement of work, which states no term.
+
+Both numbers are correct arithmetic. Vantage states an annual fee of 264,000
+over thirty-six months; Tessellate runs from 1 September 2025 to 28 February
+2026. The model multiplied, and counted, and then cited the figures it had
+worked from — so the quotes resolved, grounding passed them, and two invented
+values went into the memo with evidence attached.
+
+This is the documented limit of grounding, met in the wild: **it catches
+invention, not derivation.** The citation was real. What was manufactured was
+the inference drawn from it, and no amount of quote-checking can see that.
+
+The fix was one paragraph in the system prompt saying, in effect, report a
+number only where the document prints that number, and that quoting the figures
+you multiplied does not make the product something the contract says. Silence
+precision went from 0.90 back to 1.00, and Tessellate additionally started
+getting its effective date and total right.
+
+Worth being clear that it is a mitigation and not a guarantee. Nothing
+structural prevents a derived value; the schema cannot express "this number was
+printed" as distinct from "this number is true", and the eval is what would
+catch the next one.
+
+### Two claims were dropped on the real run
+
+`dropped_for_no_evidence: 2` — one on Beacon, one on Pinegrove. The model
+proposed a fact, the quote it offered could not be located in the document, and
+the field was discarded rather than downgraded. The control is not theoretical
+and it is not only exercised by a stub in the test suite.
+
+### Run-to-run variance
+
+Two full runs of the same corpus, on the same model, did not agree exactly. The
+significant financing flag was a false positive on one contract in one run and a
+false negative on a different contract in the other. Sampling is not fixed and
+the current models take no temperature parameter, so the honest reading of any
+single figure above is roughly ±0.05 on the judgment row. Twelve contracts is
+too few for it to be tighter, which is one more reason not to defend a second
+decimal place.
 
 ## What this harness cannot tell you
 
