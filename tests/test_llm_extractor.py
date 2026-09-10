@@ -17,7 +17,13 @@ import anthropic
 import pytest
 
 from revrec_contract_reviewer.extract import ExtractorChoice, extract_contract, llm
-from revrec_contract_reviewer.extract.schema import Claim, WireExtraction, WireObligation
+from revrec_contract_reviewer.extract.schema import (
+    Claim,
+    ContractField,
+    FieldClaim,
+    WireExtraction,
+    WireObligation,
+)
 from revrec_contract_reviewer.models.document import ContractDocument
 from revrec_contract_reviewer.models.extraction import ObligationKind
 from revrec_contract_reviewer.models.fields import FieldStatus
@@ -42,15 +48,31 @@ class StubClient:
 @pytest.fixture
 def payload() -> WireExtraction:
     return WireExtraction(
-        currency=Claim(value="GBP", quotes=["All amounts are stated in Pounds Sterling"]),
-        stated_term_months=Claim(value="24", quotes=["for a term of twenty-four (24) months"]),
-        total_fixed_consideration=Claim(value="312000", quotes=["Total committed fees GBP 312,000"]),
+        fields=[
+            FieldClaim(
+                field=ContractField.CURRENCY,
+                value="GBP",
+                quotes=["All amounts are stated in Pounds Sterling"],
+            ),
+            FieldClaim(
+                field=ContractField.STATED_TERM_MONTHS,
+                value="24",
+                quotes=["for a term of twenty-four (24) months"],
+            ),
+            FieldClaim(
+                field=ContractField.TOTAL_FIXED_CONSIDERATION,
+                value="312000",
+                quotes=["Total committed fees GBP 312,000"],
+            ),
+        ],
         obligations=[
             WireObligation(
                 label="Telemetry Platform subscription",
                 kind=ObligationKind.SAAS_SUBSCRIPTION,
                 quotes=["Telemetry Platform subscription (24 months) GBP 288,000"],
-                stated_price=Claim(value="288000", quotes=["Telemetry Platform subscription (24 months) GBP 288,000"]),
+                stated_price=[
+                    Claim(value="288000", quotes=["Telemetry Platform subscription (24 months) GBP 288,000"])
+                ],
             )
         ],
     )
@@ -97,7 +119,13 @@ def test_a_fabricated_quote_from_the_model_is_dropped(helix: ContractDocument):
     from revrec_contract_reviewer.extract import assemble
 
     invented = WireExtraction(
-        net_days=Claim(value="90", quotes=["invoices are payable within ninety (90) days of the invoice date"]),
+        fields=[
+            FieldClaim(
+                field=ContractField.NET_DAYS,
+                value="90",
+                quotes=["invoices are payable within ninety (90) days of the invoice date"],
+            )
+        ],
     )
 
     extraction = assemble(helix, invented, extractor="llm", model="stub")
@@ -152,3 +180,33 @@ def test_auto_without_a_key_uses_rules(helix: ContractDocument, monkeypatch):
     monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
 
     assert extract_contract(helix, ExtractorChoice.AUTO).extractor == "rules"
+
+
+def test_the_wire_schema_stays_flat():
+    """A regression guard on a constraint that only shows up as an API 400.
+
+    Strict structured outputs compile the schema into a grammar, and a nested
+    optional object costs enough grammar that about eleven of them is the
+    ceiling. One named field per contract term hit it at twenty-one and the
+    request was rejected outright. The flat claim list keeps the top level at
+    three properties no matter how many terms exist, so adding a term must not
+    add a property here.
+    """
+    properties = WireExtraction.model_json_schema()["properties"]
+
+    assert set(properties) == {"fields", "obligations", "variable_consideration"}
+    assert len(ContractField) > 11, "the flat list is what makes this many terms possible"
+
+
+def test_a_term_reported_twice_takes_the_first_and_ignores_the_rest(helix: ContractDocument):
+    """Disagreement is expressed with `conflicting` and two quotes on one claim,
+    so two entries for one term is a malformed response, not extra information."""
+    wire = WireExtraction(
+        fields=[
+            FieldClaim(field=ContractField.CURRENCY, value="GBP", quotes=["stated in Pounds Sterling"]),
+            FieldClaim(field=ContractField.CURRENCY, value="USD", quotes=["stated in Pounds Sterling"]),
+        ]
+    )
+
+    assert wire.claim_for(ContractField.CURRENCY).value == "GBP"
+    assert wire.claim_for(ContractField.NET_DAYS) is None
