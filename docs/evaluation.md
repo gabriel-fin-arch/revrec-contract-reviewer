@@ -135,8 +135,8 @@ and every extra obligation it finds also raises the allocation question.
 That trade is the wrong way round for this product and I would not ship the
 model path as-is to a controller. A reviewer's trust is spent by false positives
 long before it is spent by misses, and a tool that raises a spurious judgment on
-more than half the portfolio gets ignored inside a month — which is the same
-argument the corpus's two deliberately quiet contracts exist to test. The fix is
+more than half the portfolio gets ignored inside a month. The corpus's two
+deliberately quiet contracts exist to test exactly that. The fix is
 not a threshold; it is a tighter definition of what counts as integration
 language, and that is a domain question, not a prompting one.
 

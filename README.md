@@ -63,8 +63,8 @@ customer, the cost is passed through without mark-up, and there is no warranty
 obligation. In the other, the units are bought into inventory, priced at the
 seller's discretion, installed and warranted by the seller. Every indicator
 points one way in the first and the other way in the second. A rule keyed on
-the phrase "third party" would get one of them badly wrong, which is the whole
-argument for raising the question instead of answering it.
+the phrase "third party" would get one of them badly wrong. Hence a flag and
+not an answer.
 
 ## Architecture
 
@@ -237,8 +237,8 @@ capability.
 
 120 tests. CI runs ruff, the test suite, and then the whole pipeline offline
 over the corpus; the eval step exits non-zero if any citation in any memo stops
-resolving against its source document, which is the one regression that would
-leave the tool untrustworthy while still looking like it worked.
+resolving against its source document. That is the one regression that leaves
+the tool untrustworthy while still looking like it worked.
 
 ```bash
 uv run pytest -q

@@ -1,7 +1,7 @@
 """The offline extractor: regular expressions over conventional contract wording.
 
 Read this as the baseline, not as the product. It works because the corpus is
-internally consistent -- every document writes durations as "thirty-six (36)
+internally consistent: every document writes durations as "thirty-six (36)
 months", introduces parties as `Full Name ("ShortName")`, and lays fee lines out
 as a description followed by a currency code and an amount. Point it at a
 contract drafted from anyone else's template and most of it stops firing.
@@ -13,7 +13,7 @@ template is the thing this project exists to avoid.
 
 Two things it is genuinely good for. It makes the repository runnable with no
 API key, so anyone can clone it and watch the pipeline work end to end. And it
-gives the eval harness a floor -- a model extractor that cannot beat regular
+gives the eval harness a floor. A model extractor that cannot beat regular
 expressions on this corpus is not earning its cost.
 
 Note that it cites. Every claim it makes carries the words it matched and goes
@@ -52,7 +52,7 @@ _DATE = rf"(?:{_MONTH} \d{{1,2}}, \d{{4}}|\d{{1,2}} {_MONTH} \d{{4}})"
 
 # Ordered by how strongly the phrasing means "this document's own date". A
 # contract's first line is often a reference to *another* agreement's date --
-# "Issued under the Master Subscription Agreement dated January 15, 2025" -- so
+# "Issued under the Master Subscription Agreement dated January 15, 2025", so
 # a single pattern that accepts "dated" reads the wrong date on every order form
 # in the corpus. The specific phrasings are tried first and "dated" is the last
 # resort.
@@ -65,8 +65,8 @@ _EFFECTIVE_DATE_PATTERNS = [
 
 # A party is introduced as its full legal name followed by a bracketed short
 # name. The capture is a wide window rather than a precise name, because the
-# preamble puts arbitrary text in front of it -- a date, an address, the other
-# party -- and the window then gets trimmed below. Trying to write the trimming
+# preamble puts arbitrary text in front of it (a date, an address, the other
+# party) and the window then gets trimmed below. Trying to write the trimming
 # into the pattern produced something nobody could read and that still lost
 # "Calderwood" off the front of Calderwood Logistics Group.
 _PARTY = re.compile(r"([A-Z][^()\"]{3,160}?)\s*\(\"([A-Za-z]+)\"\)")
@@ -79,7 +79,7 @@ _PARTY = re.compile(r"([A-Z][^()\"]{3,160}?)\s*\(\"([A-Za-z]+)\"\)")
 _NAME_SEPARATORS = (" between ", " and ")
 _NAME_LEAD = re.compile(r"^(?:by and between|between|and)\s+", re.IGNORECASE)
 # "Nimbus Analytics, Inc., a Delaware corporation with its principal place of
-# business at ..." -- the legal name ends where the description of it begins.
+# business at ...": the legal name ends where the description of it begins.
 _NAME_DESCRIPTOR = re.compile(r",\s+an?\s+[A-Za-z].*$")
 
 _CURRENCY = re.compile(r"\b(USD|GBP|EUR)\b")
@@ -103,7 +103,7 @@ _AMENDS = re.compile(r"amends ((?:Order Form|Agreement|Clinical Services Agreeme
 # The second amount is optional because some tables print a list rate alongside
 # the agreed fee and some don't. There is deliberately no lookahead asserting
 # what follows the row: an earlier version required the next character to start
-# a new row, which silently failed on the last line of every table -- so the
+# a new row, which silently failed on the last line of every table, so the
 # "Total" line, the one row whose value is most load-bearing, was the one row
 # that never matched.
 _FEE_LINE = re.compile(
@@ -222,8 +222,8 @@ def _trim_party_name(window: str) -> str:
 
     Right to left: drop everything up to the last connective, then drop the
     description that follows the name. Right to left because the name is
-    anchored at the end of the window -- it is the text immediately before the
-    bracketed short name -- while what precedes it is unbounded.
+    anchored at the end of the window (the text immediately before the bracketed
+    short name) while what precedes it is unbounded.
     """
     name = window.strip()
     for separator in _NAME_SEPARATORS:
@@ -300,7 +300,7 @@ def _fee_rows(reader: Reader) -> list[tuple[str, str, str | None, re.Match[str]]
     """Every parsed fee line inside the fee table: (item, agreed, list, match).
 
     Scoped to the table rather than run over the whole document, and the scoping
-    is what makes the output usable. Prose contains amounts too -- "the balance
+    is what makes the output usable. Prose contains amounts too. "The balance
     of USD 900,000 in four (4) equal annual instalments of USD 225,000" parses
     as a perfectly good fee line, and taking it produced a performance
     obligation labelled "USD 900,000 in four (4) equal annual i" priced at
@@ -337,7 +337,7 @@ def _obligations(reader: Reader) -> list[WireObligation]:
             continue
         # The row itself, not the sentence around it. A fee table contains no
         # full stops, so sentence expansion swallows the entire table and the
-        # clause heading after it -- technically a true quote, and useless as
+        # clause heading after it. Technically a true quote, and useless as
         # evidence for one line of it.
         quote = reader.raw(match.start(), match.end())
         months = _ROW_MONTHS.search(item)
@@ -350,7 +350,7 @@ def _obligations(reader: Reader) -> list[WireObligation]:
                 stated_price=maybe(Claim(value=agreed, quotes=[quote])),
                 list_price=maybe(Claim(value=listed, quotes=[quote]) if listed else None),
                 # No recognition claim at all. An earlier version reported
-                # UNDETERMINED here, cited to the fee row -- a quote that
+                # UNDETERMINED here, cited to the fee row: a quote that
                 # resolves perfectly and supports nothing, because a line in a
                 # price table is not evidence about how control transfers. That
                 # is the failure grounding cannot catch: the citation is real,
@@ -428,7 +428,7 @@ _RENEWAL_TERM = re.compile(r"renew[^.]{0,120}?for (?:a further |successive )?[\w
 _RENEWAL_DISCOUNTED = re.compile(r"renewal fee represents a discount|preferential pricing", re.IGNORECASE)
 _RENEWAL_AT_LIST = re.compile(r"renews? automatically[^.]{0,160}?then-current published list rate", re.IGNORECASE)
 
-# "the balance of USD 900,000 in four (4) equal annual instalments" -- the only
+# "the balance of USD 900,000 in four (4) equal annual instalments", the only
 # instalment wording in the corpus. Deliberately narrow: a rule that guessed a
 # schedule from "instalments" alone would have to invent the period.
 _ANNUAL_INSTALMENTS = re.compile(r"\((\d+)\) equal annual instalments", re.IGNORECASE)
@@ -451,9 +451,9 @@ def _renewal(reader: Reader) -> tuple[Claim | None, Claim | None, Claim | None]:
 
     discounted = None
     # Only ask whether a renewal is discounted once a renewal has been found.
-    # Without this guard, "preferential pricing" in the Orchid amendment -- which
+    # Without this guard, "preferential pricing" in the Orchid amendment, which
     # describes the pricing of the modification itself, and has no renewal
-    # anywhere in it -- raised a material right against an option that does not
+    # anywhere in it, raised a material right against an option that does not
     # exist. A false positive on a judgment flag costs a reviewer a trip to a
     # clause that isn't there, which is exactly the credibility this is
     # supposed to be building.

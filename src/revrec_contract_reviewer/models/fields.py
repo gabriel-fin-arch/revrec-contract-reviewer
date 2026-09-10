@@ -7,7 +7,7 @@ to know is which of three situations they're in:
 
   extracted  the document says it, and here is where
   ambiguous  the document says it in more than one place, and the places disagree
-  absent     no supported reading -- nothing was found
+  absent     no supported reading; nothing was found
 
 Those three drive genuinely different actions. `extracted` means read the citation
 and move on. `ambiguous` means two clauses contradict each other and somebody has
@@ -46,7 +46,7 @@ class ExtractedField(BaseModel, Generic[T]):
     The invariant enforced below is the project's central rule in executable form:
     an EXTRACTED field must carry at least one citation. Anything the grounding
     step could not tie to real source text degrades to ABSENT with its value
-    stripped -- not to a "low confidence" version of itself. A fact with no
+    stripped, not to a "low confidence" version of itself. A fact with no
     evidence is not a weak fact, it's not a fact.
     """
 
@@ -68,7 +68,7 @@ class ExtractedField(BaseModel, Generic[T]):
 
     @property
     def is_known(self) -> bool:
-        """True when we have a usable answer -- ambiguity is not a usable answer."""
+        """True when we have a usable answer. Ambiguity is not one."""
         return self.status is FieldStatus.EXTRACTED
 
     @classmethod
@@ -82,6 +82,6 @@ class ExtractedField(BaseModel, Generic[T]):
     @classmethod
     def ambiguous(cls, value: T | None, citations: list[Citation], note: str) -> ExtractedField[T]:
         """Conflicting sources. `value` is whichever reading the extractor leaned to, and
-        the note says what it conflicts with -- but `is_known` stays False either way,
+        the note says what it conflicts with, but `is_known` stays False either way,
         so nothing downstream can quietly treat it as settled."""
         return cls(value=value, status=FieldStatus.AMBIGUOUS, citations=citations, note=note)
