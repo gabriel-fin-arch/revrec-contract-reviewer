@@ -7,8 +7,8 @@ sold at *this time, to this customer*. Every schema I sketched that had an
 `ssp` field on it was quietly lying about where that number comes from.
 
 So what gets extracted here is what the four corners of the document actually
-contain -- the stated price, the list or undiscounted rate where the order form
-shows one, the renewal price -- and the SSP question is raised as a judgment for
+contain: the stated price, the list or undiscounted rate where the order form
+shows one, the renewal price. The SSP question itself is raised as a judgment for
 a human with access to the entity's pricing data. Same reasoning applies to the
 variable consideration constraint and to whether a renewal discount is
 "incremental to the range typically given": those live outside the document.
@@ -82,12 +82,12 @@ class PerformanceObligation(BaseModel):
 
     Deliberately *not* holding a `distinct` flag. Whether a promise is distinct
     is the single most argued judgment in ASC 606 and it turns on facts the
-    contract only hints at. What this model carries instead is the evidence --
-    the integration and customisation language -- and the assessment step turns
-    that evidence into a flag for a human rather than an answer.
+    contract only hints at. What this model carries instead is the evidence:
+    the integration and customisation language. The assessment step turns that
+    evidence into a flag for a human rather than an answer.
     """
 
-    label: str = Field(description="The promise as the contract names it, e.g. 'Platform subscription -- Tier 3'.")
+    label: str = Field(description="The promise as the contract names it, e.g. 'Platform subscription, Tier 3'.")
     kind: ObligationKind
     evidence: list[Citation] = Field(
         default=[],
@@ -119,7 +119,7 @@ class VariableConsideration(BaseModel):
     estimable_from_contract: bool = Field(
         default=False,
         description=(
-            "True only when the contract itself fixes the amount and the trigger -- a stated milestone fee on a "
+            "True only when the contract itself fixes the amount and the trigger: a stated milestone fee on a "
             "stated deliverable. Usage tiers and rebates are False: the amount depends on the customer's behaviour, "
             "which is not in the document."
         ),
@@ -131,7 +131,7 @@ class ContractTerm(BaseModel):
 
     The stated term and the enforceable term are different questions. A three-year
     subscription that either party can walk away from on 30 days' notice with no
-    compensation is, for ASC 606, closer to a rolling one-month contract -- and
+    compensation is, for ASC 606, closer to a rolling one-month contract, and
     that changes the transaction price, the allocation, and whether the renewal
     discount is even a material right. Both get captured; neither gets resolved here.
     """
@@ -156,7 +156,7 @@ class PaymentTerms(BaseModel):
         default=ExtractedField[int].absent(),
         description=(
             "Months from the first payment to the last, where the contract sets out an instalment schedule. "
-            "Net terms are a different question -- this is about consideration deferred across years, which is "
+            "Net terms are a different question. This is about consideration deferred across years, which is "
             "where a financing component starts to be worth asking about."
         ),
     )
@@ -166,7 +166,7 @@ class RenewalOption(BaseModel):
     """A right to renew, which may or may not be a material right.
 
     It's a material right only if the renewal price is discounted *relative to
-    the range the entity typically offers* -- market data that is nowhere in the
+    the range the entity typically offers*, market data that is nowhere in the
     contract. So this captures the renewal price and whether the contract itself
     frames it as a discount, and stops there.
     """
@@ -199,7 +199,7 @@ class ContractExtraction(BaseModel):
 
     third_party_components: ExtractedField[str] = Field(
         default=ExtractedField[str].absent(),
-        description="Language about goods or services supplied by a third party -- the principal vs agent trigger.",
+        description="Language about goods or services supplied by a third party. The principal vs agent trigger.",
     )
 
     extractor: str = Field(description='Which extractor produced this: "llm" or "rules".')

@@ -5,7 +5,7 @@ Not the domain model. Deliberately.
 The domain model in `models/extraction.py` carries resolved citations, parsed
 Decimals and dates, and an invariant that an extracted field must have evidence.
 None of that can be produced by an extractor, because the extractor is the thing
-being checked -- letting it build a Citation directly would be letting it mark
+being checked. Letting it build a Citation directly would be letting it mark
 its own homework.
 
 So an extractor's whole vocabulary is the `Claim` below: a value written as a
@@ -27,7 +27,7 @@ different 400s to find out:
 Strict output compiles the schema into a grammar, and a nested optional object
 costs a lot of grammar. Probing it, the ceiling landed at about eleven such
 fields; this schema wanted twenty-one. Splitting the request in two did not help
-either -- fourteen fields was still "schema is too complex".
+either: fourteen fields was still "schema is too complex".
 
 What compiles, and stays compiling, is a **flat list of claims that each name
 the term they are about**. The grammar is small and, more usefully, constant:
@@ -70,7 +70,7 @@ class Claim(BaseModel):
     )
     note: str = Field(
         default="",
-        description="Only when something needs saying -- most often what the conflict is between.",
+        description="Only when something needs saying, most often what the conflict is between.",
     )
 
 
@@ -153,7 +153,7 @@ class FieldClaim(Claim):
 
 
 # Zero or one claim, used for the handful of nested fields on an obligation.
-# Same reasoning as above -- `Claim | None` is a union and unions are capped --
+# Same reasoning as above: `Claim | None` is a union and unions are capped,
 # but there are few enough of them here that the grammar still compiles.
 MaybeClaim = list[Claim]
 
@@ -187,7 +187,7 @@ class WireObligation(BaseModel):
         default=[],
         description=(
             "over_time, point_in_time, or undetermined, based on what the contract says about how control "
-            "passes. Use undetermined when it says nothing -- do not infer from the product name."
+            "passes. Use undetermined when it says nothing. Do not infer from the product name."
         ),
     )
     integration_language: MaybeClaim = Field(
@@ -230,8 +230,8 @@ class WireExtraction(BaseModel):
         """The claim for `field`, or None.
 
         First wins if a term is reported twice. Two entries for one term is not
-        how a disagreement gets expressed here -- that is what `conflicting` and
-        multiple quotes on a single claim are for -- so a duplicate is a
+        how a disagreement gets expressed here (that is what `conflicting` and
+        multiple quotes on a single claim are for), so a duplicate is a
         malformed response rather than extra information.
         """
         for claim in self.fields:
