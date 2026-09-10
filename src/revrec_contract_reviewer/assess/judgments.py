@@ -166,6 +166,18 @@ def _variable_consideration(extraction: ContractExtraction) -> JudgmentFlag | No
     )
 
 
+# REVIEW: this rule is where the model extractor loses its judgment precision.
+# It fires whenever any integration language is present at all, and the model
+# reads "integration language" far more generously than I meant it: 0.95 down to
+# 0.76, six of the seven false positives from here or downstream of an extra
+# obligation it found. See docs/evaluation.md.
+#
+# The tempting fix is a confidence threshold, and this whole project is an
+# argument against those. The real fix is a tighter definition -- does the
+# contract describe the promises as *inseparable*, or merely as related? -- and
+# I don't think that is mine to settle by tuning a regex. A group's tolerance
+# for a spurious flag against a missed one is a risk-appetite question, and it
+# belongs to whoever owns the review, not to me.
 def _distinct_uncertain(extraction: ContractExtraction) -> JudgmentFlag | None:
     integrated = [ob for ob in extraction.obligations if ob.integration_language.is_known]
     if not integrated:

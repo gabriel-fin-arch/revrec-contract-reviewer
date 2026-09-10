@@ -30,6 +30,12 @@ from revrec_contract_reviewer.fileio import write_lf
 # The scalar fields the harness scores. Kept as an explicit list rather than
 # introspected off the model: adding a field to the extraction should not
 # silently change what the published accuracy number means.
+#
+# TODO: billing_frequency, the renewal terms and per-obligation duration show up
+# in the memo but aren't in here, so their accuracy rests on a handful of unit
+# tests instead of being measured across the corpus. Adding them means adding
+# them to ContractTruth for all twelve, which is an afternoon of careful reading
+# I haven't done yet.
 SCORED_FIELDS = (
     "customer",
     "supplier",
