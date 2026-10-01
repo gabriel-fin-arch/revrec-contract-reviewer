@@ -1192,7 +1192,7 @@ MERIDIAN_CHANGE_ORDER = ContractSpec(
     supplier="Meridian Clinical Partners, S.L.",
     customer="Aster Therapeutics AB",
     preamble=(
-        "This Change Order No. 3 is entered into as of 14 January 2026 between Meridian Clinical Partners, S.L. "
+        "This Change Order No. 3 is entered into as of 14 October 2025 between Meridian Clinical Partners, S.L. "
         "(&quot;Meridian&quot;) and Aster Therapeutics AB (&quot;Sponsor&quot;) under Section 5 of the Clinical "
         "Services Agreement between the parties dated 3 March 2025 (the &quot;Agreement&quot;)."
     ),
@@ -1249,7 +1249,7 @@ MERIDIAN_CHANGE_ORDER = ContractSpec(
         supplier="Meridian Clinical Partners, S.L.",
         agreement_type=AgreementType.AMENDMENT,
         currency="EUR",
-        effective_date=date(2026, 1, 14),
+        effective_date=date(2025, 10, 14),
         stated_term_months=None,
         termination_for_convenience=None,
         termination_notice_days=None,
