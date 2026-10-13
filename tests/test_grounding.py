@@ -95,6 +95,29 @@ def test_conflicting_claims_become_ambiguous_with_both_quotes(vantage: ContractD
     assert len(field.citations) == 2
 
 
+def test_a_conflict_with_one_passage_missing_is_dropped(vantage: ContractDocument):
+    """A conflict is an assertion about two places in the document. If only one
+    of them is there, nothing shows a disagreement -- and keeping the value
+    would be worse, since it may be the reading of the passage that isn't."""
+    ground = Grounder(vantage)
+
+    field = ground.field(
+        Claim(
+            value="false",
+            quotes=[
+                "Customer may additionally terminate this Agreement for convenience",
+                "Neither party may terminate this Agreement before the end of the Term",
+            ],
+            conflicting=True,
+        ),
+        lambda raw: raw == "true",
+    )
+
+    assert field.status is FieldStatus.ABSENT
+    assert not field.citations
+    assert ground.dropped == 1
+
+
 def test_a_missing_claim_is_absent_without_counting_as_a_drop(helix: ContractDocument):
     """Not extracting a field is normal. Only asserting something unsupported is a drop."""
     ground = Grounder(helix)
