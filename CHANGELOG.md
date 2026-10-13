@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- `anthropic>=0.40` was wrong. `messages.parse(output_format=...)` arrived in 0.77,
+  and the stubbed tests could not notice. Raised the floor and added a test
+  against the real client's signature.
 - Measured the model extractor against the gold set for the first time. It beats
   the regex baseline on recall everywhere and loses judgment precision, 0.95 to
   0.76; `docs/evaluation.md` has the comparison and does not round the loss off.
