@@ -41,16 +41,27 @@ def _strip_running_footer(text: str) -> str:
     return "\n".join(lines)
 
 
+class UnreadableContract(ValueError):
+    """A file that is there but can't be reviewed: not a PDF, damaged, or scanned."""
+
+
 def load_contract(path: Path) -> ContractDocument:
     """Parse `path` into a ContractDocument with per-page character offsets."""
     if not path.exists():
         raise FileNotFoundError(f"no contract at {path}")
 
-    with pdfplumber.open(path) as pdf:
-        raw_pages = [page.extract_text() or "" for page in pdf.pages]
+    try:
+        with pdfplumber.open(path) as pdf:
+            raw_pages = [page.extract_text() or "" for page in pdf.pages]
+    except Exception as exc:
+        # Deliberately broad. pdfplumber has changed what it raises for a bad
+        # file between minor versions (pdfminer's own errors, then its
+        # PdfminerException wrapper), and whatever goes wrong inside this block
+        # is a property of the file, not of this code.
+        raise UnreadableContract(f"{path.name} could not be read as a PDF ({exc})") from exc
 
     if not any(page.strip() for page in raw_pages):
-        raise ValueError(
+        raise UnreadableContract(
             f"{path.name} has no extractable text layer. This reviewer does not do OCR -- "
             f"a scanned contract needs to go through OCR before it gets here."
         )

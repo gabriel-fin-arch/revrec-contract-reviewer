@@ -208,7 +208,8 @@ uv run revrec eval --save
 Stated plainly, because an honest scope is more credible than an inflated one.
 
 - **No OCR.** Text-layer PDFs only. A scanned contract is refused rather than
-  silently returning an empty review.
+  silently returning an empty review; in a folder, it is listed at the top of
+  the index as not reviewed and the rest are reviewed as normal.
 - **No revenue schedule.** It does not compute the journal entry or the
   period-by-period waterfall. It reviews the contract.
 - **No IFRS 16, and no IFRS 15 beyond where it converges with ASC 606.**

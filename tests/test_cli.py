@@ -98,8 +98,9 @@ def test_reviewing_an_empty_directory_says_so(workspace: Path):
 def test_the_pipeline_returns_reviews_in_filename_order(workspace: Path):
     runner.invoke(app, ["generate-corpus"])
 
-    reviews = review_directory(workspace / "corpus")
+    reviews, unreadable = review_directory(workspace / "corpus")
 
+    assert unreadable == []
     assert [review.doc_id for review in reviews] == sorted(review.doc_id for review in reviews)
     assert len(reviews) == 12
 
@@ -112,3 +113,49 @@ def test_reviewing_one_contract_directly(workspace: Path):
     assert review.doc_id == "nimbus-of-helix"
     assert review.needs_review()
     assert "judgments" in review.summary_line()
+
+
+def _scanned(path: Path) -> Path:
+    from reportlab.pdfgen import canvas
+
+    page = canvas.Canvas(str(path))
+    page.rect(50, 50, 200, 200, fill=1)
+    page.showPage()
+    page.save()
+    return path
+
+
+def test_one_unreadable_file_does_not_stop_the_rest_of_the_folder(workspace: Path):
+    """It used to: one scanned contract and the run ended in a traceback before
+    a single memo was written. Triage wants the opposite -- review what can be
+    read, and put what can't at the top of the index."""
+    runner.invoke(app, ["generate-corpus"])
+    folder = workspace / "mixed"
+    folder.mkdir()
+    for name in ("nimbus-of-helix.pdf", "nimbus-of-pinegrove.pdf"):
+        (folder / name).write_bytes((workspace / "corpus" / name).read_bytes())
+    _scanned(folder / "aaa-scanned.pdf")
+    (folder / "not-really.pdf").write_text("this is not a pdf", encoding="utf-8")
+
+    result = runner.invoke(app, ["review", str(folder), "--extractor", "rules", "--out", "mixed-out"])
+
+    assert result.exit_code == 1
+    assert "Traceback" not in result.output
+    assert (workspace / "mixed-out" / "nimbus-of-helix.html").exists()
+    assert (workspace / "mixed-out" / "nimbus-of-pinegrove.html").exists()
+    index = (workspace / "mixed-out" / "index.html").read_text(encoding="utf-8")
+    assert "2 could not be read" in index
+    assert index.index("aaa-scanned.pdf") < index.index("nimbus-of-helix")
+    assert "OCR" in index
+
+
+def test_a_single_unreadable_file_is_one_line_not_a_traceback(workspace: Path):
+    _scanned(workspace / "scanned.pdf")
+
+    for target in ("scanned.pdf", "missing.pdf"):
+        result = runner.invoke(app, ["review", target, "--extractor", "rules"])
+
+        assert result.exit_code == 1
+        assert "Cannot review" in result.output
+        assert "Traceback" not in result.output
+

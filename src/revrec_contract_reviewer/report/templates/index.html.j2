@@ -7,8 +7,21 @@
   {{ reviews | length }} contracts reviewed &middot;
   {{ total_flags }} matter{{ '' if total_flags == 1 else 's' }} for judgment &middot;
   {{ total_failed }} failed check{{ '' if total_failed == 1 else 's' }} &middot;
-  {{ clean | length }} needing no attention.
+  {{ clean | length }} needing no attention{% if unreadable %} &middot;
+  <span class="tag failed">{{ unreadable | length }} could not be read</span>{% endif %}.
 </p>
+
+{% if unreadable %}
+<h2>Could not be read</h2>
+<table>
+  <thead><tr><th>File</th><th>Reason</th></tr></thead>
+  <tbody>
+  {% for name, reason in unreadable %}
+  <tr><td>{{ name }}</td><td>{{ reason }}</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endif %}
 
 <h2>Worklist</h2>
 <table>
