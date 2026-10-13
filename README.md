@@ -1,6 +1,6 @@
 # revrec-contract-reviewer
 
-[![CI](https://github.com/Maxxym404/revrec-contract-reviewer/actions/workflows/ci.yml/badge.svg)](https://github.com/Maxxym404/revrec-contract-reviewer/actions/workflows/ci.yml)
+[![CI](https://github.com/gabriel-fin-arch/revrec-contract-reviewer/actions/workflows/ci.yml/badge.svg)](https://github.com/gabriel-fin-arch/revrec-contract-reviewer/actions/workflows/ci.yml)
 
 ASC 606 contract review for group-level revenue assurance. It reads executed
 contract PDFs, extracts the facts that drive revenue recognition, tests them
