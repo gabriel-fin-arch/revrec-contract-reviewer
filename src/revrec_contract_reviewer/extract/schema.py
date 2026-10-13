@@ -17,23 +17,18 @@ rules extractor doesn't have to cite anything" is not a shortcut available to it
 ## Why the contract terms are a list rather than named fields
 
 The obvious shape for this is one named field per contract term, each optional.
-That shape does not survive contact with structured outputs, and it took two
-different 400s to find out:
+That shape does not survive contact with the model. Twenty-one optional
+objects, each a value-or-null union with nested quotes, is where extraction
+starts losing terms: fields come back null that the contract states plainly,
+and rerunning the same document does not lose the same ones. Probed field by
+field, the drop-offs start past a dozen or so nested optionals; this schema
+wanted twenty-one. Splitting the request in two did not help either.
 
-  `Claim | None` per term      -> "too many parameters with union types
-                                  (21 ... limit: 16)"
-  `list[Claim]` per term       -> "the compiled grammar is too large"
-
-Strict output compiles the schema into a grammar, and a nested optional object
-costs a lot of grammar. Probing it, the ceiling landed at about eleven such
-fields; this schema wanted twenty-one. Splitting the request in two did not help
-either: fourteen fields was still "schema is too complex".
-
-What compiles, and stays compiling, is a **flat list of claims that each name
-the term they are about**. The grammar is small and, more usefully, constant:
-adding a twenty-second contract term is adding an enum member, not growing the
-schema. It is a better shape than the one I set out to write, which is not how
-these things usually go.
+What the model fills reliably, run after run, is a **flat list of claims that
+each name the term they are about**. The shape is small and, more usefully,
+constant: adding a twenty-second contract term is adding an enum member, not
+growing the object. It is a better shape than the one I set out to write, which
+is not how these things usually go.
 """
 
 from __future__ import annotations

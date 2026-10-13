@@ -2,16 +2,19 @@
 
 ## Unreleased
 
-- `anthropic>=0.40` was wrong. `messages.parse(output_format=...)` arrived in 0.77,
-  and the stubbed tests could not notice. Raised the floor and added a test
-  against the real client's signature.
+- The extractor moved from a forced tool call to `messages.parse(output_format=...)`,
+  which arrived in anthropic 0.77, while the floor still said 0.40 -- and the
+  stubbed tests could not notice. Floor raised, with a test against the real
+  client's signature.
 - The other floors had the same problem: pydantic 2.6 rejects the generic
   `ExtractedField` the extractors build (35 tests fail; 2.10 is the first that
-  passes), typer 0.12 crashes on `revrec review --help` against current click,
-  and reportlab 4.1 renders a corpus that differs from the committed one in
-  every file. Raised all three, checked by installing the lowest versions the
-  constraints allow, and added tests for subcommand help and for rebuilding the
-  corpus against the PDFs in the repo rather than against itself.
+  passes), and typer 0.12 crashes on `revrec review --help` against current
+  click. Raised both. reportlab goes the other way: 4.4.6 is the first version
+  whose rendering differs from the committed corpus, so it is capped below
+  4.4.6 until the corpus is regenerated on it. All found by installing the
+  versions the constraints allow, with new tests for subcommand help and for
+  rebuilding the corpus against the PDFs in the repo rather than against
+  itself.
 - The master agreement failed "Currency identified" with a detail about bare
   numbers that cannot be consolidated, in a document with no numbers in it. The
   corpus README says it should come out clean, and now it does: no amounts read
@@ -43,10 +46,10 @@
 - Measured the model extractor against the gold set for the first time. It beats
   the regex baseline on recall everywhere and loses judgment precision, 0.95 to
   0.76; `docs/evaluation.md` has the comparison and does not round the loss off.
-- The wire schema is a flat list of claims that name their own field. One named
-  optional field per contract term does not compile as a strict output schema --
-  twenty-one of them exceeded both the union-parameter cap and the grammar size
-  limit, and splitting the request in two did not help either.
+- The wire schema is a flat list of claims that name their own field. Twenty-one
+  named optional fields, one per contract term, is where the model started
+  dropping terms it had quoted, and splitting the request in two did not help
+  either.
 - Added a prompt rule against deriving values by calculation, after the first
   real run reported a transaction price it had multiplied out and a term it had
   counted between two dates, citing the inputs in both cases. Grounding cannot
