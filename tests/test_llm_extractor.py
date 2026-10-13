@@ -13,6 +13,8 @@ real run.
 
 from __future__ import annotations
 
+import inspect
+
 import anthropic
 import pytest
 
@@ -210,3 +212,13 @@ def test_a_term_reported_twice_takes_the_first_and_ignores_the_rest(helix: Contr
 
     assert wire.claim_for(ContractField.CURRENCY).value == "GBP"
     assert wire.claim_for(ContractField.NET_DAYS) is None
+
+
+def test_the_installed_sdk_has_the_call_the_stub_stands_in_for():
+    """Every other test here talks to StubMessages, which accepts any keyword
+    you hand it. That is how pyproject came to claim anthropic>=0.40 while the
+    extractor needed `messages.parse(output_format=...)`, which first shipped
+    in 0.77: the suite passed on an SDK the code could not run against."""
+    messages = anthropic.Anthropic(api_key="unused").messages
+
+    assert "output_format" in inspect.signature(messages.parse).parameters
