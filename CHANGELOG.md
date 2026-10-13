@@ -28,6 +28,11 @@
   citing one. Both passages have to be found now, or the field is dropped and
   counted. `docs/architecture.md` also still described `absent` as "the document
   does not address this", which is the claim the memo stopped making.
+- One unreadable PDF in a folder (scanned, damaged, or not a PDF) ended the
+  whole run in a traceback before any memo was written. The rest of the folder
+  is reviewed now, the unreadable files head the index with the reason, and the
+  command exits 1 so a script can tell it wasn't a full run. Bad input on the
+  command line is a one-line message instead of a traceback.
 - Measured the model extractor against the gold set for the first time. It beats
   the regex baseline on recall everywhere and loses judgment precision, 0.95 to
   0.76; `docs/evaluation.md` has the comparison and does not round the loss off.
