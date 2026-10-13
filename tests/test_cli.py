@@ -24,6 +24,17 @@ def workspace(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
     return tmp_path
 
 
+def test_every_command_prints_its_help():
+    """typer below 0.16 renders help through a click API that changed in 8.2, and
+    `revrec review --help` died with a traceback while the rest of this file
+    passed -- nothing else here asks a subcommand for help."""
+    for command in ([], ["generate-corpus"], ["review"], ["build-gold"], ["eval"]):
+        result = CliRunner().invoke(app, [*command, "--help"])
+
+        assert result.exit_code == 0, result.output
+        assert "Usage" in result.output
+
+
 def test_the_readme_quickstart_works_from_an_empty_directory(workspace: Path):
     assert runner.invoke(app, ["generate-corpus"]).exit_code == 0
     assert (workspace / "corpus" / "nimbus-of-helix.pdf").exists()

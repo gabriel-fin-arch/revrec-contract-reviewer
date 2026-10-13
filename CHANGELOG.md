@@ -5,6 +5,13 @@
 - `anthropic>=0.40` was wrong. `messages.parse(output_format=...)` arrived in 0.77,
   and the stubbed tests could not notice. Raised the floor and added a test
   against the real client's signature.
+- The other floors had the same problem: pydantic 2.6 rejects the generic
+  `ExtractedField` the extractors build (35 tests fail; 2.10 is the first that
+  passes), typer 0.12 crashes on `revrec review --help` against current click,
+  and reportlab 4.1 renders a corpus that differs from the committed one in
+  every file. Raised all three, checked by installing the lowest versions the
+  constraints allow, and added tests for subcommand help and for rebuilding the
+  corpus against the PDFs in the repo rather than against itself.
 - Measured the model extractor against the gold set for the first time. It beats
   the regex baseline on recall everywhere and loses judgment precision, 0.95 to
   0.76; `docs/evaluation.md` has the comparison and does not round the loss off.

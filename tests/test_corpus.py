@@ -24,6 +24,18 @@ def test_rebuilding_the_corpus_produces_identical_bytes(tmp_path: Path):
         assert first[name] == second[name], name
 
 
+def test_rebuilding_matches_the_corpus_in_the_repository(tmp_path: Path):
+    """The test above compares two rebuilds with each other, which says nothing
+    about the PDFs the gold set was written against. reportlab before 4.4.6
+    rebuilds all twelve with different bytes, so this is also what holds the
+    floor in pyproject up."""
+    committed = Path(__file__).resolve().parent.parent / "corpus"
+
+    for path in generate_corpus(tmp_path):
+        if path.suffix == ".pdf":
+            assert path.read_bytes() == (committed / path.name).read_bytes(), path.name
+
+
 def test_page_streams_are_not_compressed(tmp_path: Path):
     """zlib makes no promise of identical output across versions -- Python 3.11
     and 3.14 deflate the same page to different lengths. Uncompressed streams
