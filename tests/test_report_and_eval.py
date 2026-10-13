@@ -102,6 +102,20 @@ def test_the_eval_runs_end_to_end_and_every_citation_resolves(corpus_dir: Path, 
     assert "Precision" in markdown_table(report)
 
 
+def test_silence_is_reported_as_a_count_not_a_recall(corpus_dir: Path, tmp_path: Path):
+    """Every unstated field is either left blank or invented. With no third
+    outcome to count as a miss, a recall for silence is 1.00 whatever happens,
+    and the table used to print one."""
+    gold_dir = tmp_path / "gold"
+    write_gold(gold_dir)
+    report = run_eval(corpus_dir, gold_dir, ExtractorChoice.RULES)
+    table = markdown_table(report)
+
+    assert "Silence" not in table
+    blank = report.silence.true_positives
+    assert f"Unstated fields left blank: **{blank}/{blank + report.silence.false_positives}**" in table
+
+
 def test_inventing_a_value_where_the_contract_is_silent_is_scored_separately(
     corpus_dir: Path, tmp_path: Path
 ):

@@ -26,6 +26,12 @@ one sends them looking for a clause that does not exist. A tool that quietly
 fills gaps with plausible values is worse than one that leaves them empty,
 because the gaps are where the interesting contracts are.
 
+It is reported as a count, unstated fields left blank out of all of them, and
+not as precision and recall. Each unstated field is either left blank or
+invented; there is no third outcome to call a miss, so a recall would read
+1.00 whatever the extractor did. An earlier version of this table printed one
+anyway.
+
 **Performance obligations.** Matched as a multiset of (kind, price). Not by
 label — labels are free text, and a fair scorer should not reward one wording of
 "Premium Support, 36 months" over another.
@@ -49,11 +55,11 @@ than by reading the code. `revrec eval` exits non-zero if it ever drops below
 | Measure | Precision | Recall | F1 |
 |---|---|---|---|
 | Contract fields | 1.00 | 0.91 | 0.95 |
-| Silence on unstated fields | 1.00 | 1.00 | 1.00 |
 | Performance obligations | 0.79 | 0.75 | 0.77 |
 | Judgment flags | 0.95 | 0.83 | 0.88 |
 
-Citations re-resolved: 210/210 (100%). Claims dropped for no evidence: 0.
+Unstated fields left blank: 21/21. Citations re-resolved: 210/210 (100%). Claims
+dropped for no evidence: 0.
 
 Saved run: [`evals/results/rules.json`](../evals/results/rules.json).
 
@@ -102,11 +108,11 @@ Same 12 contracts, same gold set.
 | Measure | Precision | Recall | F1 |
 |---|---|---|---|
 | Contract fields | 1.00 | 0.97 | 0.98 |
-| Silence on unstated fields | 1.00 | 1.00 | 1.00 |
 | Performance obligations | 0.83 | 0.95 | 0.88 |
 | Judgment flags | 0.76 | 0.96 | 0.85 |
 
-Citations re-resolved: 325/325 (100%). Claims dropped for no evidence: 2.
+Unstated fields left blank: 21/21. Citations re-resolved: 325/325 (100%). Claims
+dropped for no evidence: 2.
 
 Saved run: [`evals/results/llm.json`](../evals/results/llm.json). Reproduce with
 `ANTHROPIC_API_KEY` set and `uv run revrec eval --extractor llm --save --mistakes`
@@ -117,7 +123,7 @@ Saved run: [`evals/results/llm.json`](../evals/results/llm.json). Reproduce with
 | Measure | Rules | Model |
 |---|---|---|
 | Contract fields | 1.00 / 0.91 | 1.00 / **0.97** |
-| Silence | 1.00 / 1.00 | 1.00 / 1.00 |
+| Unstated fields left blank | 21 of 21 | 21 of 21 |
 | Performance obligations | 0.79 / 0.75 | **0.83** / **0.95** |
 | Judgment flags | **0.95** / 0.83 | 0.76 / **0.96** |
 
@@ -158,9 +164,9 @@ the inference drawn from it, and no amount of quote-checking can see that.
 
 The fix was one paragraph in the system prompt saying, in effect, report a
 number only where the document prints that number, and that quoting the figures
-you multiplied does not make the product something the contract says. Silence
-precision went from 0.90 back to 1.00, and Tessellate additionally started
-getting its effective date and total right.
+you multiplied does not make the product something the contract says. The
+share of unstated fields left blank went from 0.90 back to 1.00, and Tessellate
+additionally started getting its effective date and total right.
 
 Worth being clear that it is a mitigation and not a guarantee. Nothing
 structural prevents a derived value; the schema cannot express "this number was

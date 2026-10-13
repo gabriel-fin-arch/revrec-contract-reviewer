@@ -153,7 +153,7 @@ isn't earning its cost.
 | Measure | Rules | Claude Opus 5 |
 |---|---|---|
 | Contract fields | 1.00 / 0.91 | 1.00 / **0.97** |
-| Silence on unstated fields | 1.00 / 1.00 | 1.00 / 1.00 |
+| Unstated fields left blank | 21 of 21 | 21 of 21 |
 | Performance obligations | 0.79 / 0.75 | **0.83** / **0.95** |
 | Judgment flags | **0.95** / 0.83 | 0.76 / **0.96** |
 
@@ -175,8 +175,8 @@ six-month term for one stating no term. Both were correct arithmetic — an annu
 fee times a term, a start date to an end date — and both cited the figures they
 were computed from, so every quote resolved and grounding passed them. **That is
 the documented limit of grounding met in the wild: it catches invention, not
-derivation.** A prompt rule against calculating values took silence precision
-from 0.90 back to 1.00.
+derivation.** A prompt rule against calculating values took the share of
+unstated fields left blank from 0.90 back to 1.00.
 
 ```bash
 uv run revrec eval --extractor rules --mistakes

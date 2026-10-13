@@ -33,6 +33,10 @@
   is reviewed now, the unreadable files head the index with the reason, and the
   command exits 1 so a script can tell it wasn't a full run. Bad input on the
   command line is a one-line message instead of a traceback.
+- The silence row printed a precision, a recall and an F1. Every unstated field
+  is either left blank or invented, so nothing was ever counted as a miss and
+  the recall was 1.00 by construction. It is reported as what it is now: 21 of
+  21 unstated fields left blank, on both runs.
 - Measured the model extractor against the gold set for the first time. It beats
   the regex baseline on recall everywhere and loses judgment precision, 0.95 to
   0.76; `docs/evaluation.md` has the comparison and does not round the loss off.
