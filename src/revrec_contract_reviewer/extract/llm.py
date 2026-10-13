@@ -28,12 +28,6 @@ from revrec_contract_reviewer.models.document import ContractDocument
 
 DEFAULT_MODEL = "claude-opus-4-0"
 
-# Structured output, 2025 style: one tool the model is forced to call, whose
-# input schema is the wire schema. The tool call's input arrives as JSON
-# already; model_validate turns it into the WireExtraction.
-TOOL_INPUT_SCHEMA = WireExtraction.model_json_schema()
-
-
 SYSTEM_PROMPT = """You are assisting a group financial controller with an ASC 606 review of contracts \
 entered into by subsidiaries of the group. Your job is to read one contract and report what it says. \
 It is not to decide the accounting.
@@ -129,9 +123,10 @@ def extract(document: ContractDocument, client: anthropic.Anthropic | None = Non
     client = client or anthropic.Anthropic()
     model = model_name()
 
-    response = client.messages.create(
+    response = client.messages.parse(
         model=model,
         max_tokens=16000,
+        thinking={"type": "adaptive"},
         system=[
             {
                 "type": "text",
@@ -147,18 +142,7 @@ def extract(document: ContractDocument, client: anthropic.Anthropic | None = Non
                 "content": USER_TEMPLATE.format(doc_id=document.doc_id, body=_with_page_markers(document)),
             }
         ],
-        tools=[
-            {
-                "name": "report_extraction",
-                "description": (
-                    "Report the contract's terms. Every value carries the "
-                    "verbatim quote it was read from."
-                ),
-                "input_schema": TOOL_INPUT_SCHEMA,
-            }
-        ],
-        tool_choice={"type": "tool", "name": "report_extraction"},
+        output_format=WireExtraction,
     )
 
-    block = next(b for b in response.content if b.type == "tool_use")
-    return WireExtraction.model_validate(block.input), model
+    return response.parsed_output, model

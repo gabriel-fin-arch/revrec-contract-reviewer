@@ -13,6 +13,8 @@ real run.
 
 from __future__ import annotations
 
+import inspect
+
 import anthropic
 import pytest
 
@@ -34,10 +36,9 @@ class StubMessages:
         self._payload = payload
         self._recorder = recorder
 
-    def create(self, **kwargs):
+    def parse(self, **kwargs):
         self._recorder.update(kwargs)
-        block = type("Block", (), {"type": "tool_use", "input": self._payload.model_dump(mode="json")})()
-        return type("Response", (), {"content": [block]})()
+        return type("Response", (), {"parsed_output": self._payload})()
 
 
 class StubClient:
@@ -97,8 +98,7 @@ def test_the_request_asks_for_the_wire_schema(helix: ContractDocument, payload: 
 
     llm.extract(helix, client=client)
 
-    assert client.calls["tools"][0]["input_schema"] == llm.TOOL_INPUT_SCHEMA
-    assert client.calls["tool_choice"] == {"type": "tool", "name": "report_extraction"}
+    assert client.calls["output_format"] is WireExtraction
     assert client.calls["model"] == llm.model_name()
 
 
@@ -212,3 +212,13 @@ def test_a_term_reported_twice_takes_the_first_and_ignores_the_rest(helix: Contr
 
     assert wire.claim_for(ContractField.CURRENCY).value == "GBP"
     assert wire.claim_for(ContractField.NET_DAYS) is None
+
+
+def test_the_installed_sdk_has_the_call_the_stub_stands_in_for():
+    """Every other test here talks to StubMessages, which accepts any keyword
+    you hand it. That is how pyproject came to claim anthropic>=0.40 while the
+    extractor needed `messages.parse(output_format=...)`, which first shipped
+    in 0.77: the suite passed on an SDK the code could not run against."""
+    messages = anthropic.Anthropic(api_key="unused").messages
+
+    assert "output_format" in inspect.signature(messages.parse).parameters

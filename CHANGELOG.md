@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- The extractor moved from a forced tool call to `messages.parse(output_format=...)`,
+  which arrived in anthropic 0.77, while the floor still said 0.40 -- and the
+  stubbed tests could not notice. Floor raised, with a test against the real
+  client's signature.
 - Measured the model extractor against the gold set for the first time. It beats
   the regex baseline on recall everywhere and loses judgment precision, 0.95 to
   0.76; `docs/evaluation.md` has the comparison and does not round the loss off.
