@@ -14,6 +14,7 @@ actually answer today.
 from __future__ import annotations
 
 import json
+from collections.abc import Sequence
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -135,10 +136,15 @@ def render_memo(review: ContractReview) -> str:
     )
 
 
-def render_index(reviews: list[ContractReview]) -> str:
-    """The run index -- one row per contract, for someone triaging a portfolio."""
+def render_index(reviews: list[ContractReview], unreadable: Sequence[tuple[str, str]] = ()) -> str:
+    """The run index -- one row per contract, for someone triaging a portfolio.
+
+    Files that could not be read at all are listed first, above the worklist:
+    they need a person more than anything the review found.
+    """
     template = _environment().get_template("index.html.j2")
     return template.render(
+        unreadable=list(unreadable),
         # Ordered by everything that needs attention, failed checks included,
         # not by judgment count alone. A contract the pipeline could not read
         # raises no judgments, so under the old ordering it sank to the bottom
@@ -173,6 +179,6 @@ def write_review(review: ContractReview, out_dir: Path) -> tuple[Path, Path]:
     return memo_path, json_path
 
 
-def write_index(reviews: list[ContractReview], out_dir: Path) -> Path:
+def write_index(reviews: list[ContractReview], out_dir: Path, unreadable: Sequence[tuple[str, str]] = ()) -> Path:
     out_dir.mkdir(parents=True, exist_ok=True)
-    return write_lf(out_dir / "index.html", render_index(reviews))
+    return write_lf(out_dir / "index.html", render_index(reviews, unreadable))
