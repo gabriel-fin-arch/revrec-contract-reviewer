@@ -301,3 +301,13 @@ def test_the_termination_trigger_does_not_assert_a_negative_it_never_established
 
     assert "was found in the document" in trigger
     assert "the document states no compensation" not in trigger
+
+
+def test_an_uncapped_term_is_described_as_not_found_not_as_unlimited(helix):
+    """A cap nobody located is not a contract saying the amount is unlimited,
+    and the trigger used to say the terms 'state no ceiling'."""
+    review = assess(extract_contract(helix, ExtractorChoice.RULES))
+    flag = next(f for f in review.flags if f.judgment_type is JudgmentType.VARIABLE_CONSIDERATION_CONSTRAINT)
+
+    assert "No ceiling was found" in flag.trigger
+    assert "state no ceiling" not in flag.trigger
