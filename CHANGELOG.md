@@ -37,6 +37,9 @@
   is either left blank or invented, so nothing was ever counted as a miss and
   the recall was 1.00 by construction. It is reported as what it is now: 21 of
   21 unstated fields left blank, on both runs.
+- The variable consideration flag said uncapped terms "state no ceiling" (with
+  "1 of these terms state" for a single one). A cap nobody found is not a
+  contract saying the amount is unlimited; it reads "no ceiling was found" now.
 - Measured the model extractor against the gold set for the first time. It beats
   the regex baseline on recall everywhere and loses judgment precision, 0.95 to
   0.76; `docs/evaluation.md` has the comparison and does not round the loss off.
