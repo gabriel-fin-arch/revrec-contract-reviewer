@@ -13,7 +13,7 @@ jobs:
       - uses: actions/checkout@v5
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v6
+        uses: astral-sh/setup-uv@v7
         with:
           python-version: "3.11"
 
@@ -35,3 +35,23 @@ jobs:
           uv run revrec generate-corpus
           uv run revrec review --extractor rules
           uv run revrec eval --extractor rules
+
+  lowest-versions:
+    # The floors in pyproject are a promise the job above never tests: it
+    # resolves to the newest of everything. This one installs the oldest
+    # versions the constraints allow, which is how several floors turned out
+    # to be versions the code could not run on.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          python-version: "3.11"
+
+      - name: Install the lowest versions pyproject allows
+        run: uv sync --extra dev --resolution lowest-direct
+
+      - name: Test
+        run: uv run pytest -q
