@@ -152,8 +152,14 @@ def _variable_consideration(extraction: ContractExtraction) -> JudgmentFlag | No
     kinds = ", ".join(sorted({term.kind.value.replace("_", " ") for term in terms}))
     uncapped = [term for term in terms if not term.cap.is_known]
     trigger = f"The contract contains variable consideration: {kinds}."
-    if uncapped:
-        trigger += f" {len(uncapped)} of these terms state no ceiling."
+    # "Found", not "states": an absent cap is one nobody located, which is not
+    # the same as a contract saying the amount is unlimited.
+    if uncapped and len(terms) == 1:
+        trigger += " No ceiling was found for it."
+    elif uncapped and len(uncapped) == len(terms):
+        trigger += " No ceiling was found for any of them."
+    elif uncapped:
+        trigger += f" No ceiling was found for {len(uncapped)} of the {len(terms)}."
 
     return JudgmentFlag(
         judgment_type=JudgmentType.VARIABLE_CONSIDERATION_CONSTRAINT,
