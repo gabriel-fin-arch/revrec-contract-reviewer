@@ -78,9 +78,31 @@ def test_footing_is_not_applicable_without_a_stated_total(citation: Citation):
 
 
 def test_a_missing_currency_fails_its_check(citation: Citation):
-    extraction = ContractExtraction(doc_id="x", extractor="rules")
+    extraction = ContractExtraction(
+        doc_id="x",
+        extractor="rules",
+        obligations=[_priced(ObligationKind.SAAS_SUBSCRIPTION, "288000", citation)],
+    )
 
     assert _check(extraction, "Currency").outcome is CheckOutcome.FAILED
+
+
+def test_no_currency_is_not_a_failure_when_no_amount_was_read(citation: Citation):
+    """A currency only matters once there is a number to consolidate."""
+    extraction = ContractExtraction(doc_id="x", extractor="rules")
+
+    assert _check(extraction, "Currency").outcome is CheckOutcome.NOT_APPLICABLE
+
+
+def test_the_master_agreement_stays_quiet(documents):
+    """The corpus README says the right answer for the MSA is a clean review,
+    and that measuring the reviewer stays quiet is half the reason it is in
+    the corpus. It used to fail the currency check for a document with no
+    money in it."""
+    review = assess(extract_contract(documents["nimbus-msa-calderwood"], ExtractorChoice.RULES))
+
+    assert review.flags == []
+    assert review.failed_checks() == []
 
 
 def test_one_obligation_raises_no_allocation_question(citation: Citation):

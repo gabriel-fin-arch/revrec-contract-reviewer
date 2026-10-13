@@ -12,6 +12,11 @@
   every file. Raised all three, checked by installing the lowest versions the
   constraints allow, and added tests for subcommand help and for rebuilding the
   corpus against the PDFs in the repo rather than against itself.
+- The master agreement failed "Currency identified" with a detail about bare
+  numbers that cannot be consolidated, in a document with no numbers in it. The
+  corpus README says it should come out clean, and now it does: no amounts read
+  means no currency to require. The rules run goes from 11 to 10 contracts
+  needing a reviewer.
 - Measured the model extractor against the gold set for the first time. It beats
   the regex baseline on recall everywhere and loses judgment precision, 0.95 to
   0.76; `docs/evaluation.md` has the comparison and does not round the loss off.
