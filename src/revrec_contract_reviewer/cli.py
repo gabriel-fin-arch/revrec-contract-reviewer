@@ -15,6 +15,7 @@ from revrec_contract_reviewer.corpus import generate_corpus
 from revrec_contract_reviewer.evaluate import markdown_table, run_eval, write_gold
 from revrec_contract_reviewer.extract import ExtractorChoice
 from revrec_contract_reviewer.fileio import write_lf
+from revrec_contract_reviewer.ingest import UnreadableContract
 from revrec_contract_reviewer.pipeline import review_contract, review_directory
 from revrec_contract_reviewer.report import write_index, write_review
 
@@ -51,22 +52,36 @@ def review(
     ),
 ) -> None:
     """Review a contract, or every contract in a directory."""
-    if path.is_dir():
-        reviews = review_directory(path, extractor)
-    else:
-        reviews = [review_contract(path, extractor)]
+    try:
+        if path.is_dir():
+            reviews, unreadable = review_directory(path, extractor)
+        else:
+            reviews, unreadable = [review_contract(path, extractor)], []
+    except (FileNotFoundError, UnreadableContract) as exc:
+        typer.echo(f"Cannot review: {exc}", err=True)
+        raise typer.Exit(code=1) from exc
 
     for result in reviews:
         write_review(result, out_dir)
         typer.echo(result.summary_line())
+    for skipped in unreadable:
+        typer.echo(f"{skipped.name}: not reviewed. {skipped.reason}", err=True)
 
-    if len(reviews) > 1:
-        index = write_index(reviews, out_dir)
+    if len(reviews) > 1 or unreadable:
+        index = write_index(reviews, out_dir, unreadable)
         needing = sum(1 for result in reviews if result.needs_review())
         typer.echo("")
-        typer.echo(f"{needing} of {len(reviews)} contracts need a reviewer. Index: {index}")
+        summary = f"{needing} of {len(reviews)} contracts need a reviewer"
+        if unreadable:
+            summary += f", and {len(unreadable)} could not be read"
+        typer.echo(f"{summary}. Index: {index}")
     else:
         typer.echo(f"Memo written to {out_dir / (reviews[0].doc_id + '.html')}")
+
+    # Some files were never reviewed. The memos and the index are still
+    # written, but a script running this should not mistake it for a full run.
+    if unreadable:
+        raise typer.Exit(code=1)
 
 
 @app.command("build-gold")
