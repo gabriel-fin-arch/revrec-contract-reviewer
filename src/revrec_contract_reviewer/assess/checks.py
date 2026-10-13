@@ -104,7 +104,30 @@ def _effective_date(extraction: ContractExtraction) -> ReviewCheck:
     )
 
 
+def _amounts_read(extraction: ContractExtraction) -> bool:
+    """Whether the extraction holds any money at all."""
+    fields = [
+        extraction.total_fixed_consideration,
+        extraction.payment.upfront_fee,
+        extraction.renewal.renewal_price,
+        *(term.cap for term in extraction.variable_consideration),
+    ]
+    for obligation in extraction.obligations:
+        fields += [obligation.stated_price, obligation.list_price]
+    return any(field.is_known for field in fields)
+
+
 def _currency(extraction: ContractExtraction) -> ReviewCheck:
+    if not extraction.currency.is_known and not _amounts_read(extraction):
+        # A master agreement sets terms and prices nothing, so it has no currency
+        # to state. Failing it here put the one contract the corpus expects a
+        # clean review for on the worklist, for a problem that only exists once
+        # there is a number to consolidate.
+        return ReviewCheck(
+            name="Currency identified",
+            outcome=CheckOutcome.NOT_APPLICABLE,
+            detail="No amounts were read from this document, so there is nothing for a currency to apply to.",
+        )
     if extraction.currency.is_known:
         return ReviewCheck(
             name="Currency identified",
