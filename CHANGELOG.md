@@ -6,6 +6,15 @@
   which arrived in anthropic 0.77, while the floor still said 0.40 -- and the
   stubbed tests could not notice. Floor raised, with a test against the real
   client's signature.
+- The other floors had the same problem: pydantic 2.6 rejects the generic
+  `ExtractedField` the extractors build (35 tests fail; 2.10 is the first that
+  passes), and typer 0.12 crashes on `revrec review --help` against current
+  click. Raised both. reportlab goes the other way: 4.4.6 is the first version
+  whose rendering differs from the committed corpus, so it is capped below
+  4.4.6 until the corpus is regenerated on it. All found by installing the
+  versions the constraints allow, with new tests for subcommand help and for
+  rebuilding the corpus against the PDFs in the repo rather than against
+  itself.
 - Measured the model extractor against the gold set for the first time. It beats
   the regex baseline on recall everywhere and loses judgment precision, 0.95 to
   0.76; `docs/evaluation.md` has the comparison and does not round the loss off.
