@@ -75,9 +75,12 @@ def markdown_table(report: EvalReport) -> str:
         "| Measure | Precision | Recall | F1 |",
         "|---|---|---|---|",
     ]
+    # Silence is not in the table. Every field the contract leaves unstated is
+    # either left blank or invented -- there is no third outcome to count as a
+    # miss -- so a recall for it is 1.00 by construction and a precision is
+    # just the blank rate under another name. It gets a count of its own.
     for label, tally in (
         ("Contract fields", report.fields),
-        ("Silence on unstated fields", report.silence),
         ("Performance obligations", report.obligations),
         ("Judgment flags", report.judgments),
     ):
@@ -87,6 +90,8 @@ def markdown_table(report: EvalReport) -> str:
     lines.extend(
         [
             "",
+            f"Unstated fields left blank: **{report.silence.true_positives}/"
+            f"{report.silence.true_positives + report.silence.false_positives}**. "
             f"Citations re-resolved against the source: **{report.citations_resolved}/{report.citations_total}** "
             f"({report.citation_rate:.0%}). "
             f"Claims dropped for no evidence: **{report.dropped_for_no_evidence}**.",
