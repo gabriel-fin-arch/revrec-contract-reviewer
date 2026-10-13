@@ -26,7 +26,7 @@ import anthropic
 from revrec_contract_reviewer.extract.schema import FIELD_GUIDANCE, WireExtraction
 from revrec_contract_reviewer.models.document import ContractDocument
 
-DEFAULT_MODEL = "claude-opus-5"
+DEFAULT_MODEL = "claude-opus-4-0"
 
 SYSTEM_PROMPT = """You are assisting a group financial controller with an ASC 606 review of contracts \
 entered into by subsidiaries of the group. Your job is to read one contract and report what it says. \

@@ -101,7 +101,7 @@ of promises, and telling those apart needs the clause above the table.
 Every one of these is a case for the model extractor, and they are a better
 argument for it than a headline number would be.
 
-## Model extractor — Claude Opus 5
+## Model extractor — Claude Opus 4
 
 Same 12 contracts, same gold set.
 

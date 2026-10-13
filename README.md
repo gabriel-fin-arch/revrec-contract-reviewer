@@ -150,7 +150,7 @@ honest account of what a synthetic corpus can and cannot tell you, in
 has to beat; a model extractor that can't beat regexes on a corpus this clean
 isn't earning its cost.
 
-| Measure | Rules | Claude Opus 5 |
+| Measure | Rules | Claude Opus 4 |
 |---|---|---|
 | Contract fields | 1.00 / 0.91 | 1.00 / **0.97** |
 | Unstated fields left blank | 21 of 21 | 21 of 21 |
