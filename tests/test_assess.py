@@ -218,7 +218,7 @@ def test_an_affirmed_silence_fails_the_recognition_check(citation: Citation):
     does not say. That is a finding, and the check has to report it."""
     from revrec_contract_reviewer.models.extraction import RecognitionPattern
 
-    obligation = _priced(ObligationKind.SAAS_SUBSCRIPTION, "288000", citation)
+    obligation = _priced(ObligationKind.IMPLEMENTATION, "60000", citation)
     obligation.recognition = ExtractedField[RecognitionPattern].found(
         RecognitionPattern.UNDETERMINED, [citation]
     )
@@ -227,6 +227,43 @@ def test_an_affirmed_silence_fails_the_recognition_check(citation: Citation):
     check = _check(extraction, "Recognition pattern")
     assert check.outcome is CheckOutcome.FAILED
     assert obligation.label in check.detail
+
+
+def _undetermined(kind: ObligationKind, amount: str, citation: Citation) -> PerformanceObligation:
+    from revrec_contract_reviewer.models.extraction import RecognitionPattern
+
+    obligation = _priced(kind, amount, citation)
+    obligation.recognition = ExtractedField[RecognitionPattern].found(RecognitionPattern.UNDETERMINED, [citation])
+    return obligation
+
+
+def test_a_subscription_silent_on_control_is_not_a_finding(citation: Citation):
+    """Access for a term is a stand-ready promise, over time under 25-27(a). No
+    order form says so and none needs to; failing on it put eleven of twelve
+    contracts on the worklist in the model run."""
+    extraction = ContractExtraction(
+        doc_id="x",
+        extractor="llm",
+        obligations=[
+            _undetermined(ObligationKind.SAAS_SUBSCRIPTION, "288000", citation),
+            _undetermined(ObligationKind.SUPPORT, "24000", citation),
+        ],
+    )
+
+    check = _check(extraction, "Recognition pattern")
+    assert check.outcome is CheckOutcome.PASSED
+    assert "stand-ready" in check.detail.lower()
+
+
+def test_only_the_obligations_that_needed_language_are_named(citation: Citation):
+    subscription = _undetermined(ObligationKind.SAAS_SUBSCRIPTION, "288000", citation)
+    implementation = _undetermined(ObligationKind.IMPLEMENTATION, "60000", citation)
+    extraction = ContractExtraction(doc_id="x", extractor="llm", obligations=[subscription, implementation])
+
+    check = _check(extraction, "Recognition pattern")
+    assert check.outcome is CheckOutcome.FAILED
+    assert implementation.label in check.detail
+    assert subscription.label not in check.detail
 
 
 def test_no_reading_at_all_is_not_applicable_rather_than_a_failure(citation: Citation):
