@@ -23,6 +23,11 @@
   stand-ready promises, over time under 606-10-25-27(a) by what they are, and
   pass on the promise now. Implementation, training, clinical services and
   resale still fail on silence, since for them the contract's terms decide it.
+- A claim marked conflicting became `ambiguous` as soon as one of its quotes
+  grounded, so the memo could present a disagreement between two clauses while
+  citing one. Both passages have to be found now, or the field is dropped and
+  counted. `docs/architecture.md` also still described `absent` as "the document
+  does not address this", which is the claim the memo stopped making.
 - Measured the model extractor against the gold set for the first time. It beats
   the regex baseline on recall everywhere and loses judgment precision, 0.95 to
   0.76; `docs/evaluation.md` has the comparison and does not round the loss off.

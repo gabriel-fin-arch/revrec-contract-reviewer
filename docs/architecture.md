@@ -97,13 +97,16 @@ because nothing in a contract is 72% true.
 |---|---|---|
 | `extracted` | the document says it, and here is where | reads the citation, moves on |
 | `ambiguous` | it says it in more than one place, and they disagree | decides which clause governs |
-| `absent` | the document does not address this | raises a drafting gap, or accepts the silence |
+| `absent` | nothing was found -- the document may not address it, or nothing looked | reads the document for it |
 
 Those drive genuinely different actions. A single blended score would have
 flattened `absent` and `ambiguous` into "0.4, take a look".
 
 The invariant is enforced on the model itself: an `extracted` field must carry
 a value and at least one citation, and an `absent` field may not carry a value.
+Grounding adds the one for `ambiguous`: both of the passages that disagree have
+to be in the document. A conflict reported with one of them missing is dropped
+and counted, like any other claim the document doesn't support.
 Constructing an unsupported fact raises a validation error rather than
 producing a plausible memo.
 

@@ -96,6 +96,17 @@ class Grounder:
                 note="Dropped: the supporting quote could not be located in the document."
             )
 
+        if claim.conflicting and len({NormalizedText.normalize(c.quote) for c in citations}) < 2:
+            # A conflict is a claim about two passages. With one of them missing
+            # there is nothing in the document showing a disagreement, and the
+            # value can't be kept either: it may be the reading of the passage
+            # that isn't there. Distinct text, not distinct locations -- the same
+            # words found twice are not two clauses disagreeing.
+            self.dropped += 1
+            return ExtractedField[T].absent(
+                note="Dropped: reported as two passages that disagree, but only one could be located."
+            )
+
         value = parse(claim.value)
         if value is None:
             self.dropped += 1
