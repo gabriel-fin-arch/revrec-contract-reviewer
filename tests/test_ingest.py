@@ -47,3 +47,14 @@ def test_a_pdf_with_no_text_layer_is_refused(tmp_path: Path):
 
     with pytest.raises(ValueError, match="OCR"):
         load_contract(blank)
+
+
+def test_a_file_that_is_not_a_pdf_is_unreadable_rather_than_a_parser_error(tmp_path: Path):
+    from revrec_contract_reviewer.ingest import UnreadableContract
+
+    fake = tmp_path / "fake.pdf"
+    fake.write_text("not a pdf at all", encoding="utf-8")
+
+    with pytest.raises(UnreadableContract, match=r"fake\.pdf could not be read as a PDF"):
+        load_contract(fake)
+
