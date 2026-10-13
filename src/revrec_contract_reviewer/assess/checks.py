@@ -15,7 +15,7 @@ from __future__ import annotations
 
 from decimal import Decimal
 
-from revrec_contract_reviewer.models.extraction import ContractExtraction, RecognitionPattern
+from revrec_contract_reviewer.models.extraction import ContractExtraction, ObligationKind, RecognitionPattern
 from revrec_contract_reviewer.models.review import CheckOutcome, ReviewCheck
 
 # The fee schedule is compared to the stated total at the cent. There is no
@@ -24,6 +24,10 @@ from revrec_contract_reviewer.models.review import CheckOutcome, ReviewCheck
 # means a line was misread. This is not an intercompany balance translated at
 # two different rates. It is arithmetic on one page.
 FOOTING_TOLERANCE = Decimal("0")
+
+# Promises whose over-time pattern follows from what they are, not from any
+# clause about control. See _recognition_pattern.
+_PATTERN_FOLLOWS_FROM_THE_PROMISE = {ObligationKind.SAAS_SUBSCRIPTION, ObligationKind.SUPPORT}
 
 
 def _footing(extraction: ContractExtraction) -> ReviewCheck:
@@ -189,11 +193,23 @@ def _recognition_pattern(extraction: ContractExtraction) -> ReviewCheck:
     # The third is the one that matters. UNDETERMINED is an assertion about the
     # contract; absence is an assertion about nothing. Reporting a failure for
     # absence would be blaming the document for what the extractor didn't do.
-    silent = [
-        ob.label
+    #
+    # Silence only counts against obligations whose pattern turns on what the
+    # contract says. A subscription or a support term is a stand-ready promise:
+    # the customer receives and consumes the benefit as the entity performs
+    # (606-10-25-27(a)), so over time follows from the promise the contract
+    # already describes. No SaaS order form says more than that, and failing
+    # every one of them for it put eleven of twelve contracts on the worklist
+    # in the model run. Implementation, training, clinical work and resale are
+    # different -- whether they qualify under (b) or (c) depends on terms like
+    # a right to payment for work done to date, and there silence is a finding.
+    undetermined = [
+        ob
         for ob in extraction.obligations
         if ob.recognition.is_known and ob.recognition.value is RecognitionPattern.UNDETERMINED
     ]
+    silent = [ob.label for ob in undetermined if ob.kind not in _PATTERN_FOLLOWS_FROM_THE_PROMISE]
+    stand_ready = [ob.label for ob in undetermined if ob.kind in _PATTERN_FOLLOWS_FROM_THE_PROMISE]
     unread = [ob.label for ob in extraction.obligations if not ob.recognition.is_known]
 
     if silent:
@@ -215,10 +231,15 @@ def _recognition_pattern(extraction: ContractExtraction) -> ReviewCheck:
                 f"extractor does not attempt it; run the model extractor to get an answer here."
             ),
         )
+    detail = "Each obligation has language in the contract bearing on how control transfers."
+    if stand_ready:
+        detail = f"Stand-ready over the stated term, so over time follows from the promise: {', '.join(stand_ready)}."
+        if len(stand_ready) < len(extraction.obligations):
+            detail += " The others have language in the contract bearing on how control transfers."
     return ReviewCheck(
         name="Recognition pattern evidenced for each obligation",
         outcome=CheckOutcome.PASSED,
-        detail="Each obligation has language in the contract bearing on how control transfers.",
+        detail=detail,
     )
 
 
