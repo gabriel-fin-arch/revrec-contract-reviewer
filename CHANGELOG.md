@@ -17,6 +17,12 @@
   corpus README says it should come out clean, and now it does: no amounts read
   means no currency to require. The rules run goes from 11 to 10 contracts
   needing a reviewer.
+- The recognition check failed every subscription and support term the contract
+  did not describe a control transfer for, which is all of them: in the model
+  run, 11 of 12 contracts failed it and none needed no attention. Those are
+  stand-ready promises, over time under 606-10-25-27(a) by what they are, and
+  pass on the promise now. Implementation, training, clinical services and
+  resale still fail on silence, since for them the contract's terms decide it.
 - Measured the model extractor against the gold set for the first time. It beats
   the regex baseline on recall everywhere and loses judgment precision, 0.95 to
   0.76; `docs/evaluation.md` has the comparison and does not round the loss off.

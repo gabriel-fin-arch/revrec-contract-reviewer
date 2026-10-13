@@ -207,3 +207,14 @@ applicable*, and the distinction matters: absence says nothing about the
 contract, and reporting it as a failure would blame the document for what the
 reader never tried. The offline extractor never attempts it, which is why it
 reports not applicable on every contract in the corpus.
+
+Silence is only a finding where the contract could have settled the question.
+A subscription or a support term is a stand-ready promise: the customer
+receives and consumes the benefit as the entity performs, which is criterion
+(a) of 606-10-25-27, and the order form describing access for a term is all the
+evidence there is to give. No SaaS contract states a recognition pattern, and
+failing each one for it put eleven of the twelve on the worklist in the model
+run. Those two kinds pass on the promise itself. Implementation, training,
+clinical services and resale still fail when the contract is silent, because
+for them the answer turns on terms like a right to payment for work performed
+to date, which a contract can contain or leave out.
