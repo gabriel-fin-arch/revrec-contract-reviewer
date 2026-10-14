@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- The README's note on the commit history left out what the publishing
+  rewrites actually did, including relabelling the model run. It says so now,
+  and `PROVENANCE.md` lists every force-push and the deleted CI runs, with how
+  to check each one. The README and `docs/evaluation.md` also say the first
+  published versions labelled the run Claude Opus 5, and that Opus 4 was retired
+  on 15 June 2026 rather than merely deprecated.
 - The history rewrite of 13 October 2026 (see `PROVENANCE.md`) also changed
   four things in the current files, and they are back to what they were before
   it. The corpus PDFs are rendered with reportlab 4.4.6 or later again (4.4.6

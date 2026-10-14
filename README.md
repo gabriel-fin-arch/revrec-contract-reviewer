@@ -11,12 +11,18 @@ It does not conclude the accounting. What it does is put the eight judgments a
 contract actually forces in front of the person who can make them, with the
 evidence already pulled.
 
-> **About the commit history.** I built this between June and November 2025.
-> The git history was reconstructed when I published it here in October 2026,
-> so commit dates before then are approximate: they were set when the history
-> was rebuilt, not recorded by git at the time. I rewrote that reconstruction
-> a few times while publishing, which is what the force-pushes in the Activity
-> tab are. Dates from October 2026 on are real.
+> **About the commit history.** I built this between June and November 2025,
+> with a second pass from July to September 2026 that moved the extractor to
+> structured outputs and a newer model. I didn't keep a usable git history, so
+> the commits before 14 October 2026 are a reconstruction from my working copy:
+> they follow roughly the order I built things in, but their dates, times,
+> messages and intermediate contents are approximate. While publishing I made
+> that worse. The first versions I pushed put 2026 code and a mislabelled model
+> run into commits dated 2025, and instead of saying so I rewrote the old
+> commits until the contradictions were gone. Those are the force-pushes in the
+> Activity tab, and the earlier versions are still linked from there.
+> [PROVENANCE.md](PROVENANCE.md) lists every change and how to check it. From
+> commit `4976f2c` (14 October 2026) on, the history is as recorded.
 
 ## Review in 5 minutes
 
@@ -176,9 +182,11 @@ isn't earning its cost.
 Citations re-resolved against the source: **100%** on both runs (210 and 325).
 Saved runs in [`evals/results/`](evals/results/).
 
-The model run is from November 2025, on Claude Opus 4. Opus 4 has since been
-deprecated, so the extractor now defaults to Claude Opus 5.5, and that has not
-been measured yet: the numbers above are Opus 4's.
+The model run is from November 2025, on Claude Opus 4. The first versions of
+this repo labelled it Claude Opus 5, which was wrong
+([PROVENANCE.md](PROVENANCE.md#the-model-run)). Opus 4 was retired on 15 June
+2026, so the extractor now defaults to Claude Opus 5.5, and that has not been
+measured yet: the numbers above are Opus 4's.
 
 The model wins on recall everywhere, and it is not close — every gap the regexes
 had closes. **It also drops judgment precision from 0.95 to 0.76**, mostly by
