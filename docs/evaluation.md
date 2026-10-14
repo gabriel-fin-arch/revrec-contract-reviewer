@@ -103,9 +103,12 @@ argument for it than a headline number would be.
 
 ## Model extractor — Claude Opus 4
 
-Same 12 contracts, same gold set. Run in November 2025. Opus 4 has since been
-deprecated and the extractor now defaults to Claude Opus 5.5; these numbers have
-not been re-measured on it.
+Same 12 contracts. Run in November 2025. The first published versions of this
+repo labelled the run Claude Opus 5, which was wrong (see
+[PROVENANCE.md](../PROVENANCE.md#the-model-run)). Opus 4 was retired on 15 June
+2026 and the extractor now defaults to Claude Opus 5.5; these numbers have not
+been re-measured on it. `llm.json` keeps only the counts, so the run can't be
+re-scored against later changes to the gold set either.
 
 | Measure | Precision | Recall | F1 |
 |---|---|---|---|
@@ -116,9 +119,9 @@ not been re-measured on it.
 Unstated fields left blank: 21/21. Citations re-resolved: 325/325 (100%). Claims
 dropped for no evidence: 2.
 
-Saved run: [`evals/results/llm.json`](../evals/results/llm.json). Reproduce with
-`ANTHROPIC_API_KEY` set and `uv run revrec eval --extractor llm --save --mistakes`
-— about four minutes and a couple of dollars.
+Saved run: [`evals/results/llm.json`](../evals/results/llm.json). It can't be
+reproduced, since Opus 4 is gone. To measure the current default, set
+`ANTHROPIC_API_KEY` and run `uv run revrec eval --extractor llm --save --mistakes`.
 
 ### Against the baseline
 
