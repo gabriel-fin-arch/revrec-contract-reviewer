@@ -11,9 +11,12 @@ It does not conclude the accounting. What it does is put the eight judgments a
 contract actually forces in front of the person who can make them, with the
 evidence already pulled.
 
-> **Provenance.** Imported from an older private workspace in Oct 2026. Commit
-> dates are preserved; public GitHub metadata such as repo creation, Actions
-> runs and activity events starts at import.
+> **About the commit history.** I built this between June and November 2025.
+> The git history was reconstructed when I published it here in October 2026,
+> so commit dates before then are approximate: they were set when the history
+> was rebuilt, not recorded by git at the time. I rewrote that reconstruction
+> a few times while publishing, which is what the force-pushes in the Activity
+> tab are. Dates from October 2026 on are real.
 
 ## Review in 5 minutes
 
@@ -22,6 +25,7 @@ evidence already pulled.
   the document.
 - `docs/judgment-calls.md` for the eight decisions that stay with a human.
 - The results table and `docs/evaluation.md`, including where the model loses.
+- How I built this: which decisions are mine and what an AI assistant wrote.
 
 ![Review memo](docs/images/memo.png)
 
@@ -231,6 +235,16 @@ Stated plainly, because an honest scope is more credible than an inflated one.
   model sees it.
 - **It does not replace technical review.** It prioritises and evidences. It
   does not conclude.
+
+## How I built this
+
+With an AI coding assistant (Claude Code). The domain calls are mine: what
+each contract in the corpus has to exercise, the eight judgments and why each
+one stays with a person, "no citation, no field", three field states instead
+of a confidence score, and how the evaluation is scored, silence included.
+The assistant drafted most of the code, tests and docs to that design. I
+reviewed what it produced and sent back what was wrong; every decision listed
+above is one I can walk you through.
 
 ## The corpus
 
