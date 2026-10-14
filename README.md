@@ -176,6 +176,10 @@ isn't earning its cost.
 Citations re-resolved against the source: **100%** on both runs (210 and 325).
 Saved runs in [`evals/results/`](evals/results/).
 
+The model run is from November 2025, on Claude Opus 4. Opus 4 has since been
+deprecated, so the extractor now defaults to Claude Opus 5.5, and that has not
+been measured yet: the numbers above are Opus 4's.
+
 The model wins on recall everywhere, and it is not close — every gap the regexes
 had closes. **It also drops judgment precision from 0.95 to 0.76**, mostly by
 reading integration language more liberally than the taxonomy intends. That
@@ -262,7 +266,7 @@ No agent framework. This is a pipeline with one model call in it, and wrapping
 that in a graph would have added a dependency and a diagram without adding a
 capability.
 
-135 tests. CI runs ruff, the test suite, and then the whole pipeline offline
+136 tests. CI runs ruff, the test suite, and then the whole pipeline offline
 over the corpus; the eval step exits non-zero if any citation in any memo stops
 resolving against its source document. That is the one regression that leaves
 the tool untrustworthy while still looking like it worked.

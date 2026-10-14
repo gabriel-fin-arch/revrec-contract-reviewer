@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+- The default model was still Claude Opus 4, which is deprecated and supports
+  neither adaptive thinking nor structured outputs, the two things the
+  `messages.parse` call asks for. The stubbed tests could not see it and CI has
+  no key. The default is Claude Opus 5.5 now. The published model numbers are
+  still the Opus 4 run from November 2025, and the README and
+  `docs/evaluation.md` say so rather than implying they were re-measured.
+- A refusal arrives as a successful response with nothing parsed, and would have
+  failed later in assembly with nothing pointing at the cause. It raises
+  `ModelDeclined` now: `--extractor llm` stops, and AUTO falls back to the rules
+  the same way it does on an API error.
 - The extractor moved from a forced tool call to `messages.parse(output_format=...)`,
   which arrived in anthropic 0.77, while the floor still said 0.40 -- and the
   stubbed tests could not notice. Floor raised, with a test against the real

@@ -26,7 +26,14 @@ import anthropic
 from revrec_contract_reviewer.extract.schema import FIELD_GUIDANCE, WireExtraction
 from revrec_contract_reviewer.models.document import ContractDocument
 
-DEFAULT_MODEL = "claude-opus-4-0"
+# Claude Opus 4 produced the published eval numbers, in November 2025. It is
+# deprecated now, and it supports neither adaptive thinking nor structured
+# outputs, both of which the call below relies on.
+DEFAULT_MODEL = "claude-opus-5-5"
+
+
+class ModelDeclined(Exception):
+    """The model returned a refusal instead of an extraction."""
 
 SYSTEM_PROMPT = """You are assisting a group financial controller with an ASC 606 review of contracts \
 entered into by subsidiaries of the group. Your job is to read one contract and report what it says. \
@@ -144,5 +151,10 @@ def extract(document: ContractDocument, client: anthropic.Anthropic | None = Non
         ],
         output_format=WireExtraction,
     )
+
+    # A refusal arrives as a successful response with nothing parsed, so it has
+    # to be checked for rather than caught.
+    if response.stop_reason == "refusal":
+        raise ModelDeclined(f"{model} declined to extract {document.doc_id}")
 
     return response.parsed_output, model

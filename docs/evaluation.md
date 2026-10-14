@@ -103,7 +103,9 @@ argument for it than a headline number would be.
 
 ## Model extractor — Claude Opus 4
 
-Same 12 contracts, same gold set.
+Same 12 contracts, same gold set. Run in November 2025. Opus 4 has since been
+deprecated and the extractor now defaults to Claude Opus 5.5; these numbers have
+not been re-measured on it.
 
 | Measure | Precision | Recall | F1 |
 |---|---|---|---|

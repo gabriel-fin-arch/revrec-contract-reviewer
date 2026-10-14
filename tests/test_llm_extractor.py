@@ -32,19 +32,20 @@ from revrec_contract_reviewer.models.fields import FieldStatus
 
 
 class StubMessages:
-    def __init__(self, payload: WireExtraction, recorder: dict) -> None:
+    def __init__(self, payload: WireExtraction | None, recorder: dict, stop_reason: str) -> None:
         self._payload = payload
         self._recorder = recorder
+        self._stop_reason = stop_reason
 
     def parse(self, **kwargs):
         self._recorder.update(kwargs)
-        return type("Response", (), {"parsed_output": self._payload})()
+        return type("Response", (), {"parsed_output": self._payload, "stop_reason": self._stop_reason})()
 
 
 class StubClient:
-    def __init__(self, payload: WireExtraction) -> None:
+    def __init__(self, payload: WireExtraction | None, stop_reason: str = "end_turn") -> None:
         self.calls: dict = {}
-        self.messages = StubMessages(payload, self.calls)
+        self.messages = StubMessages(payload, self.calls, stop_reason)
 
 
 @pytest.fixture
@@ -173,6 +174,22 @@ def test_auto_falls_back_to_rules_when_the_api_fails(helix: ContractDocument, mo
     monkeypatch.setattr(llm, "extract", explode)
 
     extraction = extract_contract(helix, ExtractorChoice.AUTO)
+
+    assert extraction.extractor == "rules"
+    assert extraction.model is None
+
+
+def test_a_refusal_is_not_read_as_an_empty_extraction(helix: ContractDocument, monkeypatch):
+    """A refusal comes back as a successful response with nothing parsed.
+    Asked for the model, that is an error; on AUTO it falls back like an API
+    failure does."""
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key-not-used")
+    declined = StubClient(None, stop_reason="refusal")
+
+    with pytest.raises(llm.ModelDeclined):
+        extract_contract(helix, ExtractorChoice.LLM, client=declined)
+
+    extraction = extract_contract(helix, ExtractorChoice.AUTO, client=declined)
 
     assert extraction.extractor == "rules"
     assert extraction.model is None
