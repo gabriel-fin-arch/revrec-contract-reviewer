@@ -2,29 +2,34 @@
 
 ## Unreleased
 
-- The default model was still Claude Opus 4, which is deprecated and supports
-  neither adaptive thinking nor structured outputs, the two things the
-  `messages.parse` call asks for. The stubbed tests could not see it and CI has
-  no key. The default is Claude Opus 5.5 now. The published model numbers are
+- The history rewrite of 13 October 2026 (see `PROVENANCE.md`) also changed
+  four things in the current files, and they are back to what they were before
+  it. The corpus PDFs are rendered with reportlab 4.4.6 or later again (4.4.6
+  through 5.0.1 produce identical bytes), so the floor is `reportlab>=4.4.6`
+  instead of a cap below it. `extract/schema.py` gives the structured-outputs
+  reason for the flat list of claims again. And the entries below about the
+  anthropic and reportlab floors, and about the wire schema, say what they said
+  before the rewrite.
+- The default model was still Claude Opus 4, which was retired on 15 June 2026
+  and supports neither adaptive thinking nor structured outputs, the two things
+  the `messages.parse` call asks for. The stubbed tests could not see it and CI
+  has no key. The default is Claude Opus 5.5 now. The published model numbers are
   still the Opus 4 run from November 2025, and the README and
   `docs/evaluation.md` say so rather than implying they were re-measured.
 - A refusal arrives as a successful response with nothing parsed, and would have
   failed later in assembly with nothing pointing at the cause. It raises
   `ModelDeclined` now: `--extractor llm` stops, and AUTO falls back to the rules
   the same way it does on an API error.
-- The extractor moved from a forced tool call to `messages.parse(output_format=...)`,
-  which arrived in anthropic 0.77, while the floor still said 0.40 -- and the
-  stubbed tests could not notice. Floor raised, with a test against the real
-  client's signature.
+- `anthropic>=0.40` was wrong. `messages.parse(output_format=...)` arrived in 0.77,
+  and the stubbed tests could not notice. Raised the floor and added a test
+  against the real client's signature.
 - The other floors had the same problem: pydantic 2.6 rejects the generic
   `ExtractedField` the extractors build (35 tests fail; 2.10 is the first that
-  passes), and typer 0.12 crashes on `revrec review --help` against current
-  click. Raised both. reportlab goes the other way: 4.4.6 is the first version
-  whose rendering differs from the committed corpus, so it is capped below
-  4.4.6 until the corpus is regenerated on it. All found by installing the
-  versions the constraints allow, with new tests for subcommand help and for
-  rebuilding the corpus against the PDFs in the repo rather than against
-  itself.
+  passes), typer 0.12 crashes on `revrec review --help` against current click,
+  and reportlab 4.1 renders a corpus that differs from the committed one in
+  every file. Raised all three, checked by installing the lowest versions the
+  constraints allow, and added tests for subcommand help and for rebuilding the
+  corpus against the PDFs in the repo rather than against itself.
 - The master agreement failed "Currency identified" with a detail about bare
   numbers that cannot be consolidated, in a document with no numbers in it. The
   corpus README says it should come out clean, and now it does: no amounts read
@@ -56,10 +61,10 @@
 - Measured the model extractor against the gold set for the first time. It beats
   the regex baseline on recall everywhere and loses judgment precision, 0.95 to
   0.76; `docs/evaluation.md` has the comparison and does not round the loss off.
-- The wire schema is a flat list of claims that name their own field. Twenty-one
-  named optional fields, one per contract term, is where the model started
-  dropping terms it had quoted, and splitting the request in two did not help
-  either.
+- The wire schema is a flat list of claims that name their own field. One named
+  optional field per contract term does not compile as a strict output schema --
+  twenty-one of them exceeded both the union-parameter cap and the grammar size
+  limit, and splitting the request in two did not help either.
 - Added a prompt rule against deriving values by calculation, after the first
   real run reported a transaction price it had multiplied out and a term it had
   counted between two dates, citing the inputs in both cases. Grounding cannot
