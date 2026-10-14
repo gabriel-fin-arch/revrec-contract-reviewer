@@ -49,7 +49,7 @@ def extract_contract(
 
     try:
         wire, model = llm.extract(document, client=client)
-    except anthropic.APIError:
+    except (anthropic.APIError, llm.ModelDeclined):
         if choice is ExtractorChoice.LLM:
             raise
         # AUTO asked for the best extractor available, and right now the API
