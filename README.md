@@ -11,6 +11,18 @@ It does not conclude the accounting. What it does is put the eight judgments a
 contract actually forces in front of the person who can make them, with the
 evidence already pulled.
 
+> **Provenance.** Imported from an older private workspace in Oct 2026. Commit
+> dates are preserved; public GitHub metadata such as repo creation, Actions
+> runs and activity events starts at import.
+
+## Review in 5 minutes
+
+- The business problem and the three places ASC 606 needs domain knowledge.
+- The grounding rule: no citation, no field; nothing is concluded from outside
+  the document.
+- `docs/judgment-calls.md` for the eight decisions that stay with a human.
+- The results table and `docs/evaluation.md`, including where the model loses.
+
 ![Review memo](docs/images/memo.png)
 
 ---
