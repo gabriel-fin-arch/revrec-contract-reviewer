@@ -11,15 +11,18 @@ It does not conclude the accounting. What it does is put the eight judgments a
 contract actually forces in front of the person who can make them, with the
 evidence already pulled.
 
-> **About the commit history.** Commit dates before 14 October 2026 are
-> invented. I built this with Claude Code in September 2026, after
-> intercompany-close-agent, first published it that month under an earlier
-> account, and had the assistant backdate the history to June–November 2025.
-> While publishing here I rewrote it several times to hide that, and
-> relabelled the model run from Claude Opus 5 to Claude Opus 4 to fit the
-> dates; it says Opus 5 again. [PROVENANCE.md](PROVENANCE.md) lists every
-> change, what I said that wasn't true, and how to check it. From `4976f2c`
-> (14 October 2026) on, the history is as recorded.
+> **About the commit history.** I built this with Claude Code in September
+> 2026, after intercompany-close-agent, first published it that month under an
+> earlier account, and had the assistant date the commits back to June–November
+> 2025, at a pace meant to look like months of hand-written work. Dates before
+> 13 October 2026 are invented; the 13 October commits keep their real times
+> but were rewritten that day and the next. While publishing here I rewrote the
+> history several times, and added commits dated 2025, to hide all this; that
+> included relabelling the model run from Claude Opus 5 to Claude Opus 4 and
+> moving a contract date in the corpus. Both are back.
+> [PROVENANCE.md](PROVENANCE.md) lists every change, what I said that wasn't
+> true, and how to check it. From `4976f2c` (14 October 2026) on, the history
+> is as recorded.
 
 ## Review in 5 minutes
 

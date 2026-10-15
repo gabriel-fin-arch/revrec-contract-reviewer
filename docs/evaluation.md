@@ -107,9 +107,9 @@ Same 12 contracts. Run on Claude Opus 5 (`claude-opus-5`) on 10 September 2026.
 For a few days this file called it a Claude Opus 4 run from November 2025,
 after I relabelled it in a history rewrite to fit the backdated commits (see
 [PROVENANCE.md](../PROVENANCE.md#the-model-run)). The extractor now defaults
-to Claude Opus 5.5; these numbers have not been re-measured on it. `llm.json`
-keeps only the counts, so the run can't be re-scored against later changes to
-the gold set.
+to Claude Opus 5.5; these numbers have not been re-measured on it. The corpus
+PDFs and the gold set are the ones the run was saved with. `llm.json` keeps only
+the counts, so the run can't be re-scored against later changes to the code.
 
 | Measure | Precision | Recall | F1 |
 |---|---|---|---|

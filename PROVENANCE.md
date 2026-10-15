@@ -10,10 +10,19 @@ of it should depend on nobody looking.
   intercompany-close-agent. None of it existed in 2025.
 - The commits were backdated to June–November 2025 as they were made, on my
   instructions, so the history would look like long-running work.
+- My design notes of 8 September planned how the history and the repo should
+  look, so they would read as hand-written: no commits on the first five days
+  of any month, as if I were closing the books; a practitioner's voice in the
+  docs with a few rough corners left in; and no repo-wide formatting, so the
+  diffs wouldn't look machine-made. None of the 69 backdated commits falls on
+  days 1–5. I've dropped all of that.
 - I first published it in September 2026 under an earlier account, also named
   gabriel-fin-arch, that I've since deleted; its README badge pointed at that
   copy until 1 October. On 1 October 2026 I pushed it to this account, which I
   opened in 2022 as Maxxym404 and later renamed to gabriel-fin-arch.
+- When I moved it here on 1 October I also added three commits dated November
+  2025, `8adaa13`, `aad8770` and `3616819`, each removing something that
+  contradicted those dates (see below).
 
 What is real: the code, the corpus, the gold set and the design decisions in
 them, the model run in the README (see [The model run](#the-model-run)), and
@@ -26,8 +35,9 @@ every commit from `4976f2c` (14 October 2026) on, which is as recorded.
   packages published up to 5 September 2026, `astral-sh/setup-uv@v7`, and a
   model run labelled `claude-opus-5`.
 - The first commit (`bf27977`, dated 11 June 2025) has a 2026 copyright line,
-  the true year, which `aad8770` ("licence year") changed to 2025 to match the
-  backdated dates. The licence says 2026 again.
+  the true year, which `aad8770` ("licence year", dated 23 November 2025 and
+  first pushed on 1 October 2026) changed to 2025 to match the backdated dates.
+  The licence says 2026 again.
 - `c5ff62d` (dated 10 July 2025) gets structured output through a forced tool
   call, with a comment calling that "2025 style". That file was written during
   the rewrite of 13 October 2026 to make the commit look like 2025 code. The
@@ -60,6 +70,8 @@ changelog entries.
 
 | Commit | Where | What it said |
 |---|---|---|
+| `8adaa13` (dated 22 Nov 2025, first pushed 1 Oct 2026) | `docs/architecture.md` | Replaced "The first project I built in this space is a LangGraph agent", which is true, with "My other project in this space", because the backdated dates made this repo look older than intercompany-close-agent. The sentence is back. |
+| `3616819` (dated 25 Nov 2025, first pushed 1 Oct 2026) | commit message, corpus, gold set | "The meridian change order was dated after the study it amends had finished." It wasn't: the agreement it amends runs until database lock, expected in the fourth quarter of 2027. I moved the change order from 14 January 2026 to 14 October 2025 because a contract signed in 2026 didn't fit the backdated history. The original date is back. |
 | `4976f2c` (14 Oct 2026) | README | "Imported from an older private workspace in Oct 2026. Commit dates are preserved." Nothing was imported, and the dates were invented. |
 | `3af6659` (14 Oct 2026) | README | That I built it between June and November 2025, and that the history was reconstructed when I published it. |
 | `e6f4cef` (14 Oct 2026) | README, `docs/evaluation.md`, `extract/llm.py` | That the published model numbers came from Claude Opus 4 in November 2025. |
@@ -97,10 +109,11 @@ that the run would fit the commits backdated to 2025, and the notes I wrote
 here on 14 and 15 October defended the change. The label is `claude-opus-5`
 again. `llm.json` is otherwise identical to the version I pushed on 1 October.
 
-Claude Opus 5 is still available, so the run can be repeated. `llm.json` keeps
-only the counts, so it can't be re-scored against later changes to the gold
-set. The extractor now defaults to Claude Opus 5.5, which hasn't been measured
-yet.
+Claude Opus 5 is still available, so the run can be repeated. The corpus PDFs
+and the gold set are again byte-for-byte those of the commit that saved the run
+(`7ba5a65`, in the version pushed on 1 October). `llm.json` keeps only the
+counts, so the run can't be re-scored against later changes to the code. The
+extractor now defaults to Claude Opus 5.5, which hasn't been measured yet.
 
 ## How to check
 
@@ -121,6 +134,21 @@ grep -n "model" src/revrec_contract_reviewer/evaluate/__init__.py
 # the extractor in the commit dated 10 July 2025, before the 17:05 rewrite
 gh api "repos/gabriel-fin-arch/revrec-contract-reviewer/contents/src/revrec_contract_reviewer/extract/llm.py?ref=d5ab303" \
   --jq .content | base64 -d | grep -nE "DEFAULT_MODEL|messages\.parse|adaptive"
+
+# the two commits dated November 2025 that went up on 1 October after the first push
+gh api repos/gabriel-fin-arch/revrec-contract-reviewer/compare/52d2fbf...7b204e7 \
+  --jq '.commits[] | [.sha[0:7], .commit.author.date, .commit.message] | @tsv'
+
+# the agreement the Meridian change order amends runs to 2027
+grep -n "until database lock" -A1 src/revrec_contract_reviewer/corpus/library.py
+
+# the corpus PDFs and gold set against the commit that saved the model run (prints nothing)
+git fetch origin 7b204e772dfd62631e6d135d10e2b5e533ba0d43
+git diff --stat 7ba5a65 -- 'corpus/*.pdf' evals/gold
+
+# no backdated commit on the first five days of a month
+gh api "repos/gabriel-fin-arch/revrec-contract-reviewer/commits?until=2026-10-01T00:00:00Z&per_page=100" \
+  --jq '.[].commit.author.date[8:10]' | sort | uniq -c
 
 # this account's earlier username still redirects here
 gh api repos/Maxxym404/revrec-contract-reviewer --jq .full_name
