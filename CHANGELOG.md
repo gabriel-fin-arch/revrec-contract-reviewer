@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- The README's note on the commit history took up most of the first screen.
+  It's shorter now and keeps every fact. It, `PROVENANCE.md`,
+  `docs/evaluation.md` and the comment in `extract/llm.py` give the model run's
+  date, 10 September 2026, and the README and `PROVENANCE.md` say this repo was
+  first published under the earlier account, which they had left out.
 - The model run is Claude Opus 5's, from September 2026, not Claude Opus 4's
   from November 2025. The harness wrote `claude-opus-5` into
   `evals/results/llm.json`; I relabelled it in the history rewrite of 13

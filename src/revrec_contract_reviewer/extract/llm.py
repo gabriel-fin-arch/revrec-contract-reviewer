@@ -26,7 +26,7 @@ import anthropic
 from revrec_contract_reviewer.extract.schema import FIELD_GUIDANCE, WireExtraction
 from revrec_contract_reviewer.models.document import ContractDocument
 
-# Claude Opus 5 produced the published eval numbers, in September 2026. Opus
+# Claude Opus 5 produced the published eval numbers, on 10 September 2026. Opus
 # 5.5 hasn't been measured yet.
 DEFAULT_MODEL = "claude-opus-5-5"
 
