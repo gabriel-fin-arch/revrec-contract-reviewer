@@ -11,18 +11,16 @@ It does not conclude the accounting. What it does is put the eight judgments a
 contract actually forces in front of the person who can make them, with the
 evidence already pulled.
 
-> **About the commit history.** I built this between June and November 2025,
-> with a second pass from July to September 2026 that moved the extractor to
-> structured outputs and a newer model. I didn't keep a usable git history, so
-> the commits before 14 October 2026 are a reconstruction from my working copy:
-> they follow roughly the order I built things in, but their dates, times,
-> messages and intermediate contents are approximate. While publishing I made
-> that worse. The first versions I pushed put 2026 code and a mislabelled model
-> run into commits dated 2025, and instead of saying so I rewrote the old
-> commits until the contradictions were gone. Those are the force-pushes in the
-> Activity tab, and the earlier versions are still linked from there.
-> [PROVENANCE.md](PROVENANCE.md) lists every change and how to check it. From
-> commit `4976f2c` (14 October 2026) on, the history is as recorded.
+> **About the commit history.** The dates on the commits before 14 October
+> 2026 are not real. I built this in September 2026 with Claude Code, after
+> intercompany-close-agent, and the commits were backdated to June–November
+> 2025 as they were made. While publishing I rewrote the history several times
+> to remove contradictions instead of stating them, and in one rewrite I
+> relabelled the model run from Claude Opus 5 to Claude Opus 4 to fit those
+> dates. My first notes here repeated the invented dates and defended the wrong
+> label. [PROVENANCE.md](PROVENANCE.md) lists every change, what I said that
+> wasn't true, and how to check each one. From commit `4976f2c` (14 October
+> 2026) on, the history is as recorded.
 
 ## Review in 5 minutes
 
@@ -172,7 +170,7 @@ honest account of what a synthetic corpus can and cannot tell you, in
 has to beat; a model extractor that can't beat regexes on a corpus this clean
 isn't earning its cost.
 
-| Measure | Rules | Claude Opus 4 (unverified) |
+| Measure | Rules | Claude Opus 5 |
 |---|---|---|
 | Contract fields | 1.00 / 0.91 | 1.00 / **0.97** |
 | Unstated fields left blank | 21 of 21 | 21 of 21 |
@@ -182,12 +180,14 @@ isn't earning its cost.
 Citations re-resolved against the source: **100%** on both runs (210 and 325).
 Saved runs in [`evals/results/`](evals/results/).
 
-The model run is from November 2025, on Claude Opus 4. The first versions of
-this repo labelled it Claude Opus 5, which was wrong, and I made the run from
-an Anthropic account I no longer have, so there is no usage record to settle
-it ([PROVENANCE.md](PROVENANCE.md#the-model-run)). Treat the column as
-unverified. Opus 4 was retired on 15 June 2026, so it can't be re-run; the
-extractor now defaults to Claude Opus 5.5, which has not been measured yet.
+The model run is on Claude Opus 5 (`claude-opus-5`), from September 2026; it
+is already in the version I pushed here on 1 October. The harness records the
+model it calls, and `llm.json` said `claude-opus-5` until 13 October, when I
+relabelled it Claude Opus 4 in a history rewrite to fit the backdated commits.
+An earlier version of this note then called the Opus 5 label wrong. It wasn't
+([PROVENANCE.md](PROVENANCE.md#the-model-run)). Opus 5 is still available, so
+the run can be repeated. The extractor now defaults to Claude Opus 5.5, which
+has not been measured yet.
 
 The model wins on recall everywhere, and it is not close — every gap the regexes
 had closes. **It also drops judgment precision from 0.95 to 0.76**, mostly by
@@ -257,7 +257,9 @@ one stays with a person, "no citation, no field", three field states instead
 of a confidence score, and how the evaluation is scored, silence included.
 The assistant drafted most of the code, tests and docs to that design. I
 reviewed what it produced and sent back what was wrong; every decision listed
-above is one I can walk you through.
+above is one I can walk you through. The commit messages before 14 October 2026
+are the assistant's too, written in a casual first-person style I asked for;
+commits it drafts now carry a `Co-Authored-By` line.
 
 ## The corpus
 

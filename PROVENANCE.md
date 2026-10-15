@@ -1,34 +1,37 @@
 # Provenance
 
-What the git history of this repo is and isn't, and every change I made to it
-while publishing. None of it should depend on nobody looking.
+What the git history of this repo is and isn't, every change I made to it
+while publishing, and the things I said about it here that weren't true. None
+of it should depend on nobody looking.
 
-## What is real
+## What happened
 
-- The code, the corpus, the gold set and the design decisions in them.
-- When I worked on it: June to November 2025, and a second pass from July to
-  September 2026 that moved the extractor to structured outputs
-  (`messages.parse`) with adaptive thinking and made Claude Opus 5 the default.
-- Every commit from `4976f2c` (14 October 2026) on, which is as recorded.
+- I built this in September 2026 with Claude Code, after
+  intercompany-close-agent. None of it existed in 2025.
+- The commits were backdated to June–November 2025 as they were made, on my
+  instructions, so the history would look like long-running work.
+- On 1 October 2026 I pushed it to this account, which I opened in 2022 as
+  Maxxym404 and later renamed to gabriel-fin-arch. Until then its README badge
+  pointed at `gabriel-fin-arch/revrec-contract-reviewer` on an earlier account
+  of that name, which I've since deleted.
 
-## What is reconstructed
+What is real: the code, the corpus, the gold set and the design decisions in
+them, the model run in the README (see [The model run](#the-model-run)), and
+every commit from `4976f2c` (14 October 2026) on, which is as recorded.
 
-I didn't keep a usable git history. The commits before 14 October 2026 were
-re-created from my working copy when I published the repo. They follow roughly
-the order I built things in, but their dates, times of day, messages and
-intermediate contents are approximations, not snapshots of what existed then.
+## What the history shows because of it
 
-Some things in those commits only make sense in that light:
-
-- The README badge, from the commit dated 13 September 2025 (`b30918f`), points
-  at this repo, which was created on 1 October 2026.
+- Code and tooling from 2026 sat in commits dated 2025 in the versions I pushed
+  on 1 October: `messages.parse` with adaptive thinking, a lockfile with
+  packages published up to 5 September 2026, `astral-sh/setup-uv@v7`, and a
+  model run labelled `claude-opus-5`.
 - The first commit (`bf27977`, dated 11 June 2025) has a 2026 copyright line,
-  which `aad8770` ("licence year") corrects. Both were written while
-  reconstructing.
+  the true year, which `aad8770` ("licence year") changed to 2025 to match the
+  backdated dates. The licence says 2026 again.
 - `c5ff62d` (dated 10 July 2025) gets structured output through a forced tool
   call, with a comment calling that "2025 style". That file was written during
-  the rewrite of 13 October 2026, as an approximation of how the 2025 extractor
-  worked with Claude Opus 4. It is not the original file.
+  the rewrite of 13 October 2026 to make the commit look like 2025 code. The
+  extractor has used `messages.parse` from its first version.
 
 ## The force-pushes
 
@@ -40,16 +43,31 @@ linked and reachable.
 | 2026-10-01 11:55 | `7b204e7` → `094f074` | Removed `uv.lock` from the commit dated 24 August 2025 ("ci, and the lockfile so it installs what I ran" became "ci"). That lockfile had packages published up to 5 September 2026. Also added `uv.lock` to `.gitignore` and changed `astral-sh/setup-uv@v7` (released 7 October 2025) to `@v6` in every commit. |
 | 2026-10-13 09:25 | `094f074` → `ecd3328` | Changed the author and committer email on all 69 commits from a personal address to the GitHub noreply one. Dropped the badge change from the commit dated 22 November 2025, which had re-pointed the badge at `Maxxym404/revrec-contract-reviewer`, an earlier username of mine; its message lost "point the badge at this repo". |
 | 2026-10-13 14:42 | `ef6a584` → `d5fa7bf` | In every commit, the default model went from `claude-opus-5` to `claude-opus-4-0` (`extract/llm.py`, `.env.example`). From the commit dated 16 November 2025 on, the model in `evals/results/llm.json`, the README and `docs/evaluation.md` went from Claude Opus 5 to Claude Opus 4. The numbers did not change. |
-| 2026-10-13 17:05 | `d5fa7bf` → `25093c3` | The extractor in the commits dated 10 July to 25 November 2025 went from `messages.parse(output_format=...)` with adaptive thinking, both 2026 features, to a forced tool call. The corpus PDFs in every commit were re-rendered with a reportlab older than 4.4.6, and the floor became a cap (`>=4.1,<4.4.6`). The structured-outputs reason for the flat wire schema (`extract/schema.py`, the commit dated 16 November 2025 and the changelog) was replaced with a vaguer one about the model dropping fields. The 69 timestamps before October had their seconds changed from `:00` to varied values. The commit dated 13 October 2026 that raised the anthropic floor (`89c3121`, "anthropic floor was 0.40; messages.parse(output_format=) needs 0.77") became `f48de6f`, "extract: move to messages.parse, and raise the anthropic floor to match", which now carries out a move that had already happened in the 2026 pass. |
+| 2026-10-13 17:05 | `d5fa7bf` → `25093c3` | The extractor in the commits dated 10 July to 25 November 2025 went from `messages.parse(output_format=...)` with adaptive thinking, both 2026 features, to a forced tool call. The corpus PDFs in every commit were re-rendered with a reportlab older than 4.4.6, and the floor became a cap (`>=4.1,<4.4.6`). The structured-outputs reason for the flat wire schema (`extract/schema.py`, the commit dated 16 November 2025 and the changelog) was replaced with a vaguer one about the model dropping fields. The 69 timestamps before October had their seconds changed from `:00` to varied values. The commit dated 13 October 2026 that raised the anthropic floor (`89c3121`, "anthropic floor was 0.40; messages.parse(output_format=) needs 0.77") became `f48de6f`, "extract: move to messages.parse, and raise the anthropic floor to match", which now carries out a move the extractor never needed: it had used `messages.parse` from the start. |
 | 2026-10-14 08:37 | `25093c3` → `de862ae` | Renamed the commit dated 24 August 2025 from "ci" to "test: add the first checks draft". No content change. |
 
-The pattern in the last three is the one I regret: wherever a commit
-contradicted its date, I changed the commit. The honest fix was to say the
-dates were wrong, which is what this file does instead.
+Every one of them kept the invented dates. The last three are the ones I
+regret most: wherever a commit contradicted its date, I changed the commit,
+and the 14:42 one changed what the published results said they were measured
+on. The honest fix was to say the dates were invented, which is what this file
+does now.
 
 `fbd7cea` puts back the four things the 17:05 rewrite had changed in the
 current files: the corpus, the reportlab floor, the schema rationale and two
 changelog entries.
+
+## What I said here that wasn't true
+
+| Commit | Where | What it said |
+|---|---|---|
+| `4976f2c` (14 Oct 2026) | README | "Imported from an older private workspace in Oct 2026. Commit dates are preserved." Nothing was imported, and the dates were invented. |
+| `3af6659` (14 Oct 2026) | README | That I built it between June and November 2025, and that the history was reconstructed when I published it. |
+| `e6f4cef` (14 Oct 2026) | README, `docs/evaluation.md`, `extract/llm.py` | That the published model numbers came from Claude Opus 4 in November 2025. |
+| `b5d4462` (14 Oct 2026) | README, `docs/evaluation.md`, this file | The same dates; that I hadn't kept a usable git history and rebuilt one from my working copy; that the `claude-opus-5` label was wrong; and that my Anthropic Console usage for November 2025 shows the calls. |
+| `b250861` (15 Oct 2026) | README, `docs/evaluation.md`, this file | Kept the Opus 4, November 2025 story and marked the model column unverified. |
+
+My profile README made the same claims about the dates in `4593a4f`,
+`8e6ce4f`, `62e8d62` and `e6822c6`.
 
 ## Other changes
 
@@ -57,27 +75,32 @@ changelog entries.
   October 2026. The first run left is #11.
 - **Email.** The versions pushed on 1 October were committed under a personal
   email address, and those orphaned commits still show it.
-- **Contribution graph.** GitHub counts the commits of the rewritten-away
-  versions as well, so the profile's graph shows about three times the 2025
-  activity that this history contains. Only GitHub can rebuild it, and the
-  ways to bring the number down myself would mean deleting or hiding these
-  repos, so I've left it as it is and explained it here and on my profile.
+- **Contribution graph.** My profile's graph shows 239 commits in 2025 for this
+  repo. There was no work on it in 2025: they are the backdated commits,
+  counted once for every rewritten version. Only GitHub can rebuild the graph,
+  and the ways to remove them myself would mean deleting or hiding these repos,
+  which would also remove the evidence this file points at, so I've left it as
+  it is and said so here and on my profile.
+- **`Co-Authored-By`.** `4976f2c`, the first commit as recorded, was drafted by
+  the assistant and has no `Co-Authored-By` line. Every commit after it that the
+  assistant drafted has one.
 
 ## The model run
 
-The numbers in the README's model column come from a run on Claude Opus 4 in
-November 2025. The first versions I published labelled that run
-`claude-opus-5`, a model released in July 2026. That label was wrong. I
-corrected it by rewriting the history on 13 October instead of with a normal
-commit, which is why the earlier versions still say Opus 5.
+The numbers in the README's model column come from a run on Claude Opus 5
+(`claude-opus-5`) in September 2026. The run is already in the version I
+pushed here on 1 October, and the harness writes the model it calls into
+`evals/results/llm.json`, which said `claude-opus-5` until I relabelled it.
 
-I can't prove which label is right. I made the run from an Anthropic account
-I no longer have, so there are no usage records I can show. Claude Opus 4 was
-retired on 15 June 2026, so the run can't be repeated, and `llm.json` keeps
+On 13 October I changed that label to Claude Opus 4 in a history rewrite, so
+that the run would fit the commits backdated to 2025, and the notes I wrote
+here on 14 and 15 October defended the change. The label is `claude-opus-5`
+again. `llm.json` is otherwise identical to the version I pushed on 1 October.
+
+Claude Opus 5 is still available, so the run can be repeated. `llm.json` keeps
 only the counts, so it can't be re-scored against later changes to the gold
-set either. Treat the model column as unverified until it is re-measured on a
-current model. The extractor now defaults to Claude Opus 5.5, which hasn't
-been measured yet.
+set. The extractor now defaults to Claude Opus 5.5, which hasn't been measured
+yet.
 
 ## How to check
 
@@ -86,13 +109,21 @@ been measured yet.
 gh api "repos/gabriel-fin-arch/revrec-contract-reviewer/activity?per_page=100" \
   --jq '.[] | select(.activity_type=="force_push") | [.timestamp, .before[0:7], .after[0:7]] | @tsv'
 
-# the model label before the 14:42 rewrite
+# the model label in the version pushed on 1 October, and before the 14:42 rewrite
+gh api "repos/gabriel-fin-arch/revrec-contract-reviewer/contents/evals/results/llm.json?ref=7b204e7" \
+  --jq .content | base64 -d | head -3
 gh api "repos/gabriel-fin-arch/revrec-contract-reviewer/contents/evals/results/llm.json?ref=ef6a584" \
   --jq .content | base64 -d | head -3
+
+# where the harness takes that label from
+grep -n "model" src/revrec_contract_reviewer/evaluate/__init__.py
 
 # the extractor in the commit dated 10 July 2025, before the 17:05 rewrite
 gh api "repos/gabriel-fin-arch/revrec-contract-reviewer/contents/src/revrec_contract_reviewer/extract/llm.py?ref=d5ab303" \
   --jq .content | base64 -d | grep -nE "DEFAULT_MODEL|messages\.parse|adaptive"
+
+# this account's earlier username still redirects here
+gh api repos/Maxxym404/revrec-contract-reviewer --jq .full_name
 ```
 
 ## From here on

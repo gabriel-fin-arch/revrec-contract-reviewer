@@ -26,9 +26,8 @@ import anthropic
 from revrec_contract_reviewer.extract.schema import FIELD_GUIDANCE, WireExtraction
 from revrec_contract_reviewer.models.document import ContractDocument
 
-# Claude Opus 4 produced the published eval numbers, in November 2025. It was
-# retired on 15 June 2026, and it supports neither adaptive thinking nor
-# structured outputs, both of which the call below relies on.
+# Claude Opus 5 produced the published eval numbers, in September 2026. Opus
+# 5.5 hasn't been measured yet.
 DEFAULT_MODEL = "claude-opus-5-5"
 
 
