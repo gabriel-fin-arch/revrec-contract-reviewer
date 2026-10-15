@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- The commit history has its real dates. Every commit's author date is now the
+  time it was made, taken from my Claude Code session logs, and no file
+  changed. The commits of 13 October are back as they were pushed that day,
+  and what each publishing rewrite changed in the files is a bridge commit.
+  `PROVENANCE.md` says how, with the full commit map and how to check it, and
+  now also says how the history was first made: the first 47 commits by one
+  script run, the dates set on 1 October by another.
 - "How I built this" said the assistant drafted most of the code. It wrote all
   of it, and the tests; the design notes behind it I drafted with the help of
   an AI chat. The README says so now.
