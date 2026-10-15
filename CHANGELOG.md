@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- "How I built this" said the assistant drafted most of the code. It wrote all
+  of it, and the tests; the design notes behind it I drafted with the help of
+  an AI chat. The README says so now.
 - The Meridian change order is dated 14 January 2026 again. `3616819` had moved
   it to 14 October 2025, saying it was dated after the study it amends had
   finished; that study runs to 2027, and the real reason was that a contract

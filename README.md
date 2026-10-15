@@ -257,11 +257,13 @@ With an AI coding assistant (Claude Code). The domain calls are mine: what
 each contract in the corpus has to exercise, the eight judgments and why each
 one stays with a person, "no citation, no field", three field states instead
 of a confidence score, and how the evaluation is scored, silence included.
-The assistant drafted most of the code, tests and docs to that design. I
-reviewed what it produced and sent back what was wrong; every decision listed
-above is one I can walk you through. The commit messages before 14 October 2026
-are the assistant's too, written in a casual first-person style I asked for;
-commits it drafts now carry a `Co-Authored-By` line.
+I worked them out in design notes I drafted with the help of an AI chat as
+the build started. Claude Code wrote the code and the tests, and most of the
+docs, to that design. I reviewed what it produced and sent back what was
+wrong; every decision listed above is one I can walk you through. The commit
+messages before 14 October 2026 are the assistant's too, written in a casual
+first-person style I asked for; commits it drafts now carry a `Co-Authored-By`
+line.
 
 ## The corpus
 
