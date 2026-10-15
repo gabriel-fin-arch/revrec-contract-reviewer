@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- `PROVENANCE.md` said my Anthropic Console usage shows the November 2025
+  model run. It can't: I made the run from an account I no longer have. That
+  sentence is gone, and the README, `docs/evaluation.md` and `PROVENANCE.md`
+  mark the model column as unverified until it is re-measured.
 - The README's note on the commit history left out what the publishing
   rewrites actually did, including relabelling the model run. It says so now,
   and `PROVENANCE.md` lists every force-push and the deleted CI runs, with how
