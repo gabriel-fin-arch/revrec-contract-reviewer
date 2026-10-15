@@ -9,9 +9,6 @@ while publishing. None of it should depend on nobody looking.
 - When I worked on it: June to November 2025, and a second pass from July to
   September 2026 that moved the extractor to structured outputs
   (`messages.parse`) with adaptive thinking and made Claude Opus 5 the default.
-- The model column in the README: a run on Claude Opus 4 in November 2025. My
-  Anthropic Console usage for that month shows the calls. See
-  [The model run](#the-model-run).
 - Every commit from `4976f2c` (14 October 2026) on, which is as recorded.
 
 ## What is reconstructed
@@ -60,23 +57,27 @@ changelog entries.
   October 2026. The first run left is #11.
 - **Email.** The versions pushed on 1 October were committed under a personal
   email address, and those orphaned commits still show it.
-- **Contribution graph.** GitHub counted the commits of the rewritten-away
-  versions as well, so the profile showed about three times the 2025 activity
-  that this history contains.
+- **Contribution graph.** GitHub counts the commits of the rewritten-away
+  versions as well, so the profile's graph shows about three times the 2025
+  activity that this history contains. Only GitHub can rebuild it, and the
+  ways to bring the number down myself would mean deleting or hiding these
+  repos, so I've left it as it is and explained it here and on my profile.
 
 ## The model run
 
 The numbers in the README's model column come from a run on Claude Opus 4 in
-November 2025, and my Anthropic Console usage for that month shows the calls.
-The first versions I published labelled that run `claude-opus-5`, a model
-released in July 2026. That label was wrong. I corrected it by rewriting the
-history on 13 October instead of with a normal commit, which is why the
-earlier versions still say Opus 5.
+November 2025. The first versions I published labelled that run
+`claude-opus-5`, a model released in July 2026. That label was wrong. I
+corrected it by rewriting the history on 13 October instead of with a normal
+commit, which is why the earlier versions still say Opus 5.
 
-The run can't be repeated. Claude Opus 4 was retired on 15 June 2026, and
-`llm.json` keeps only the counts, so it can't be re-scored against later
-changes to the gold set either. The extractor now defaults to Claude Opus 5.5,
-which hasn't been measured.
+I can't prove which label is right. I made the run from an Anthropic account
+I no longer have, so there are no usage records I can show. Claude Opus 4 was
+retired on 15 June 2026, so the run can't be repeated, and `llm.json` keeps
+only the counts, so it can't be re-scored against later changes to the gold
+set either. Treat the model column as unverified until it is re-measured on a
+current model. The extractor now defaults to Claude Opus 5.5, which hasn't
+been measured yet.
 
 ## How to check
 

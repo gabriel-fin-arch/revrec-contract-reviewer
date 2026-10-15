@@ -172,7 +172,7 @@ honest account of what a synthetic corpus can and cannot tell you, in
 has to beat; a model extractor that can't beat regexes on a corpus this clean
 isn't earning its cost.
 
-| Measure | Rules | Claude Opus 4 |
+| Measure | Rules | Claude Opus 4 (unverified) |
 |---|---|---|
 | Contract fields | 1.00 / 0.91 | 1.00 / **0.97** |
 | Unstated fields left blank | 21 of 21 | 21 of 21 |
@@ -183,10 +183,11 @@ Citations re-resolved against the source: **100%** on both runs (210 and 325).
 Saved runs in [`evals/results/`](evals/results/).
 
 The model run is from November 2025, on Claude Opus 4. The first versions of
-this repo labelled it Claude Opus 5, which was wrong
-([PROVENANCE.md](PROVENANCE.md#the-model-run)). Opus 4 was retired on 15 June
-2026, so the extractor now defaults to Claude Opus 5.5, and that has not been
-measured yet: the numbers above are Opus 4's.
+this repo labelled it Claude Opus 5, which was wrong, and I made the run from
+an Anthropic account I no longer have, so there is no usage record to settle
+it ([PROVENANCE.md](PROVENANCE.md#the-model-run)). Treat the column as
+unverified. Opus 4 was retired on 15 June 2026, so it can't be re-run; the
+extractor now defaults to Claude Opus 5.5, which has not been measured yet.
 
 The model wins on recall everywhere, and it is not close — every gap the regexes
 had closes. **It also drops judgment precision from 0.95 to 0.76**, mostly by

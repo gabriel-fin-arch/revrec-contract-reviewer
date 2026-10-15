@@ -104,11 +104,13 @@ argument for it than a headline number would be.
 ## Model extractor — Claude Opus 4
 
 Same 12 contracts. Run in November 2025. The first published versions of this
-repo labelled the run Claude Opus 5, which was wrong (see
-[PROVENANCE.md](../PROVENANCE.md#the-model-run)). Opus 4 was retired on 15 June
-2026 and the extractor now defaults to Claude Opus 5.5; these numbers have not
-been re-measured on it. `llm.json` keeps only the counts, so the run can't be
-re-scored against later changes to the gold set either.
+repo labelled the run Claude Opus 5, which was wrong, and I made it from an
+Anthropic account I no longer have, so there is no usage record to settle it
+(see [PROVENANCE.md](../PROVENANCE.md#the-model-run)). Treat these numbers as
+unverified. Opus 4 was retired on 15 June 2026 and the extractor now defaults
+to Claude Opus 5.5; these numbers have not been re-measured on it. `llm.json`
+keeps only the counts, so the run can't be re-scored against later changes to
+the gold set either.
 
 | Measure | Precision | Recall | F1 |
 |---|---|---|---|
