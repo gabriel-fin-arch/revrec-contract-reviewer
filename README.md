@@ -11,16 +11,15 @@ It does not conclude the accounting. What it does is put the eight judgments a
 contract actually forces in front of the person who can make them, with the
 evidence already pulled.
 
-> **About the commit history.** The dates on the commits before 14 October
-> 2026 are not real. I built this in September 2026 with Claude Code, after
-> intercompany-close-agent, and the commits were backdated to June–November
-> 2025 as they were made. While publishing I rewrote the history several times
-> to remove contradictions instead of stating them, and in one rewrite I
-> relabelled the model run from Claude Opus 5 to Claude Opus 4 to fit those
-> dates. My first notes here repeated the invented dates and defended the wrong
-> label. [PROVENANCE.md](PROVENANCE.md) lists every change, what I said that
-> wasn't true, and how to check each one. From commit `4976f2c` (14 October
-> 2026) on, the history is as recorded.
+> **About the commit history.** Commit dates before 14 October 2026 are
+> invented. I built this with Claude Code in September 2026, after
+> intercompany-close-agent, first published it that month under an earlier
+> account, and had the assistant backdate the history to June–November 2025.
+> While publishing here I rewrote it several times to hide that, and
+> relabelled the model run from Claude Opus 5 to Claude Opus 4 to fit the
+> dates; it says Opus 5 again. [PROVENANCE.md](PROVENANCE.md) lists every
+> change, what I said that wasn't true, and how to check it. From `4976f2c`
+> (14 October 2026) on, the history is as recorded.
 
 ## Review in 5 minutes
 
@@ -180,9 +179,9 @@ isn't earning its cost.
 Citations re-resolved against the source: **100%** on both runs (210 and 325).
 Saved runs in [`evals/results/`](evals/results/).
 
-The model run is on Claude Opus 5 (`claude-opus-5`), from September 2026; it
-is already in the version I pushed here on 1 October. The harness records the
-model it calls, and `llm.json` said `claude-opus-5` until 13 October, when I
+The model run is on Claude Opus 5 (`claude-opus-5`), from 10 September 2026;
+it is already in the version I pushed here on 1 October. The harness records
+the model it calls, and `llm.json` said `claude-opus-5` until 13 October, when I
 relabelled it Claude Opus 4 in a history rewrite to fit the backdated commits.
 An earlier version of this note then called the Opus 5 label wrong. It wasn't
 ([PROVENANCE.md](PROVENANCE.md#the-model-run)). Opus 5 is still available, so

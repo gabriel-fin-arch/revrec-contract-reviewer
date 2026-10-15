@@ -10,10 +10,10 @@ of it should depend on nobody looking.
   intercompany-close-agent. None of it existed in 2025.
 - The commits were backdated to June–November 2025 as they were made, on my
   instructions, so the history would look like long-running work.
-- On 1 October 2026 I pushed it to this account, which I opened in 2022 as
-  Maxxym404 and later renamed to gabriel-fin-arch. Until then its README badge
-  pointed at `gabriel-fin-arch/revrec-contract-reviewer` on an earlier account
-  of that name, which I've since deleted.
+- I first published it in September 2026 under an earlier account, also named
+  gabriel-fin-arch, that I've since deleted; its README badge pointed at that
+  copy until 1 October. On 1 October 2026 I pushed it to this account, which I
+  opened in 2022 as Maxxym404 and later renamed to gabriel-fin-arch.
 
 What is real: the code, the corpus, the gold set and the design decisions in
 them, the model run in the README (see [The model run](#the-model-run)), and
@@ -88,7 +88,7 @@ My profile README made the same claims about the dates in `4593a4f`,
 ## The model run
 
 The numbers in the README's model column come from a run on Claude Opus 5
-(`claude-opus-5`) in September 2026. The run is already in the version I
+(`claude-opus-5`) on 10 September 2026. The run is already in the version I
 pushed here on 1 October, and the harness writes the model it calls into
 `evals/results/llm.json`, which said `claude-opus-5` until I relabelled it.
 
