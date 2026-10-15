@@ -101,16 +101,15 @@ of promises, and telling those apart needs the clause above the table.
 Every one of these is a case for the model extractor, and they are a better
 argument for it than a headline number would be.
 
-## Model extractor — Claude Opus 4
+## Model extractor — Claude Opus 5
 
-Same 12 contracts. Run in November 2025. The first published versions of this
-repo labelled the run Claude Opus 5, which was wrong, and I made it from an
-Anthropic account I no longer have, so there is no usage record to settle it
-(see [PROVENANCE.md](../PROVENANCE.md#the-model-run)). Treat these numbers as
-unverified. Opus 4 was retired on 15 June 2026 and the extractor now defaults
+Same 12 contracts. Run on Claude Opus 5 (`claude-opus-5`) in September 2026.
+For a few days this file called it a Claude Opus 4 run from November 2025,
+after I relabelled it in a history rewrite to fit the backdated commits (see
+[PROVENANCE.md](../PROVENANCE.md#the-model-run)). The extractor now defaults
 to Claude Opus 5.5; these numbers have not been re-measured on it. `llm.json`
 keeps only the counts, so the run can't be re-scored against later changes to
-the gold set either.
+the gold set.
 
 | Measure | Precision | Recall | F1 |
 |---|---|---|---|
@@ -121,9 +120,11 @@ the gold set either.
 Unstated fields left blank: 21/21. Citations re-resolved: 325/325 (100%). Claims
 dropped for no evidence: 2.
 
-Saved run: [`evals/results/llm.json`](../evals/results/llm.json). It can't be
-reproduced, since Opus 4 is gone. To measure the current default, set
-`ANTHROPIC_API_KEY` and run `uv run revrec eval --extractor llm --save --mistakes`.
+Saved run: [`evals/results/llm.json`](../evals/results/llm.json). Claude Opus 5
+is still available, so it can be repeated with `ANTHROPIC_MODEL=claude-opus-5`.
+To measure the current default, set `ANTHROPIC_API_KEY` and run
+`uv run revrec eval --extractor llm --mistakes`; `--save` writes to
+`evals/results/llm.json` and would replace this run, so move it first.
 
 ### Against the baseline
 

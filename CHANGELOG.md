@@ -2,16 +2,24 @@
 
 ## Unreleased
 
-- `PROVENANCE.md` said my Anthropic Console usage shows the November 2025
-  model run. It can't: I made the run from an account I no longer have. That
-  sentence is gone, and the README, `docs/evaluation.md` and `PROVENANCE.md`
-  mark the model column as unverified until it is re-measured.
+- The model run is Claude Opus 5's, from September 2026, not Claude Opus 4's
+  from November 2025. The harness wrote `claude-opus-5` into
+  `evals/results/llm.json`; I relabelled it in the history rewrite of 13
+  October to fit the backdated commits. `llm.json`, the README,
+  `docs/evaluation.md`, `PROVENANCE.md` and the comment on the default model in
+  `extract/llm.py` say Claude Opus 5 again. Three entries below said otherwise
+  and have been corrected; their earlier wording is in the git history.
+- The README's note on the commit history, and `PROVENANCE.md`, still said I
+  built this in 2025 and rebuilt a lost git history when publishing. I built it
+  in September 2026, and the commits were backdated as they were made. Both say
+  so now, along with what I said earlier that wasn't true. The licence year is
+  2026.
+- `PROVENANCE.md` said my Anthropic Console usage for November 2025 shows the
+  model run. There was no run in November 2025. That sentence is gone.
 - The README's note on the commit history left out what the publishing
   rewrites actually did, including relabelling the model run. It says so now,
   and `PROVENANCE.md` lists every force-push and the deleted CI runs, with how
-  to check each one. The README and `docs/evaluation.md` also say the first
-  published versions labelled the run Claude Opus 5, and that Opus 4 was retired
-  on 15 June 2026 rather than merely deprecated.
+  to check each one.
 - The history rewrite of 13 October 2026 (see `PROVENANCE.md`) also changed
   four things in the current files, and they are back to what they were before
   it. The corpus PDFs are rendered with reportlab 4.4.6 or later again (4.4.6
@@ -20,12 +28,13 @@
   reason for the flat list of claims again. And the entries below about the
   anthropic and reportlab floors, and about the wire schema, say what they said
   before the rewrite.
-- The default model was still Claude Opus 4, which was retired on 15 June 2026
-  and supports neither adaptive thinking nor structured outputs, the two things
-  the `messages.parse` call asks for. The stubbed tests could not see it and CI
-  has no key. The default is Claude Opus 5.5 now. The published model numbers are
-  still the Opus 4 run from November 2025, and the README and
-  `docs/evaluation.md` say so rather than implying they were re-measured.
+- The default model was still Claude Opus 4, put there by the history rewrite
+  of 13 October. It was retired on 15 June 2026 and supports neither adaptive
+  thinking nor structured outputs, the two things the `messages.parse` call asks
+  for. The stubbed tests could not see it and CI has no key. The default is
+  Claude Opus 5.5 now. The published model numbers are still the Claude Opus 5
+  run from September 2026, and the README and `docs/evaluation.md` say so rather
+  than implying they were re-measured.
 - A refusal arrives as a successful response with nothing parsed, and would have
   failed later in assembly with nothing pointing at the cause. It raises
   `ModelDeclined` now: `--extractor llm` stops, and AUTO falls back to the rules
