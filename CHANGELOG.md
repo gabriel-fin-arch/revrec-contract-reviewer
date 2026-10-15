@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+- The Meridian change order is dated 14 January 2026 again. `3616819` had moved
+  it to 14 October 2025, saying it was dated after the study it amends had
+  finished; that study runs to 2027, and the real reason was that a contract
+  signed in 2026 didn't fit the backdated history. The corpus PDFs and the gold
+  set are now byte-for-byte those of the commit that saved the model run.
+  `docs/architecture.md` says again that intercompany-close-agent was the first
+  project, which `8adaa13` had removed for the same reason. `PROVENANCE.md`
+  lists both, with the design notes' plan for making the history look
+  hand-written, and the README's note says the dates before 13 October are
+  invented: the 13 October commits have their real times.
 - The README's note on the commit history took up most of the first screen.
   It's shorter now and keeps every fact. It, `PROVENANCE.md`,
   `docs/evaluation.md` and the comment in `extract/llm.py` give the model run's
