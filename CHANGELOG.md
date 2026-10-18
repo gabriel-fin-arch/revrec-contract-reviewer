@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- The first run on the held-out test set, rules extractor: fields 1.00 / 0.89,
+  obligations 0.67 / 0.50, judgments 1.00 / 0.42, against 1.00 / 0.91,
+  0.79 / 0.75 and 0.95 / 0.83 on the development set. Saved in
+  `evals/results/test/` with its claims. The README and `docs/evaluation.md`
+  now say which numbers are which, list what the rules missed on the test
+  set, and state the rule that nothing seen there is used to tune the rules,
+  the prompt or the scorer. CI also runs the test set offline and fails if a
+  citation in it stops resolving.
 - A held-out test set: seven synthetic contracts in `corpus/test/`, generated
   the same way as the twelve in `corpus/` from `corpus/heldout.py`, with their
   gold records in `evals/gold/test/`. They were written after the rules and the

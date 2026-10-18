@@ -123,3 +123,12 @@ def test_eval_save_writes_the_claims_and_rescore_reads_them(tmp_path: Path, monk
     assert refused.exit_code == 1
     assert "Cannot rescore" in refused.output
     assert "Traceback" not in refused.output
+
+
+def test_the_committed_test_set_run_rescores_to_its_committed_report():
+    results = ROOT / "evals" / "results" / "test"
+    run = SavedRun.model_validate_json((results / "rules.claims.json").read_text(encoding="utf-8"))
+    saved = EvalReport.model_validate_json((results / "rules.json").read_text(encoding="utf-8"))
+
+    assert len(run.contracts) == 7
+    assert rescore(run, ROOT / "corpus" / "test", ROOT / "evals" / "gold" / "test") == saved
