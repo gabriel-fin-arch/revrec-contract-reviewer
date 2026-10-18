@@ -11,7 +11,7 @@ from pathlib import Path
 import typer
 from dotenv import load_dotenv
 
-from revrec_contract_reviewer.corpus import generate_corpus
+from revrec_contract_reviewer.corpus import CorpusSet, generate_corpus
 from revrec_contract_reviewer.evaluate import (
     CorpusChanged,
     SavedRun,
@@ -39,13 +39,28 @@ DEFAULT_CORPUS = Path("corpus")
 DEFAULT_OUT = Path("out")
 DEFAULT_GOLD = Path("evals/gold")
 
+# Where each set lives: its PDFs, its gold records, its saved runs. The test
+# set sits one level down, so a review or an eval of corpus/ never picks it up.
+SET_DIRS: dict[CorpusSet, tuple[Path, Path, Path]] = {
+    CorpusSet.DEVELOPMENT: (DEFAULT_CORPUS, DEFAULT_GOLD, Path("evals/results")),
+    CorpusSet.TEST: (DEFAULT_CORPUS / "test", DEFAULT_GOLD / "test", Path("evals/results/test")),
+}
+SET_OPTION = typer.Option(
+    CorpusSet.DEVELOPMENT,
+    "--set",
+    help="development: the twelve contracts the rules and prompt were written against. "
+    "test: the seven held out, reported and never tuned on.",
+)
+
 
 @app.command("generate-corpus")
 def generate_corpus_command(
-    out_dir: Path = typer.Option(DEFAULT_CORPUS, "--out", help="Where to write the PDFs."),
+    out_dir: Path | None = typer.Option(None, "--out", help="Where to write the PDFs. Defaults to the set's folder."),
+    corpus_set: CorpusSet = SET_OPTION,
 ) -> None:
     """Rebuild the synthetic contract corpus."""
-    written = generate_corpus(out_dir)
+    out_dir = out_dir or SET_DIRS[corpus_set][0]
+    written = generate_corpus(out_dir, corpus_set)
     typer.echo(f"Wrote {len(written)} contracts to {out_dir}/ and refreshed its index.")
 
 
@@ -94,31 +109,35 @@ def review(
 
 @app.command("build-gold")
 def build_gold_command(
-    out_dir: Path = typer.Option(DEFAULT_GOLD, "--out", help="Where to write the gold records."),
+    out_dir: Path | None = typer.Option(None, "--out", help="Where to write the gold records. Defaults to the set's."),
+    corpus_set: CorpusSet = SET_OPTION,
 ) -> None:
     """Regenerate the gold set from the corpus specs."""
-    written = write_gold(out_dir)
+    out_dir = out_dir or SET_DIRS[corpus_set][1]
+    written = write_gold(out_dir, corpus_set)
     typer.echo(f"Wrote {len(written)} gold records to {out_dir}/.")
 
 
 @app.command("eval")
 def eval_command(
-    corpus_dir: Path = typer.Option(DEFAULT_CORPUS, "--corpus", help="Where the contract PDFs are."),
-    gold_dir: Path = typer.Option(DEFAULT_GOLD, "--gold", help="Where the gold records are."),
+    corpus_set: CorpusSet = SET_OPTION,
+    corpus_dir: Path | None = typer.Option(None, "--corpus", help="Where the PDFs are. Defaults to the set's."),
+    gold_dir: Path | None = typer.Option(None, "--gold", help="Where the gold records are. Defaults to the set's."),
     extractor: ExtractorChoice = typer.Option(ExtractorChoice.AUTO, "--extractor"),
     show_mistakes: bool = typer.Option(False, "--mistakes", help="List every individual miss."),
     save: bool = typer.Option(
         False,
         "--save",
-        help="Write the full report to evals/results/, so a published number has a run behind it.",
+        help="Write the report and its claims to the set's results folder, so a published number has a "
+        "run behind it.",
     ),
 ) -> None:
     """Score the pipeline against the gold set."""
-    report, run = evaluate(corpus_dir, gold_dir, extractor)
+    default_corpus, default_gold, results_dir = SET_DIRS[corpus_set]
+    report, run = evaluate(corpus_dir or default_corpus, gold_dir or default_gold, extractor)
     typer.echo(markdown_table(report))
 
     if save:
-        results_dir = Path("evals/results")
         results_dir.mkdir(parents=True, exist_ok=True)
         target = write_lf(results_dir / f"{report.extractor}.json", report.model_dump_json(indent=2) + "\n")
         # The run behind the counts: every claim and what grounding did with
@@ -145,13 +164,15 @@ def eval_command(
 @app.command("rescore")
 def rescore_command(
     saved: Path = typer.Argument(..., help="A saved run, evals/results/<extractor>.claims.json."),
-    corpus_dir: Path = typer.Option(DEFAULT_CORPUS, "--corpus", help="Where the contract PDFs are."),
-    gold_dir: Path = typer.Option(DEFAULT_GOLD, "--gold", help="Where the gold records are."),
+    corpus_set: CorpusSet = SET_OPTION,
+    corpus_dir: Path | None = typer.Option(None, "--corpus", help="Where the PDFs are. Defaults to the set's."),
+    gold_dir: Path | None = typer.Option(None, "--gold", help="Where the gold records are. Defaults to the set's."),
 ) -> None:
     """Score a saved run again from its claims, without extracting anything."""
+    default_corpus, default_gold, _ = SET_DIRS[corpus_set]
     try:
         run = SavedRun.model_validate_json(saved.read_text(encoding="utf-8"))
-        report = rescore(run, corpus_dir, gold_dir)
+        report = rescore(run, corpus_dir or default_corpus, gold_dir or default_gold)
     except (OSError, CorpusChanged, ValueError) as exc:
         typer.echo(f"Cannot rescore: {exc}", err=True)
         raise typer.Exit(code=1) from exc

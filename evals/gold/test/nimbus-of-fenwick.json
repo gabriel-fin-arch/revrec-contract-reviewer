@@ -1,0 +1,25 @@
+{
+  "doc_id": "nimbus-of-fenwick",
+  "fields": {
+    "customer": "Fenwick Rowe Engineering Ltd",
+    "supplier": "Nimbus Analytics Ltd",
+    "agreement_type": "order_form",
+    "currency": "GBP",
+    "effective_date": "2025-10-06",
+    "stated_term_months": 12,
+    "termination_for_convenience": true,
+    "termination_notice_days": 30,
+    "net_days": 14,
+    "total_fixed_consideration": "66000"
+  },
+  "obligations": [
+    {
+      "kind": "saas_subscription",
+      "stated_price": "66000"
+    }
+  ],
+  "judgments": [
+    "enforceable_term",
+    "variable_consideration_constraint"
+  ]
+}

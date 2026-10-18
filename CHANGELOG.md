@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- A held-out test set: seven synthetic contracts in `corpus/test/`, generated
+  the same way as the twelve in `corpus/` from `corpus/heldout.py`, with their
+  gold records in `evals/gold/test/`. They were written after the rules and the
+  prompt and committed before either extractor ran on them. `generate-corpus`,
+  `build-gold`, `eval` and `rescore` take `--set test`. Tests check that the
+  set rebuilds byte for byte, that its gold matches its specs, that it shares
+  no contract or customer with the development set, and that no extractor
+  source or prompt names one of its contracts.
 - A saved run keeps its claims. `eval --save` writes, next to the report,
   `<extractor>.claims.json`: for each contract, the PDF's SHA-256, every
   claim the extractor returned with its quotes, and the extraction grounding
