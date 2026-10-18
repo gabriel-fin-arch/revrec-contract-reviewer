@@ -30,6 +30,8 @@ evidence already pulled.
   the document.
 - `docs/judgment-calls.md` for the eight decisions that stay with a human.
 - The results table and `docs/evaluation.md`, including where the model loses.
+- `docs/controls.md` for each control, the code and test behind it, and what a run
+  writes as evidence.
 - How I built this: which decisions are mine and what an AI assistant wrote.
 
 ![Review memo](docs/images/memo.png)
@@ -95,7 +97,8 @@ segment   numbered clauses, deterministic
 extract   structured claims, each carrying a quote       Claude, or offline rules
 ground    every quote located in the document, or dropped
 assess    five-step checks and the judgment taxonomy     deterministic
-memo      HTML with the evidence inline, plus JSON
+memo      HTML with the evidence inline, the same as a PDF, plus JSON
+worklist  every open item in the run, one row each       xlsx
 ```
 
 Four of the five stages are deterministic. A model is involved in exactly one
@@ -222,8 +225,9 @@ uv run revrec generate-corpus
 uv run revrec review --extractor rules
 ```
 
-That writes a memo per contract and a worklist index to `out/`. Open
-`out/index.html`.
+That writes a memo per contract to `out/`, as HTML and as PDF, with an index
+of the run and `worklist.xlsx`, every open item on one sheet with blank
+columns for the reviewer's conclusion. Open `out/index.html`.
 
 To use the model extractor, set `ANTHROPIC_API_KEY` (copy `.env.example` to
 `.env`) and drop the flag:
@@ -274,13 +278,13 @@ around none. Every party, product, price and person is invented. See
 ## Stack
 
 Python 3.11+ · pydantic · pdfplumber · Anthropic SDK · jinja2 · typer ·
-reportlab · pytest · ruff.
+reportlab · openpyxl · pytest · ruff.
 
 No agent framework. This is a pipeline with one model call in it, and wrapping
 that in a graph would have added a dependency and a diagram without adding a
 capability.
 
-136 tests. CI runs ruff, the test suite, and then the whole pipeline offline
+187 tests. CI runs ruff, the test suite, and then the whole pipeline offline
 over the corpus; the eval step exits non-zero if any citation in any memo stops
 resolving against its source document. That is the one regression that leaves
 the tool untrustworthy while still looking like it worked.
