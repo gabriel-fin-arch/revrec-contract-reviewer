@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- A saved run keeps its claims. `eval --save` writes, next to the report,
+  `<extractor>.claims.json`: for each contract, the PDF's SHA-256, every
+  claim the extractor returned with its quotes, and the extraction grounding
+  made of them. `revrec rescore` scores a saved run again from that file
+  without extracting, and refuses if a PDF has changed since the run.
+  `evals/results/rules.claims.json` is the run behind `rules.json`, and a
+  test checks that rescoring it gives `rules.json`. The September model run
+  was saved before this and still has only its counts.
 - The commit history has its real dates. Every commit's author date is now the
   time it was made, taken from my Claude Code session logs, and no file
   changed. The commits of 13 October are back as they were pushed that day,

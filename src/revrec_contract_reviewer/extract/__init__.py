@@ -13,10 +13,11 @@ import anthropic
 from revrec_contract_reviewer.extract import llm, rules
 from revrec_contract_reviewer.extract.assemble import assemble
 from revrec_contract_reviewer.extract.grounding import Grounder
+from revrec_contract_reviewer.extract.schema import WireExtraction
 from revrec_contract_reviewer.models.document import ContractDocument
 from revrec_contract_reviewer.models.extraction import ContractExtraction
 
-__all__ = ["ExtractorChoice", "Grounder", "assemble", "extract_contract", "llm", "rules"]
+__all__ = ["ExtractorChoice", "Grounder", "assemble", "extract_contract", "extract_with_claims", "llm", "rules"]
 
 
 class ExtractorChoice(StrEnum):
@@ -30,7 +31,19 @@ def extract_contract(
     choice: ExtractorChoice = ExtractorChoice.AUTO,
     client: anthropic.Anthropic | None = None,
 ) -> ContractExtraction:
-    """Extract `document`, picking an extractor according to `choice`.
+    """Extract `document`, picking an extractor according to `choice`. See extract_with_claims."""
+    return extract_with_claims(document, choice, client=client)[1]
+
+
+def extract_with_claims(
+    document: ContractDocument,
+    choice: ExtractorChoice = ExtractorChoice.AUTO,
+    client: anthropic.Anthropic | None = None,
+) -> tuple[WireExtraction, ContractExtraction]:
+    """The claims the extractor returned, and what grounding made of them.
+
+    The claims are kept for the eval harness, which saves them so a run can be
+    scored again without extracting again.
 
     AUTO uses the model when an API key is available and the rules otherwise,
     which is what makes a fresh clone runnable. LLM is explicit and raises
@@ -39,7 +52,8 @@ def extract_contract(
     possible outcome. That exact failure is why this argument exists.
     """
     if choice is ExtractorChoice.RULES or (choice is ExtractorChoice.AUTO and not llm.available()):
-        return assemble(document, rules.extract(document), extractor="rules")
+        claims = rules.extract(document)
+        return claims, assemble(document, claims, extractor="rules")
 
     if choice is ExtractorChoice.LLM and not llm.available():
         raise RuntimeError(
@@ -56,6 +70,7 @@ def extract_contract(
         # isn't it. Falling back keeps the run going, and `extractor` on the
         # result records which one actually produced it -- so a memo built this
         # way says "rules" on its face and nobody has to guess afterwards.
-        return assemble(document, rules.extract(document), extractor="rules")
+        claims = rules.extract(document)
+        return claims, assemble(document, claims, extractor="rules")
 
-    return assemble(document, wire, extractor="llm", model=model)
+    return wire, assemble(document, wire, extractor="llm", model=model)

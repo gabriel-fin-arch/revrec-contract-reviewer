@@ -61,7 +61,14 @@ than by reading the code. `revrec eval` exits non-zero if it ever drops below
 Unstated fields left blank: 21/21. Citations re-resolved: 210/210 (100%). Claims
 dropped for no evidence: 0.
 
-Saved run: [`evals/results/rules.json`](../evals/results/rules.json).
+Saved run: [`evals/results/rules.json`](../evals/results/rules.json), and the
+run behind it in
+[`evals/results/rules.claims.json`](../evals/results/rules.claims.json): for
+each contract, the PDF's SHA-256, every claim the extractor returned with its
+quotes, and the extraction grounding made of them.
+`uv run revrec rescore evals/results/rules.claims.json` scores that run again
+without extracting, and refuses if a PDF has changed since; a test checks it
+gives `rules.json`.
 
 ### Where it loses, specifically
 
@@ -124,7 +131,9 @@ Saved run: [`evals/results/llm.json`](../evals/results/llm.json). Claude Opus 5
 is still available, so it can be repeated with `ANTHROPIC_MODEL=claude-opus-5`.
 To measure the current default, set `ANTHROPIC_API_KEY` and run
 `uv run revrec eval --extractor llm --mistakes`; `--save` writes to
-`evals/results/llm.json` and would replace this run, so move it first.
+`evals/results/llm.json`, and the claims to `llm.claims.json`, and would
+replace this run, so move it first. A run saved that way keeps its claims,
+so unlike this one it can be scored again.
 
 ### Against the baseline
 

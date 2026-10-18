@@ -1,7 +1,7 @@
 """Command line interface.
 
-Four commands, in the order you'd use them: build the corpus, review it, refresh
-the gold set, score against it.
+Five commands, in the order you'd use them: build the corpus, review it, refresh
+the gold set, score against it, and score a saved run again without extracting.
 """
 
 from __future__ import annotations
@@ -12,7 +12,15 @@ import typer
 from dotenv import load_dotenv
 
 from revrec_contract_reviewer.corpus import generate_corpus
-from revrec_contract_reviewer.evaluate import markdown_table, run_eval, write_gold
+from revrec_contract_reviewer.evaluate import (
+    CorpusChanged,
+    SavedRun,
+    claims_path,
+    evaluate,
+    markdown_table,
+    rescore,
+    write_gold,
+)
 from revrec_contract_reviewer.extract import ExtractorChoice
 from revrec_contract_reviewer.fileio import write_lf
 from revrec_contract_reviewer.ingest import UnreadableContract
@@ -106,14 +114,17 @@ def eval_command(
     ),
 ) -> None:
     """Score the pipeline against the gold set."""
-    report = run_eval(corpus_dir, gold_dir, extractor)
+    report, run = evaluate(corpus_dir, gold_dir, extractor)
     typer.echo(markdown_table(report))
 
     if save:
         results_dir = Path("evals/results")
         results_dir.mkdir(parents=True, exist_ok=True)
         target = write_lf(results_dir / f"{report.extractor}.json", report.model_dump_json(indent=2) + "\n")
-        typer.echo(f"\nSaved to {target}")
+        # The run behind the counts: every claim and what grounding did with
+        # it, so `rescore` can score it again without extracting again.
+        claims = write_lf(claims_path(target), run.model_dump_json(indent=2) + "\n")
+        typer.echo(f"\nSaved to {target}, and the claims behind it to {claims}")
 
     if show_mistakes:
         typer.echo("")
@@ -127,6 +138,25 @@ def eval_command(
     # A citation that no longer resolves means the grounding invariant has been
     # broken somewhere, which is a different order of problem from a low score.
     # Worth a non-zero exit so CI notices without anyone reading the table.
+    if report.citations_resolved != report.citations_total:
+        raise typer.Exit(code=1)
+
+
+@app.command("rescore")
+def rescore_command(
+    saved: Path = typer.Argument(..., help="A saved run, evals/results/<extractor>.claims.json."),
+    corpus_dir: Path = typer.Option(DEFAULT_CORPUS, "--corpus", help="Where the contract PDFs are."),
+    gold_dir: Path = typer.Option(DEFAULT_GOLD, "--gold", help="Where the gold records are."),
+) -> None:
+    """Score a saved run again from its claims, without extracting anything."""
+    try:
+        run = SavedRun.model_validate_json(saved.read_text(encoding="utf-8"))
+        report = rescore(run, corpus_dir, gold_dir)
+    except (OSError, CorpusChanged, ValueError) as exc:
+        typer.echo(f"Cannot rescore: {exc}", err=True)
+        raise typer.Exit(code=1) from exc
+    typer.echo(markdown_table(report))
+
     if report.citations_resolved != report.citations_total:
         raise typer.Exit(code=1)
 
