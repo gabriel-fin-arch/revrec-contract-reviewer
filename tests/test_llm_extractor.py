@@ -239,3 +239,13 @@ def test_the_installed_sdk_has_the_call_the_stub_stands_in_for():
     messages = anthropic.Anthropic(api_key="unused").messages
 
     assert "output_format" in inspect.signature(messages.parse).parameters
+
+
+def test_the_installed_sdk_takes_the_effort_the_request_sets():
+    """The same trap a second time: anthropic 0.77 types output_config with a
+    format and no effort, so the floor is 0.78, and this fails on anything
+    lower."""
+    from anthropic.types import OutputConfigParam
+
+    assert "effort" in OutputConfigParam.__annotations__
+    assert "output_config" in inspect.signature(anthropic.Anthropic(api_key="unused").messages.parse).parameters

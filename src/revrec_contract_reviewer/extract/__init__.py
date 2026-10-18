@@ -13,6 +13,7 @@ import anthropic
 from revrec_contract_reviewer.extract import llm, rules
 from revrec_contract_reviewer.extract.assemble import assemble
 from revrec_contract_reviewer.extract.grounding import Grounder
+from revrec_contract_reviewer.extract.metering import CallRecord
 from revrec_contract_reviewer.extract.schema import WireExtraction
 from revrec_contract_reviewer.models.document import ContractDocument
 from revrec_contract_reviewer.models.extraction import ContractExtraction
@@ -39,11 +40,13 @@ def extract_with_claims(
     document: ContractDocument,
     choice: ExtractorChoice = ExtractorChoice.AUTO,
     client: anthropic.Anthropic | None = None,
-) -> tuple[WireExtraction, ContractExtraction]:
-    """The claims the extractor returned, and what grounding made of them.
+    effort: str | None = None,
+) -> tuple[WireExtraction, ContractExtraction, CallRecord | None]:
+    """The claims the extractor returned, what grounding made of them, and
+    the model call behind them (None when the rules ran).
 
-    The claims are kept for the eval harness, which saves them so a run can be
-    scored again without extracting again.
+    The claims and the call are kept for the eval harness, which saves them so
+    a run can be scored again without extracting again, and costed.
 
     AUTO uses the model when an API key is available and the rules otherwise,
     which is what makes a fresh clone runnable. LLM is explicit and raises
@@ -53,7 +56,7 @@ def extract_with_claims(
     """
     if choice is ExtractorChoice.RULES or (choice is ExtractorChoice.AUTO and not llm.available()):
         claims = rules.extract(document)
-        return claims, assemble(document, claims, extractor="rules")
+        return claims, assemble(document, claims, extractor="rules"), None
 
     if choice is ExtractorChoice.LLM and not llm.available():
         raise RuntimeError(
@@ -62,7 +65,7 @@ def extract_with_claims(
         )
 
     try:
-        wire, model = llm.extract(document, client=client)
+        wire, call = llm.extract_measured(document, client=client, effort=effort)
     except (anthropic.APIError, llm.ModelDeclined):
         if choice is ExtractorChoice.LLM:
             raise
@@ -71,6 +74,6 @@ def extract_with_claims(
         # result records which one actually produced it -- so a memo built this
         # way says "rules" on its face and nobody has to guess afterwards.
         claims = rules.extract(document)
-        return claims, assemble(document, claims, extractor="rules")
+        return claims, assemble(document, claims, extractor="rules"), None
 
-    return wire, assemble(document, wire, extractor="llm", model=model)
+    return wire, assemble(document, wire, extractor="llm", model=call.model), call

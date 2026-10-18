@@ -24,6 +24,7 @@ from pydantic import BaseModel
 from revrec_contract_reviewer.assess import assess
 from revrec_contract_reviewer.evaluate.gold import load_gold
 from revrec_contract_reviewer.evaluate.score import EvalReport, aggregate, score_contract
+from revrec_contract_reviewer.extract.metering import CallRecord
 from revrec_contract_reviewer.extract.schema import WireExtraction
 from revrec_contract_reviewer.ingest import load_contract
 from revrec_contract_reviewer.models.extraction import ContractExtraction
@@ -35,12 +36,38 @@ class SavedContract(BaseModel):
     pdf_sha256: str
     claims: WireExtraction
     extraction: ContractExtraction
+    call: CallRecord | None = None  # the model call, when the model ran
 
 
 class SavedRun(BaseModel):
     extractor: str
     model: str | None = None
+    run_at: str | None = None  # UTC, when the run started
+    effort: str | None = None
     contracts: list[SavedContract] = []
+
+    def calls(self) -> list[CallRecord]:
+        return [contract.call for contract in self.contracts if contract.call is not None]
+
+    def summary(self) -> str | None:
+        """One line on what the model calls cost and took, or None for a rules run."""
+        calls = self.calls()
+        if not calls:
+            return None
+        costs = [call.cost_usd for call in calls]
+        cost = (
+            f"USD {sum(c for c in costs if c is not None):.2f} at the prices of {calls[0].prices_as_of}"
+            if all(c is not None for c in costs)
+            else "cost unknown (a model missing from the price table)"
+        )
+        tokens_in = sum(c.input_tokens + c.cache_creation_input_tokens + c.cache_read_input_tokens for c in calls)
+        tokens_out = sum(c.output_tokens for c in calls)
+        seconds = sum(c.seconds for c in calls)
+        return (
+            f"Model run: {self.model} at effort {self.effort}, {len(calls)} calls on {self.run_at}; "
+            f"{tokens_in:,} input and {tokens_out:,} output tokens; {cost}; "
+            f"{seconds:.1f} s in calls, {max(c.seconds for c in calls):.1f} s the longest."
+        )
 
 
 class CorpusChanged(ValueError):

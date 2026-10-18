@@ -130,10 +130,28 @@ dropped for no evidence: 2.
 Saved run: [`evals/results/llm.json`](../evals/results/llm.json). Claude Opus 5
 is still available, so it can be repeated with `ANTHROPIC_MODEL=claude-opus-5`.
 To measure the current default, set `ANTHROPIC_API_KEY` and run
-`uv run revrec eval --extractor llm --mistakes`; `--save` writes to
-`evals/results/llm.json`, and the claims to `llm.claims.json`, and would
-replace this run, so move it first. A run saved that way keeps its claims,
-so unlike this one it can be scored again.
+`uv run revrec eval --extractor llm --effort high --mistakes --save`.
+
+### How a model run is measured
+
+The request sets the effort explicitly, `high` unless `--effort` or
+`REVREC_EFFORT` says otherwise: Claude Opus 5.5 defaults to `medium` and Claude
+Opus 5 to `high`, so leaving it out would make two runs differ in more than
+the model. Every call is recorded with the run (`extract/metering.py`): model,
+effort, stop reason, input, output and cache tokens as the API reports them,
+wall-clock seconds, and the cost at Anthropic's published prices, which the
+code holds with the date they were read. Thinking is billed as output and is
+inside the output count. `eval` prints the totals, and `--save` writes the
+report as `llm-<model>-<effort>.json` with its claims and calls beside it, so a
+new run sits next to `llm.json` instead of replacing it. A call that returns
+nothing usable, a refusal or a response cut off at `max_tokens`, raises with
+its record attached, since its tokens were spent either way.
+
+`uv run revrec estimate --set development --model claude-opus-5-5` says what a
+run would cost before it is made, without calling the API: input from the
+character counts of the instructions, the schema and each contract, output
+between the claims alone and `max_tokens` on every call, which no call can
+exceed. No model run is made without that estimate and my approval first.
 
 ### Against the baseline
 

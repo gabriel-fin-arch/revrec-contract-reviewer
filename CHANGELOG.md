@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+- A model run is measured as well as scored. The request sets the effort
+  explicitly (`high` by default; `eval --effort` or `REVREC_EFFORT`), and every
+  call is saved with the run: model, effort, stop reason, tokens, seconds and
+  cost at the published prices, dated (`extract/metering.py`). `eval` prints the
+  totals, and `--save` names a model run `llm-<model>-<effort>.json`, so it no
+  longer replaces `llm.json`. A refusal or a response cut off at `max_tokens`
+  raises with its call record. `revrec estimate` gives the bounds on a run's
+  tokens and cost without calling the API. No model run is included here.
+- `anthropic>=0.77` was too low again: 0.77 types `output_config` with a format
+  and no effort, so the effort the request now sets could be dropped without a
+  word. The floor is 0.78, the first that takes it, and a test checks the
+  installed SDK does.
 - The first run on the held-out test set, rules extractor: fields 1.00 / 0.89,
   obligations 0.67 / 0.50, judgments 1.00 / 0.42, against 1.00 / 0.91,
   0.79 / 0.75 and 0.95 / 0.83 on the development set. Saved in

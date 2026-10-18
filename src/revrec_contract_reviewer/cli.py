@@ -1,7 +1,8 @@
 """Command line interface.
 
-Five commands, in the order you'd use them: build the corpus, review it, refresh
-the gold set, score against it, and score a saved run again without extracting.
+Six commands, in the order you'd use them: build the corpus, review it, refresh
+the gold set, score against it, score a saved run again without extracting, and
+estimate what a model run would cost before making one.
 """
 
 from __future__ import annotations
@@ -21,7 +22,8 @@ from revrec_contract_reviewer.evaluate import (
     rescore,
     write_gold,
 )
-from revrec_contract_reviewer.extract import ExtractorChoice
+from revrec_contract_reviewer.evaluate.estimate import estimate_run
+from revrec_contract_reviewer.extract import ExtractorChoice, llm
 from revrec_contract_reviewer.fileio import write_lf
 from revrec_contract_reviewer.ingest import UnreadableContract
 from revrec_contract_reviewer.pipeline import review_contract, review_directory
@@ -131,15 +133,29 @@ def eval_command(
         help="Write the report and its claims to the set's results folder, so a published number has a "
         "run behind it.",
     ),
+    effort: str | None = typer.Option(
+        None,
+        "--effort",
+        help="Effort for the model extractor: low, medium, high, xhigh or max. Defaults to high, or REVREC_EFFORT.",
+    ),
 ) -> None:
     """Score the pipeline against the gold set."""
     default_corpus, default_gold, results_dir = SET_DIRS[corpus_set]
-    report, run = evaluate(corpus_dir or default_corpus, gold_dir or default_gold, extractor)
+    if effort is not None and effort not in llm.EFFORTS:
+        typer.echo(f"--effort must be one of {', '.join(llm.EFFORTS)}", err=True)
+        raise typer.Exit(code=2)
+    report, run = evaluate(corpus_dir or default_corpus, gold_dir or default_gold, extractor, effort=effort)
     typer.echo(markdown_table(report))
+    summary = run.summary()
+    if summary:
+        typer.echo(f"\n{summary}")
 
     if save:
         results_dir.mkdir(parents=True, exist_ok=True)
-        target = write_lf(results_dir / f"{report.extractor}.json", report.model_dump_json(indent=2) + "\n")
+        # A model run is named for its model and effort, so a new run sits next
+        # to the published one instead of replacing it.
+        name = report.extractor if not run.calls() else f"llm-{run.model}-{run.effort}"
+        target = write_lf(results_dir / f"{name}.json", report.model_dump_json(indent=2) + "\n")
         # The run behind the counts: every claim and what grounding did with
         # it, so `rescore` can score it again without extracting again.
         claims = write_lf(claims_path(target), run.model_dump_json(indent=2) + "\n")
@@ -159,6 +175,22 @@ def eval_command(
     # Worth a non-zero exit so CI notices without anyone reading the table.
     if report.citations_resolved != report.citations_total:
         raise typer.Exit(code=1)
+
+
+@app.command("estimate")
+def estimate_command(
+    corpus_set: CorpusSet = SET_OPTION,
+    model: str | None = typer.Option(None, "--model", help="The model to cost. Defaults to the extractor's."),
+) -> None:
+    """Estimate the tokens and cost of a model run over a set, without calling the API."""
+    corpus_dir, _, results_dir = SET_DIRS[corpus_set]
+    try:
+        estimate = estimate_run(corpus_dir, model or llm.model_name(), rules_claims=results_dir / "rules.claims.json")
+    except (FileNotFoundError, ValueError) as exc:
+        typer.echo(f"Cannot estimate: {exc}", err=True)
+        raise typer.Exit(code=1) from exc
+    for line in estimate.lines(f"{corpus_set.value} set"):
+        typer.echo(line)
 
 
 @app.command("rescore")
