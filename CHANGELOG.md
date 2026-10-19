@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+- One change for judgment precision, argued from the development set: the
+  prompt's guidance on `integration_language` now asks for promises the
+  customer can't benefit from separately, and says that services of the same
+  nature, from the same team or in the same engagement are related, not
+  integrated, as is a product that needs another sold separately. Two of the
+  three judgments Claude Opus 5.5 raised against the development gold came
+  from passages like that. `revrec judgment-misses` lists the judgments a
+  saved run raised or missed with the passages behind them, without calling
+  the API, and `eval --save --name` saves a run beside the one before it.
+  `docs/evaluation.md` has the cases, the change and an open question about
+  the development gold (Aster and Tessellate). The runs that measure it
+  haven't been made.
 - Measured Claude Opus 5.5, the default model, at effort high on both sets, and
   repeated Claude Opus 5 the same way, on 19 October 2026: 38 calls, USD 2.04 at
   the published prices. Judgment precision / recall: Opus 5.5 0.87 / 0.87 on

@@ -361,6 +361,89 @@ with its reason.
   because of it. The workshop is named among the deliverables, so the gold may
   be the one that's incomplete.
 
+## Judgment precision: one change, argued from the development set
+
+A judgment is raised by a rule in `assess/judgments.py` from what the
+extractor read, so every false positive has a passage behind it.
+`revrec judgment-misses` lists them from a saved run, with no extraction and
+no API call. On the development set, the Claude Opus 5.5 run of 19 October:
+
+| Judgment raised, not in the gold | Contract | The passage behind it |
+|---|---|---|
+| distinct-or-not | Meridian change order 03 | "The additional services are of the same nature as those already being provided under the Agreement and are delivered by the same study team as part of the same integrated engagement." |
+| distinct-or-not | Beacon | "The Software requires the Cartos Spatial Database" |
+| variable consideration | Calderwood master agreement | "termination of the affected Order Form and a refund of prepaid fees for the unused portion of the Subscription Term." |
+
+Claude Opus 5 raised the first and the third too, plus the allocation question
+on Aster, through a second obligation it built from the pass-through costs,
+and distinct-or-not on Tessellate.
+
+Two of the three come from `integration_language`, the passage the
+distinct-or-not rule acts on. Neither describes promises the customer can't
+benefit from separately. The change order adds more of a service that, by the
+corpus's own account, is a single performance obligation; "the same nature",
+"the same study team" and "the same integrated engagement" say the new
+services are related to the old ones, and the question that does arise, how
+to account for the modification, is already flagged. Beacon's licence needs a
+database that Cartos, an unaffiliated third party, licenses at a price it
+sets: a product sold separately. The questions it does raise, principal or
+agent on the database and the allocation, are already flagged.
+
+So the change is one paragraph of the prompt's guidance on
+`integration_language`, which now reads:
+
+> Only report integration_language where the contract actually describes one
+> promise as customising, integrating with, or depending on another, so that
+> the customer cannot benefit from one without the other. Do not supply it
+> because the arrangement looks like it might be. Services being of the same
+> nature as others, delivered by the same team, or part of the same
+> engagement are related, not integrated; and a product that needs another
+> product sold separately, by the supplier or anyone else, does not depend on
+> it in this sense.
+
+The first two sentences were there before, less the clause about benefit.
+It is the tighter definition the comment on `_distinct_uncertain` names as
+the real fix, inseparable rather than related, written into the prompt
+rather than tuned into a rule. That comment also says where to draw the line
+is a risk-appetite call for whoever owns the review, so the line drawn here
+is one for review, and the test set decides whether it stays.
+
+What it leaves alone: the refund on the Calderwood master agreement. It is
+the remedy for a breach of warranty, and whether a breach remedy belongs with
+variable consideration is a question about the taxonomy rather than about
+reading the contract. The issue asks for one change.
+
+What could go the wrong way: Aster says its activities are "provided as an
+integrated service" and that the sponsor gets no "separately usable
+deliverable" from any one of them, and the gold expects distinct-or-not there.
+That is integration in the new sense, so it should still be reported. If it
+isn't, the change costs a true positive.
+
+**An open question about the development gold.** Tessellate says almost the
+same as Aster: "a single integrated engagement", phases "not separately
+saleable", "no usable output until cutover". The gold expects distinct-or-not
+on Aster and not on Tessellate. Under the new guidance the two read the same
+way. The gold is not changed here.
+
+The test set's misses on 19 October were already published in the section
+above when this was written. The change is argued from the development cases
+only, and the test set decides whether it stays: if test-set precision
+doesn't improve, this file says so and the change is dropped.
+
+### Before and after
+
+Same model and effort as the runs of 19 October, Claude Opus 5.5 at `high`;
+those runs are the before. The after runs are saved beside them as
+`llm-claude-opus-5-5-high-integration.json` (`eval --save --name`). Estimated
+with `revrec estimate`, at the prices of 18 October:
+
+| Run | Calls | Cost (USD) |
+|---|---|---|
+| Development | 12 | 0.51 to 4.07 |
+| Test | 7 | 0.26 to 2.37 |
+
+Not run yet: each run waits for its cost estimate to be approved.
+
 ## What this harness cannot tell you
 
 Stated plainly, because the limitations are more interesting than the scores.
