@@ -30,8 +30,9 @@ from revrec_contract_reviewer.extract.metering import CallRecord
 from revrec_contract_reviewer.extract.schema import FIELD_GUIDANCE, WireExtraction
 from revrec_contract_reviewer.models.document import ContractDocument
 
-# Claude Opus 5 produced the published eval numbers, on 10 September 2026. Opus
-# 5.5 hasn't been measured yet.
+# Measured at effort high on 19 October 2026, alongside Claude Opus 5
+# (evals/results/llm-*-high.json). Claude Opus 5's first run, from 10
+# September 2026, is evals/results/llm.json.
 DEFAULT_MODEL = "claude-opus-5-5"
 
 # Set explicitly rather than left to the model: Claude Opus 5.5 defaults to

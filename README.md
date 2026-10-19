@@ -167,39 +167,58 @@ The pipeline is scored against a committed gold set. Full methodology, and an
 honest account of what a synthetic corpus can and cannot tell you, in
 [docs/evaluation.md](docs/evaluation.md).
 
-12 contracts, precision / recall. The offline regexes are the baseline the model
-has to beat; a model extractor that can't beat regexes on a corpus this clean
-isn't earning its cost.
+Precision / recall. The offline regexes are the baseline the model has to beat;
+a model extractor that can't beat regexes on a corpus this clean isn't earning
+its cost.
 
-| Measure | Rules | Claude Opus 5 |
-|---|---|---|
-| Contract fields | 1.00 / 0.91 | 1.00 / **0.97** |
-| Unstated fields left blank | 21 of 21 | 21 of 21 |
-| Performance obligations | 0.79 / 0.75 | **0.83** / **0.95** |
-| Judgment flags | **0.95** / 0.83 | 0.76 / **0.96** |
+**Development set**, the 12 contracts the regexes and the prompt were written
+against:
 
-Citations re-resolved against the source: **100%** on both runs (210 and 325).
-Saved runs in [`evals/results/`](evals/results/).
+| Measure | Rules | Claude Opus 5.5 | Claude Opus 5 | Claude Opus 5, September |
+|---|---|---|---|---|
+| Contract fields | 1.00 / 0.91 | 0.99 / 0.95 | 1.00 / 0.98 | 1.00 / 0.97 |
+| Unstated fields left blank | 21 of 21 | 21 of 21 | 21 of 21 | 21 of 21 |
+| Performance obligations | 0.79 / 0.75 | 0.95 / 0.95 | 0.83 / 0.95 | 0.83 / 0.95 |
+| Judgment flags | 0.95 / 0.83 | 0.87 / 0.87 | 0.85 / 0.96 | 0.76 / 0.96 |
 
-Those twelve are the development set: the regexes and the prompt were written
-against them. Seven more contracts, written afterwards the same way and
-committed with their answers before anything ran on them, are held out in
-[`corpus/test/`](corpus/test/). On them the regexes score 1.00 / 0.89 on
-fields, 0.67 / 0.50 on obligations and 1.00 / 0.42 on judgments: judgment
-recall halves on contracts they weren't written against. That is what a
-held-out set is for, and the rules are not being adjusted against those seven.
-The model has not been run on them yet.
+**Test set**, 7 contracts written afterwards the same way and committed with
+their answers before anything ran on them ([`corpus/test/`](corpus/test/)):
 
-The model run is on Claude Opus 5 (`claude-opus-5`), from 10 September 2026;
-it is already in the version I pushed here on 1 October. The harness records
-the model it calls, and `llm.json` said `claude-opus-5` until 13 October, when I
-relabelled it Claude Opus 4 in a history rewrite to fit the backdated commits.
-An earlier version of this note then called the Opus 5 label wrong. It wasn't
-([PROVENANCE.md](PROVENANCE.md#the-model-run)). Opus 5 is still available, so
-the run can be repeated. The extractor now defaults to Claude Opus 5.5, which
-has not been measured yet.
+| Measure | Rules | Claude Opus 5.5 | Claude Opus 5 |
+|---|---|---|---|
+| Contract fields | 1.00 / 0.89 | 0.98 / 0.97 | 0.98 / 0.97 |
+| Unstated fields left blank | 8 of 8 | 8 of 8 | 8 of 8 |
+| Performance obligations | 0.67 / 0.50 | 0.85 / 0.92 | 0.85 / 0.92 |
+| Judgment flags | 1.00 / 0.42 | 0.85 / 0.92 | 0.65 / 0.92 |
 
-The model wins on recall everywhere, and it is not close — every gap the regexes
+The Claude Opus 5.5 and Claude Opus 5 columns are runs of 19 October 2026 at
+effort `high`, costed at the published prices of 18 October: USD 0.66 and 0.34
+for Opus 5.5 on the two sets, USD 0.72 and 0.33 for Opus 5, 16 to 21 seconds a
+contract on average. Citations re-resolved against the source: 100% on every run. Saved
+runs, with their claims and every model call, in
+[`evals/results/`](evals/results/).
+
+On the test set the regexes' recall falls apart, judgments at 0.42, and so does
+Claude Opus 5's judgment precision, at 0.65: it raises questions the contracts
+don't call for, among them the distinct-or-not question on Larkspur, whose
+configuration services were written not to raise it. Claude Opus 5.5 holds at
+0.85 there. It is the default, the cheaper per token, and on these numbers the
+better of the two. Two disagreements with the test-set gold are open questions,
+listed in [docs/evaluation.md](docs/evaluation.md#open-questions-about-the-test-gold).
+
+The September column is the original model run, on Claude Opus 5
+(`claude-opus-5`) at its default effort, which is high; it is already in the
+version I pushed here on 1 October. The harness records the model it calls, and
+`llm.json` said `claude-opus-5` until 13 October, when I relabelled it Claude
+Opus 4 in a history rewrite to fit the backdated commits. An earlier version of
+this note then called the Opus 5 label wrong. It wasn't
+([PROVENANCE.md](PROVENANCE.md#the-model-run)). Repeated on 19 October, the
+same model scores 0.85 on judgment precision instead of 0.76. The code has
+changed since September and that run kept only its counts, so it can't be
+scored again to say how much of the difference is the code and how much is
+run-to-run variance.
+
+In September the model won on recall everywhere, and it was not close — every gap the regexes
 had closes. **It also drops judgment precision from 0.95 to 0.76**, mostly by
 reading integration language more liberally than the taxonomy intends. That
 trade is the wrong way round for this product: a reviewer's trust is spent by

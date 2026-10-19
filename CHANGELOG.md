@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+- Measured Claude Opus 5.5, the default model, at effort high on both sets, and
+  repeated Claude Opus 5 the same way, on 19 October 2026: 38 calls, USD 2.04 at
+  the published prices. Judgment precision / recall: Opus 5.5 0.87 / 0.87 on
+  the development set and 0.85 / 0.92 on the test set; Opus 5 0.85 / 0.96 and
+  0.65 / 0.92. The README and `docs/evaluation.md` show each run with its date,
+  model, effort and cost; the September run in `llm.json` is unchanged, and
+  the docs say why its 0.76 can't be compared with today's 0.85 more closely.
+  Two places where both models disagree with the test-set gold (Wexford's term
+  and price, Harbourline's handover workshop) are listed as open questions; the
+  gold is unchanged.
 - A model run is measured as well as scored. The request sets the effort
   explicitly (`high` by default; `eval --effort` or `REVREC_EFFORT`), and every
   call is saved with the run: model, effort, stop reason, tokens, seconds and
