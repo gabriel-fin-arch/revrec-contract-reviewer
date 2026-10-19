@@ -132,3 +132,26 @@ def test_the_committed_test_set_run_rescores_to_its_committed_report():
 
     assert len(run.contracts) == 7
     assert rescore(run, ROOT / "corpus" / "test", ROOT / "evals" / "gold" / "test") == saved
+
+
+MODEL_RUNS = [
+    (results, corpus, gold, name)
+    for results, corpus, gold in (
+        ("evals/results", "corpus", "evals/gold"),
+        ("evals/results/test", "corpus/test", "evals/gold/test"),
+    )
+    for name in ("llm-claude-opus-5-5-high", "llm-claude-opus-5-high")
+]
+
+
+@pytest.mark.parametrize(("results", "corpus", "gold", "name"), MODEL_RUNS, ids=lambda value: value)
+def test_each_committed_model_run_rescores_to_its_report_and_records_its_calls(results, corpus, gold, name):
+    """The model runs of 19 October 2026, scored again from their claims with no
+    API call, and every call recorded with its effort, tokens and cost."""
+    run = SavedRun.model_validate_json((ROOT / results / f"{name}.claims.json").read_text(encoding="utf-8"))
+    saved = EvalReport.model_validate_json((ROOT / results / f"{name}.json").read_text(encoding="utf-8"))
+
+    assert rescore(run, ROOT / corpus, ROOT / gold) == saved
+    calls = run.calls()
+    assert len(calls) == len(run.contracts)
+    assert all(call.effort == "high" and call.stop_reason == "end_turn" and call.cost_usd for call in calls)
