@@ -443,7 +443,13 @@ Same model and effort as the runs of 19 October, Claude Opus 5.5 at `high`;
 those runs are the before. The after runs were made on 20 October, after an
 estimate of USD 0.77 to 6.44 for the two (`revrec estimate`) and my approval,
 and are saved beside them as `llm-claude-opus-5-5-high-integration.json`
-(`eval --save --name`): 19 calls, USD 0.60 and 0.34, all ending `end_turn`.
+(`eval --save --name`). All 19 calls ended `end_turn`:
+
+| Run | Calls | Input tokens | Output tokens | Cost (USD) | Seconds in calls | Longest call |
+|---|---|---|---|---|---|---|
+| After, development | 12 | 67,583 | 25,696 | 0.60 | 211.6 | 29.4 s |
+| After, test | 7 | 37,918 | 15,393 | 0.34 | 127.0 | 25.9 s |
+
 Earlier attempts that day and the day before stopped when the API refused
 requests for lack of credit; nothing from them is used here.
 

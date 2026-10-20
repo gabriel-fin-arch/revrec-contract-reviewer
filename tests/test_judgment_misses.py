@@ -122,3 +122,17 @@ def test_the_before_and_after_table_is_what_the_saved_runs_score():
         assert f"| {label} | {cells[0]} | {cells[1]} |" in section, (label, cells)
         if label == "Development":
             assert f"| Development without Aster | {without_aster[0]} | {without_aster[1]} |" in section
+
+
+def test_the_after_runs_are_published_with_their_tokens_cost_and_latency():
+    section = _section()
+    for label, results in (("development", RESULTS), ("test", RESULTS / "test")):
+        calls = _run(results / "llm-claude-opus-5-5-high-integration.claims.json").calls()
+        tokens_in = sum(c.input_tokens + c.cache_creation_input_tokens + c.cache_read_input_tokens for c in calls)
+        row = (
+            f"| After, {label} | {len(calls)} | {tokens_in:,} | {sum(c.output_tokens for c in calls):,} | "
+            f"{sum(c.cost_usd for c in calls if c.cost_usd):.2f} | {sum(c.seconds for c in calls):.1f} | "
+            f"{max(c.seconds for c in calls):.1f} s |"
+        )
+        assert row in section, row
+        assert {c.stop_reason for c in calls} == {"end_turn"}
