@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+- A model run that stops part-way keeps what it paid for. `evaluate` hands
+  over the run so far after every contract, and once more with the reason if
+  an extraction raises; `eval --save` writes it to
+  `<name>.partial.claims.json` as it goes and removes it when the run
+  finishes. A stopped run says how many calls it made and what they cost, or
+  that none was billed, and a refusal or a cut-off answer is kept with it.
+  Before, the run was written only at the end, so the calls before a failure
+  were paid for and lost: the runs of 19 October for the change below stopped
+  when the API refused requests for lack of credit, and whatever went
+  through before that wasn't kept.
 - One change for judgment precision, argued from the development set: the
   prompt's guidance on `integration_language` now asks for promises the
   customer can't benefit from separately, and says that services of the same

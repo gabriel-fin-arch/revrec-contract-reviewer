@@ -45,12 +45,18 @@ class SavedRun(BaseModel):
     run_at: str | None = None  # UTC, when the run started
     effort: str | None = None
     contracts: list[SavedContract] = []
+    # Set on a run that stopped before its last contract: why it stopped, and
+    # any call that was billed without giving an extraction (a refusal, an
+    # answer cut off at max_tokens). A complete run leaves both empty.
+    stopped: str | None = None
+    unfinished_calls: list[CallRecord] = []
 
     def calls(self) -> list[CallRecord]:
-        return [contract.call for contract in self.contracts if contract.call is not None]
+        made = [contract.call for contract in self.contracts if contract.call is not None]
+        return made + list(self.unfinished_calls)
 
     def summary(self) -> str | None:
-        """One line on what the model calls cost and took, or None for a rules run."""
+        """One line on what the model calls cost and took, or None for a run that made none."""
         calls = self.calls()
         if not calls:
             return None
@@ -81,6 +87,15 @@ def pdf_sha256(path: Path) -> str:
 def claims_path(report_path: Path) -> Path:
     """Where a report's run is saved: rules.json next to rules.claims.json."""
     return report_path.with_name(f"{report_path.stem}.claims.json")
+
+
+def partial_path(results_dir: Path, name: str) -> Path:
+    """Where `eval --save` keeps a run while it's going: <name>.partial.claims.json.
+
+    Rewritten after every contract and removed when the run finishes, so one
+    that's still there is a run that stopped, with what it had paid for.
+    """
+    return results_dir / f"{name}.partial.claims.json"
 
 
 def rescore(run: SavedRun, corpus_dir: Path, gold_dir: Path) -> EvalReport:

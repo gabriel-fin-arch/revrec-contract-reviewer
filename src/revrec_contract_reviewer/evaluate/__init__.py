@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from datetime import UTC, datetime
 from pathlib import Path
 
@@ -14,6 +15,7 @@ from revrec_contract_reviewer.evaluate.runs import (
     SavedContract,
     SavedRun,
     claims_path,
+    partial_path,
     pdf_sha256,
     rescore,
 )
@@ -24,7 +26,8 @@ from revrec_contract_reviewer.evaluate.score import (
     aggregate,
     score_contract,
 )
-from revrec_contract_reviewer.extract import ExtractorChoice, extract_with_claims
+from revrec_contract_reviewer.extract import ExtractorChoice, extract_with_claims, llm
+from revrec_contract_reviewer.extract.metering import CallRecord
 from revrec_contract_reviewer.ingest import load_contract
 from revrec_contract_reviewer.segment import segmented
 
@@ -42,6 +45,7 @@ __all__ = [
     "evaluate",
     "load_gold",
     "markdown_table",
+    "partial_path",
     "rescore",
     "run_eval",
     "score_contract",
@@ -65,6 +69,7 @@ def evaluate(
     choice: ExtractorChoice = ExtractorChoice.AUTO,
     client: anthropic.Anthropic | None = None,
     effort: str | None = None,
+    checkpoint: Callable[[SavedRun], None] | None = None,
 ) -> tuple[EvalReport, SavedRun]:
     """Review every contract in the gold set, score it, and keep the run.
 
@@ -72,6 +77,11 @@ def evaluate(
     gold record is not silently skipped in a way that flatters the numbers, and
     a gold record with no PDF is an error rather than a quietly missing row.
     The SavedRun has every claim and its grounding, for `rescore`.
+
+    `checkpoint` gets the run so far after every contract, and once more if an
+    extraction raises, with `stopped` set, before the error goes on. A model
+    run that stops half-way has already paid for the calls before it, and this
+    is how they're kept.
     """
     gold = load_gold(gold_dir)
     scores: list[ContractScore] = []
@@ -80,28 +90,42 @@ def evaluate(
     model: str | None = None
     run_at = datetime.now(UTC).isoformat(timespec="seconds").replace("+00:00", "Z")
 
+    def so_far(stopped: str | None = None, unfinished: list[CallRecord] | None = None) -> SavedRun:
+        calls = [contract.call for contract in saved if contract.call is not None] + (unfinished or [])
+        efforts = {call.effort for call in calls}
+        return SavedRun(
+            extractor=extractor if saved or not calls else "llm",
+            model=model or (calls[0].model if calls else None),
+            run_at=run_at,
+            effort=efforts.pop() if len(efforts) == 1 else None,
+            contracts=list(saved),
+            stopped=stopped,
+            unfinished_calls=unfinished or [],
+        )
+
     for doc_id, record in sorted(gold.items()):
         path = corpus_dir / f"{doc_id}.pdf"
         if not path.exists():
             raise FileNotFoundError(f"gold record {doc_id} has no contract at {path}")
 
         document = segmented(load_contract(path))
-        claims, extraction, call = extract_with_claims(document, choice, client=client, effort=effort)
+        try:
+            claims, extraction, call = extract_with_claims(document, choice, client=client, effort=effort)
+        except Exception as exc:
+            if checkpoint is not None:
+                billed = [exc.call] if isinstance(exc, llm.ModelDeclined) and exc.call is not None else []
+                checkpoint(so_far(f"{doc_id}: {type(exc).__name__}: {exc}", billed))
+            raise
         extractor = extraction.extractor
         model = extraction.model or model
         scores.append(score_contract(assess(extraction), document, record))
         saved.append(
             SavedContract(doc_id=doc_id, pdf_sha256=pdf_sha256(path), claims=claims, extraction=extraction, call=call)
         )
+        if checkpoint is not None:
+            checkpoint(so_far())
 
-    efforts = {contract.call.effort for contract in saved if contract.call is not None}
-    return aggregate(scores, extractor=extractor, model=model), SavedRun(
-        extractor=extractor,
-        model=model,
-        run_at=run_at,
-        effort=efforts.pop() if len(efforts) == 1 else None,
-        contracts=saved,
-    )
+    return aggregate(scores, extractor=extractor, model=model), so_far()
 
 
 def markdown_table(report: EvalReport) -> str:

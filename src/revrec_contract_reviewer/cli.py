@@ -11,6 +11,7 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
+import anthropic
 import typer
 from dotenv import load_dotenv
 
@@ -21,6 +22,7 @@ from revrec_contract_reviewer.evaluate import (
     claims_path,
     evaluate,
     markdown_table,
+    partial_path,
     rescore,
     write_gold,
 )
@@ -157,7 +159,26 @@ def eval_command(
     if name is not None and not RUN_NAME.fullmatch(name):
         typer.echo("--name takes lower-case letters, digits, dots and hyphens", err=True)
         raise typer.Exit(code=2)
-    report, run = evaluate(corpus_dir or default_corpus, gold_dir or default_gold, extractor, effort=effort)
+    # With --save, the run so far is written after every contract, so a run
+    # that stops half-way keeps the calls it has already paid for. A run that
+    # finishes replaces it with the report and the claims.
+    so_far: list[SavedRun] = []
+
+    def checkpoint(partial: SavedRun) -> None:
+        so_far[:] = [partial]
+        if save and partial.calls():
+            results_dir.mkdir(parents=True, exist_ok=True)
+            write_lf(partial_path(results_dir, _run_name(partial, name)), partial.model_dump_json(indent=2) + "\n")
+
+    try:
+        report, run = evaluate(
+            corpus_dir or default_corpus, gold_dir or default_gold, extractor, effort=effort, checkpoint=checkpoint
+        )
+    except Exception as exc:
+        _report_stopped(exc, so_far[0] if so_far else None, results_dir, name, save)
+        if isinstance(exc, (anthropic.APIError, llm.ModelDeclined, RuntimeError)):
+            raise typer.Exit(code=1) from exc
+        raise
     typer.echo(markdown_table(report))
     summary = run.summary()
     if summary:
@@ -167,12 +188,11 @@ def eval_command(
         results_dir.mkdir(parents=True, exist_ok=True)
         # A model run is named for its model and effort, so a new run sits next
         # to the published one instead of replacing it.
-        if name is None:
-            name = report.extractor if not run.calls() else f"llm-{run.model}-{run.effort}"
-        target = write_lf(results_dir / f"{name}.json", report.model_dump_json(indent=2) + "\n")
+        target = write_lf(results_dir / f"{_run_name(run, name)}.json", report.model_dump_json(indent=2) + "\n")
         # The run behind the counts: every claim and what grounding did with
         # it, so `rescore` can score it again without extracting again.
         claims = write_lf(claims_path(target), run.model_dump_json(indent=2) + "\n")
+        partial_path(results_dir, _run_name(run, name)).unlink(missing_ok=True)
         typer.echo(f"\nSaved to {target}, and the claims behind it to {claims}")
 
     if show_mistakes:
@@ -189,6 +209,26 @@ def eval_command(
     # Worth a non-zero exit so CI notices without anyone reading the table.
     if report.citations_resolved != report.citations_total:
         raise typer.Exit(code=1)
+
+
+def _run_name(run: SavedRun, name: str | None) -> str:
+    """--name if given; otherwise the extractor, or llm-<model>-<effort> for a model run."""
+    if name is not None:
+        return name
+    return run.extractor if not run.calls() else f"llm-{run.model}-{run.effort}"
+
+
+def _report_stopped(exc: Exception, partial: SavedRun | None, results_dir: Path, name: str | None, save: bool) -> None:
+    typer.echo(f"The run stopped: {type(exc).__name__}: {exc}", err=True)
+    if partial is None or not partial.calls():
+        typer.echo("No model call had been billed.", err=True)
+        return
+    typer.echo(f"Before it stopped, {len(partial.contracts)} contract(s) were extracted. {partial.summary()}", err=True)
+    if save:
+        path = partial_path(results_dir, _run_name(partial, name))
+        typer.echo(f"Their claims and calls are saved in {path}.", err=True)
+    else:
+        typer.echo("Nothing was saved: without --save the run is only printed.", err=True)
 
 
 @app.command("estimate")

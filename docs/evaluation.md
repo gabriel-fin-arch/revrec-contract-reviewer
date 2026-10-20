@@ -148,6 +148,13 @@ new run sits next to `llm.json` instead of replacing it. A call that returns
 nothing usable, a refusal or a response cut off at `max_tokens`, raises with
 its record attached, since its tokens were spent either way.
 
+With `--save`, the run so far is also written after every contract, to
+`<name>.partial.claims.json`, and removed when the run finishes and the report
+and claims are written. A run that stops part-way, on a refused key or a
+balance that has run out, keeps there the claims and calls it had already
+paid for, with the reason it stopped, and `eval` says how many calls that was
+and what they cost.
+
 `uv run revrec estimate --set development --model claude-opus-5-5` says what a
 run would cost before it is made, without calling the API: input from the
 character counts of the instructions, the schema and each contract, output
