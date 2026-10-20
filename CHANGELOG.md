@@ -2,6 +2,21 @@
 
 ## Unreleased
 
+- The memo as a PDF, for filing: `review` writes `<contract>.pdf` beside each
+  HTML memo, with the same content in the same order, every quote with its
+  clause and page. A test reads the PDF back with pdfplumber and checks each
+  judgment's quotes inside that judgment, each check with its result and each
+  value with its label, for all twelve contracts. Built with reportlab, with
+  `invariant` set, so the same review gives the same bytes.
+- `worklist.xlsx` for a folder review: every judgment, failed check and
+  unreadable file in the run, one row each, in the index's order, with the
+  quote, clause and page and blank columns for the reviewer's conclusion,
+  plus a sheet listing every contract. The index and the workbook now share
+  one ordering function. Needs openpyxl.
+- `docs/controls.md`: twelve controls of the review, each with the code that
+  enforces it, the test that proves it and the output that evidences it, and
+  what the review doesn't control. A test fails if anything it names stops
+  existing, or if it cites an output a run doesn't write.
 - The published numbers are checked now. The Results table and a new
   three-line summary near the top of the README are rendered from
   `evals/results/` by `revrec_contract_reviewer.evaluate.published`, and the
