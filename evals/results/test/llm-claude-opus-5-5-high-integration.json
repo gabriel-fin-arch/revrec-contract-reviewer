@@ -186,13 +186,13 @@
         "false_negatives": 0
       },
       "obligations": {
-        "true_positives": 0,
-        "false_positives": 2,
+        "true_positives": 1,
+        "false_positives": 1,
         "false_negatives": 1
       },
       "judgments": {
-        "true_positives": 1,
-        "false_positives": 1,
+        "true_positives": 2,
+        "false_positives": 0,
         "false_negatives": 0
       },
       "citations_total": 20,
@@ -200,9 +200,7 @@
       "dropped_for_no_evidence": 0,
       "mistakes": [
         "obligation not in gold: professional_services at - (x1)",
-        "obligation not in gold: training at - (x1)",
-        "obligation missed: professional_services at 180000 (x1)",
-        "judgment raised but not expected: ssp_not_observable"
+        "obligation missed: professional_services at 180000 (x1)"
       ]
     }
   ],
@@ -217,13 +215,13 @@
     "false_negatives": 0
   },
   "obligations": {
-    "true_positives": 10,
-    "false_positives": 3,
+    "true_positives": 11,
+    "false_positives": 2,
     "false_negatives": 2
   },
   "judgments": {
-    "true_positives": 11,
-    "false_positives": 2,
+    "true_positives": 12,
+    "false_positives": 1,
     "false_negatives": 1
   },
   "citations_total": 168,

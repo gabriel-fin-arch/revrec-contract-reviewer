@@ -219,8 +219,8 @@ their answers before anything ran on them ([`corpus/test/`](corpus/test/)):
 |---|---|---|---|
 | Contract fields | 1.00 / 0.89 | 0.98 / 0.97 | 0.98 / 0.97 |
 | Unstated fields left blank | 8 of 8 | 8 of 8 | 8 of 8 |
-| Performance obligations | 0.67 / 0.50 | 0.85 / 0.92 | 0.85 / 0.92 |
-| Judgment flags | 1.00 / 0.42 | 0.85 / 0.92 | 0.65 / 0.92 |
+| Performance obligations | 0.67 / 0.46 | 0.92 / 0.92 | 0.92 / 0.92 |
+| Judgment flags | 1.00 / 0.38 | 0.92 / 0.92 | 0.71 / 0.92 |
 
 The Claude Opus 5.5 and Claude Opus 5 columns are runs of 19 October 2026 at
 effort `high`, costed at the published prices of 18 October: USD 0.66 and 0.34
@@ -229,13 +229,14 @@ contract on average. Citations re-resolved against the source: 100% on every run
 runs, with their claims and every model call, in
 [`evals/results/`](evals/results/).
 
-On the test set the regexes' recall falls apart, judgments at 0.42, and so does
-Claude Opus 5's judgment precision, at 0.65: it raises questions the contracts
-don't call for, among them the distinct-or-not question on Larkspur, whose
-configuration services were written not to raise it. Claude Opus 5.5 holds at
-0.85 there. It is the default, the cheaper per token, and on these numbers the
-better of the two. Two disagreements with the test-set gold are open questions,
-listed in [docs/evaluation.md](docs/evaluation.md#open-questions-about-the-test-gold).
+On the test set the regexes' recall falls apart, judgments at 0.38, and
+Claude Opus 5's judgment precision drops to 0.71: it raises questions the
+contracts don't call for, among them the distinct-or-not question on Larkspur,
+whose configuration services were written not to raise it. Claude Opus 5.5
+holds at 0.92 there. It is the default, the cheaper per token, and on these
+numbers the better of the two. One disagreement with the test-set gold is an
+open question, listed in
+[docs/evaluation.md](docs/evaluation.md#open-questions-about-the-test-gold).
 
 The September column is the original model run, on Claude Opus 5
 (`claude-opus-5`) at its default effort, which is high; it is already in the

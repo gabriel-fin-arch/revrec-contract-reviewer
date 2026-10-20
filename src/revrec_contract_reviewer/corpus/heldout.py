@@ -305,13 +305,20 @@ NIMBUS_SOW_HARBOURLINE = ContractSpec(
         termination_notice_days=None,
         net_days=30,
         total_fixed_consideration=Decimal("180000"),
-        obligations=(TruthObligation(ObligationKind.PROFESSIONAL_SERVICES, Decimal("180000")),),
-        judgments=(JudgmentType.VARIABLE_CONSIDERATION_CONSTRAINT,),
+        obligations=(
+            TruthObligation(ObligationKind.PROFESSIONAL_SERVICES, Decimal("180000")),
+            TruthObligation(ObligationKind.TRAINING, None),
+        ),
+        judgments=(
+            JudgmentType.VARIABLE_CONSIDERATION_CONSTRAINT,
+            JudgmentType.SSP_NOT_OBSERVABLE,
+        ),
     ),
     commentary=(
         "A fixed fee invoiced on milestones, which the contract says in so many words, and a reduction for late "
-        "delivery that makes the price variable anyway. One deliverable, so nothing to allocate; termination "
-        "only for breach, so no question about the enforceable term."
+        "delivery that makes the price variable anyway. Three deliverables under one unstated split -- the "
+        "handover workshop is a training obligation -- so the allocation is a question; termination only for "
+        "breach, so no question about the enforceable term."
     ),
 )
 

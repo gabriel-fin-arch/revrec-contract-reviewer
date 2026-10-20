@@ -16,9 +16,14 @@
     {
       "kind": "professional_services",
       "stated_price": "180000"
+    },
+    {
+      "kind": "training",
+      "stated_price": null
     }
   ],
   "judgments": [
+    "ssp_not_observable",
     "variable_consideration_constraint"
   ]
 }
