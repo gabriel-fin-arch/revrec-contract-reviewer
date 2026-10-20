@@ -25,7 +25,7 @@ from revrec_contract_reviewer.extract import ExtractorChoice
 from revrec_contract_reviewer.fileio import write_lf
 from revrec_contract_reviewer.ingest import UnreadableContract
 from revrec_contract_reviewer.pipeline import review_contract, review_directory
-from revrec_contract_reviewer.report import write_index, write_review
+from revrec_contract_reviewer.report import write_index, write_pdf_memo, write_review, write_worklist
 
 load_dotenv()
 
@@ -74,7 +74,12 @@ def review(
         help="auto uses the model when an API key is present; rules never calls out; llm requires one.",
     ),
 ) -> None:
-    """Review a contract, or every contract in a directory."""
+    """Review a contract, or every contract in a directory.
+
+    Each contract gets an HTML memo, the same memo as a PDF, and a JSON file.
+    A directory also gets an index and a worklist workbook with every open
+    item in the run.
+    """
     try:
         if path.is_dir():
             reviews, unreadable = review_directory(path, extractor)
@@ -86,6 +91,7 @@ def review(
 
     for result in reviews:
         write_review(result, out_dir)
+        write_pdf_memo(result, out_dir)
         typer.echo(result.summary_line())
     for skipped in unreadable:
         typer.echo(f"{skipped.name}: not reviewed. {skipped.reason}", err=True)
@@ -98,6 +104,7 @@ def review(
         if unreadable:
             summary += f", and {len(unreadable)} could not be read"
         typer.echo(f"{summary}. Index: {index}")
+        typer.echo(f"Worklist: {write_worklist(reviews, out_dir, unreadable)}")
     else:
         typer.echo(f"Memo written to {out_dir / (reviews[0].doc_id + '.html')}")
 

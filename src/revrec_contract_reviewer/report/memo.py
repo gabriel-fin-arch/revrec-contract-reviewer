@@ -136,6 +136,29 @@ def render_memo(review: ContractReview) -> str:
     )
 
 
+def attention_order(reviews: list[ContractReview]) -> list[ContractReview]:
+    """Contracts in the order a reviewer should open them.
+
+    Ordered by everything that needs attention, failed checks included, not by
+    judgment count alone. A contract the pipeline could not read raises no
+    judgments, so under the old ordering it sank to the bottom of the worklist
+    and sat there looking exactly like the clean one -- "0 judgments" reads as
+    nothing to do, whether that is because there is nothing to decide or
+    because nobody managed to read the document. Failed checks break ties,
+    because a failed check means everything else in that memo is built on a
+    reading that did not hold up. The index and the worklist workbook both use
+    this order.
+    """
+    return sorted(
+        reviews,
+        key=lambda review: (
+            -(len(review.flags) + len(review.failed_checks())),
+            -len(review.failed_checks()),
+            review.doc_id,
+        ),
+    )
+
+
 def render_index(reviews: list[ContractReview], unreadable: Sequence[tuple[str, str]] = ()) -> str:
     """The run index -- one row per contract, for someone triaging a portfolio.
 
@@ -145,22 +168,7 @@ def render_index(reviews: list[ContractReview], unreadable: Sequence[tuple[str, 
     template = _environment().get_template("index.html.j2")
     return template.render(
         unreadable=list(unreadable),
-        # Ordered by everything that needs attention, failed checks included,
-        # not by judgment count alone. A contract the pipeline could not read
-        # raises no judgments, so under the old ordering it sank to the bottom
-        # of the worklist and sat there looking exactly like the clean one --
-        # "0 judgments" reads as nothing to do, whether that is because there is
-        # nothing to decide or because nobody managed to read the document.
-        # Failed checks break ties, because a failed check means everything else
-        # in that memo is built on a reading that did not hold up.
-        reviews=sorted(
-            reviews,
-            key=lambda review: (
-                -(len(review.flags) + len(review.failed_checks())),
-                -len(review.failed_checks()),
-                review.doc_id,
-            ),
-        ),
+        reviews=attention_order(reviews),
         total_flags=sum(len(review.flags) for review in reviews),
         total_failed=sum(len(review.failed_checks()) for review in reviews),
         clean=[review for review in reviews if not review.needs_review()],

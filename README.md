@@ -23,6 +23,19 @@ evidence already pulled.
 > dates are when the history was rebuilt. [PROVENANCE.md](PROVENANCE.md) lists
 > every change and how to check it.
 
+<!-- results-headline:start -->
+**Results on the sample corpus** (12 synthetic contracts, scored against a
+committed gold set; the tests check these figures against the saved runs and
+repeat the rules run):
+
+- Contract fields: precision 1.00 and recall 0.91 with the offline rules, 1.00
+  and 0.97 with Claude Opus 5.
+- Judgment flags: precision 0.95 and recall 0.83 with the rules, 0.76 and 0.96
+  with the model.
+- Citations re-resolved against the source: 210 of 210 with the rules, 325 of
+  325 with the model. [Full results](#results).
+<!-- results-headline:end -->
+
 ## Review in 5 minutes
 
 - The business problem and the three places ASC 606 needs domain knowledge.
@@ -30,6 +43,8 @@ evidence already pulled.
   the document.
 - `docs/judgment-calls.md` for the eight decisions that stay with a human.
 - The results table and `docs/evaluation.md`, including where the model loses.
+- `docs/controls.md` for each control, the code and test behind it, and what a run
+  writes as evidence.
 - How I built this: which decisions are mine and what an AI assistant wrote.
 
 ![Review memo](docs/images/memo.png)
@@ -95,7 +110,8 @@ segment   numbered clauses, deterministic
 extract   structured claims, each carrying a quote       Claude, or offline rules
 ground    every quote located in the document, or dropped
 assess    five-step checks and the judgment taxonomy     deterministic
-memo      HTML with the evidence inline, plus JSON
+memo      HTML with the evidence inline, the same as a PDF, plus JSON
+worklist  every open item in the run, one row each       xlsx
 ```
 
 Four of the five stages are deterministic. A model is involved in exactly one
@@ -171,6 +187,7 @@ honest account of what a synthetic corpus can and cannot tell you, in
 has to beat; a model extractor that can't beat regexes on a corpus this clean
 isn't earning its cost.
 
+<!-- results-table:start -->
 | Measure | Rules | Claude Opus 5 |
 |---|---|---|
 | Contract fields | 1.00 / 0.91 | 1.00 / **0.97** |
@@ -180,6 +197,7 @@ isn't earning its cost.
 
 Citations re-resolved against the source: **100%** on both runs (210 and 325).
 Saved runs in [`evals/results/`](evals/results/).
+<!-- results-table:end -->
 
 Those twelve are the development set: the regexes and the prompt were written
 against them. Seven more contracts, written afterwards the same way and
@@ -231,8 +249,9 @@ uv run revrec generate-corpus
 uv run revrec review --extractor rules
 ```
 
-That writes a memo per contract and a worklist index to `out/`. Open
-`out/index.html`.
+That writes a memo per contract to `out/`, as HTML and as PDF, with an index
+of the run and `worklist.xlsx`, every open item on one sheet with blank
+columns for the reviewer's conclusion. Open `out/index.html`.
 
 To use the model extractor, set `ANTHROPIC_API_KEY` (copy `.env.example` to
 `.env`) and drop the flag:
@@ -283,13 +302,13 @@ around none. Every party, product, price and person is invented. See
 ## Stack
 
 Python 3.11+ · pydantic · pdfplumber · Anthropic SDK · jinja2 · typer ·
-reportlab · pytest · ruff.
+reportlab · openpyxl · pytest · ruff.
 
 No agent framework. This is a pipeline with one model call in it, and wrapping
 that in a graph would have added a dependency and a diagram without adding a
 capability.
 
-149 tests. CI runs ruff, the test suite, and then the whole pipeline offline
+203 tests. CI runs ruff, the test suite, and then the whole pipeline offline
 over the corpus and the held-out set; the eval step exits non-zero if any
 citation in any memo stops
 resolving against its source document. That is the one regression that leaves
