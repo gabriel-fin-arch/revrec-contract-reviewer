@@ -159,3 +159,26 @@ def test_a_single_unreadable_file_is_one_line_not_a_traceback(workspace: Path):
         assert "Cannot review" in result.output
         assert "Traceback" not in result.output
 
+
+def test_a_folder_review_writes_a_pdf_per_memo_and_a_worklist(workspace: Path):
+    runner.invoke(app, ["generate-corpus"])
+
+    result = runner.invoke(app, ["review", "--extractor", "rules"])
+
+    assert result.exit_code == 0
+    out = workspace / "out"
+    memos = sorted(path.stem for path in out.glob("*.html") if path.stem != "index")
+    assert sorted(path.stem for path in out.glob("*.pdf")) == memos
+    assert len(memos) == 12
+    assert (out / "worklist.xlsx").is_file()
+    assert f"Worklist: {Path('out') / 'worklist.xlsx'}" in result.stdout
+
+
+def test_a_single_contract_gets_its_pdf_and_no_worklist(workspace: Path):
+    runner.invoke(app, ["generate-corpus"])
+
+    result = runner.invoke(app, ["review", "corpus/nimbus-of-pinegrove.pdf", "--extractor", "rules"])
+
+    assert result.exit_code == 0
+    assert (workspace / "out" / "nimbus-of-pinegrove.pdf").is_file()
+    assert not (workspace / "out" / "worklist.xlsx").exists()

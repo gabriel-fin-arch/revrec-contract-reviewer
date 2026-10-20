@@ -1,23 +1,38 @@
 """Command line interface.
 
-Four commands, in the order you'd use them: build the corpus, review it, refresh
-the gold set, score against it.
+Seven commands, in the order you'd use them: build the corpus, review it,
+refresh the gold set, score against it, score a saved run again without
+extracting, list the judgments a saved run got wrong with the passages behind
+them, and estimate what a model run would cost before making one.
 """
 
 from __future__ import annotations
 
+import re
 from pathlib import Path
 
+import anthropic
 import typer
 from dotenv import load_dotenv
 
-from revrec_contract_reviewer.corpus import generate_corpus
-from revrec_contract_reviewer.evaluate import markdown_table, run_eval, write_gold
-from revrec_contract_reviewer.extract import ExtractorChoice
+from revrec_contract_reviewer.corpus import CorpusSet, generate_corpus
+from revrec_contract_reviewer.evaluate import (
+    CorpusChanged,
+    SavedRun,
+    claims_path,
+    evaluate,
+    markdown_table,
+    partial_path,
+    rescore,
+    write_gold,
+)
+from revrec_contract_reviewer.evaluate.estimate import estimate_run
+from revrec_contract_reviewer.evaluate.misses import judgment_misses, report_lines
+from revrec_contract_reviewer.extract import ExtractorChoice, llm
 from revrec_contract_reviewer.fileio import write_lf
 from revrec_contract_reviewer.ingest import UnreadableContract
 from revrec_contract_reviewer.pipeline import review_contract, review_directory
-from revrec_contract_reviewer.report import write_index, write_review
+from revrec_contract_reviewer.report import write_index, write_pdf_memo, write_review, write_worklist
 
 load_dotenv()
 
@@ -31,13 +46,29 @@ DEFAULT_CORPUS = Path("corpus")
 DEFAULT_OUT = Path("out")
 DEFAULT_GOLD = Path("evals/gold")
 
+# Where each set lives: its PDFs, its gold records, its saved runs. The test
+# set sits one level down, so a review or an eval of corpus/ never picks it up.
+SET_DIRS: dict[CorpusSet, tuple[Path, Path, Path]] = {
+    CorpusSet.DEVELOPMENT: (DEFAULT_CORPUS, DEFAULT_GOLD, Path("evals/results")),
+    CorpusSet.TEST: (DEFAULT_CORPUS / "test", DEFAULT_GOLD / "test", Path("evals/results/test")),
+}
+RUN_NAME = re.compile(r"[a-z0-9][a-z0-9.-]*")
+SET_OPTION = typer.Option(
+    CorpusSet.DEVELOPMENT,
+    "--set",
+    help="development: the twelve contracts the rules and prompt were written against. "
+    "test: the seven held out, reported and never tuned on.",
+)
+
 
 @app.command("generate-corpus")
 def generate_corpus_command(
-    out_dir: Path = typer.Option(DEFAULT_CORPUS, "--out", help="Where to write the PDFs."),
+    out_dir: Path | None = typer.Option(None, "--out", help="Where to write the PDFs. Defaults to the set's folder."),
+    corpus_set: CorpusSet = SET_OPTION,
 ) -> None:
     """Rebuild the synthetic contract corpus."""
-    written = generate_corpus(out_dir)
+    out_dir = out_dir or SET_DIRS[corpus_set][0]
+    written = generate_corpus(out_dir, corpus_set)
     typer.echo(f"Wrote {len(written)} contracts to {out_dir}/ and refreshed its index.")
 
 
@@ -51,7 +82,12 @@ def review(
         help="auto uses the model when an API key is present; rules never calls out; llm requires one.",
     ),
 ) -> None:
-    """Review a contract, or every contract in a directory."""
+    """Review a contract, or every contract in a directory.
+
+    Each contract gets an HTML memo, the same memo as a PDF, and a JSON file.
+    A directory also gets an index and a worklist workbook with every open
+    item in the run.
+    """
     try:
         if path.is_dir():
             reviews, unreadable = review_directory(path, extractor)
@@ -63,6 +99,7 @@ def review(
 
     for result in reviews:
         write_review(result, out_dir)
+        write_pdf_memo(result, out_dir)
         typer.echo(result.summary_line())
     for skipped in unreadable:
         typer.echo(f"{skipped.name}: not reviewed. {skipped.reason}", err=True)
@@ -75,6 +112,7 @@ def review(
         if unreadable:
             summary += f", and {len(unreadable)} could not be read"
         typer.echo(f"{summary}. Index: {index}")
+        typer.echo(f"Worklist: {write_worklist(reviews, out_dir, unreadable)}")
     else:
         typer.echo(f"Memo written to {out_dir / (reviews[0].doc_id + '.html')}")
 
@@ -86,34 +124,83 @@ def review(
 
 @app.command("build-gold")
 def build_gold_command(
-    out_dir: Path = typer.Option(DEFAULT_GOLD, "--out", help="Where to write the gold records."),
+    out_dir: Path | None = typer.Option(None, "--out", help="Where to write the gold records. Defaults to the set's."),
+    corpus_set: CorpusSet = SET_OPTION,
 ) -> None:
     """Regenerate the gold set from the corpus specs."""
-    written = write_gold(out_dir)
+    out_dir = out_dir or SET_DIRS[corpus_set][1]
+    written = write_gold(out_dir, corpus_set)
     typer.echo(f"Wrote {len(written)} gold records to {out_dir}/.")
 
 
 @app.command("eval")
 def eval_command(
-    corpus_dir: Path = typer.Option(DEFAULT_CORPUS, "--corpus", help="Where the contract PDFs are."),
-    gold_dir: Path = typer.Option(DEFAULT_GOLD, "--gold", help="Where the gold records are."),
+    corpus_set: CorpusSet = SET_OPTION,
+    corpus_dir: Path | None = typer.Option(None, "--corpus", help="Where the PDFs are. Defaults to the set's."),
+    gold_dir: Path | None = typer.Option(None, "--gold", help="Where the gold records are. Defaults to the set's."),
     extractor: ExtractorChoice = typer.Option(ExtractorChoice.AUTO, "--extractor"),
     show_mistakes: bool = typer.Option(False, "--mistakes", help="List every individual miss."),
     save: bool = typer.Option(
         False,
         "--save",
-        help="Write the full report to evals/results/, so a published number has a run behind it.",
+        help="Write the report and its claims to the set's results folder, so a published number has a "
+        "run behind it.",
+    ),
+    effort: str | None = typer.Option(
+        None,
+        "--effort",
+        help="Effort for the model extractor: low, medium, high, xhigh or max. Defaults to high, or REVREC_EFFORT.",
+    ),
+    name: str | None = typer.Option(
+        None,
+        "--name",
+        help="With --save, the file name to save under instead of the extractor's, so a run made after a change "
+        "sits beside the one before it.",
     ),
 ) -> None:
     """Score the pipeline against the gold set."""
-    report = run_eval(corpus_dir, gold_dir, extractor)
+    default_corpus, default_gold, results_dir = SET_DIRS[corpus_set]
+    if effort is not None and effort not in llm.EFFORTS:
+        typer.echo(f"--effort must be one of {', '.join(llm.EFFORTS)}", err=True)
+        raise typer.Exit(code=2)
+    if name is not None and not RUN_NAME.fullmatch(name):
+        typer.echo("--name takes lower-case letters, digits, dots and hyphens", err=True)
+        raise typer.Exit(code=2)
+    # With --save, the run so far is written after every contract, so a run
+    # that stops half-way keeps the calls it has already paid for. A run that
+    # finishes replaces it with the report and the claims.
+    so_far: list[SavedRun] = []
+
+    def checkpoint(partial: SavedRun) -> None:
+        so_far[:] = [partial]
+        if save and partial.calls():
+            results_dir.mkdir(parents=True, exist_ok=True)
+            write_lf(partial_path(results_dir, _run_name(partial, name)), partial.model_dump_json(indent=2) + "\n")
+
+    try:
+        report, run = evaluate(
+            corpus_dir or default_corpus, gold_dir or default_gold, extractor, effort=effort, checkpoint=checkpoint
+        )
+    except Exception as exc:
+        _report_stopped(exc, so_far[0] if so_far else None, results_dir, name, save)
+        if isinstance(exc, (anthropic.APIError, llm.ModelDeclined, RuntimeError)):
+            raise typer.Exit(code=1) from exc
+        raise
     typer.echo(markdown_table(report))
+    summary = run.summary()
+    if summary:
+        typer.echo(f"\n{summary}")
 
     if save:
-        results_dir = Path("evals/results")
         results_dir.mkdir(parents=True, exist_ok=True)
-        target = write_lf(results_dir / f"{report.extractor}.json", report.model_dump_json(indent=2) + "\n")
-        typer.echo(f"\nSaved to {target}")
+        # A model run is named for its model and effort, so a new run sits next
+        # to the published one instead of replacing it.
+        target = write_lf(results_dir / f"{_run_name(run, name)}.json", report.model_dump_json(indent=2) + "\n")
+        # The run behind the counts: every claim and what grounding did with
+        # it, so `rescore` can score it again without extracting again.
+        claims = write_lf(claims_path(target), run.model_dump_json(indent=2) + "\n")
+        partial_path(results_dir, _run_name(run, name)).unlink(missing_ok=True)
+        typer.echo(f"\nSaved to {target}, and the claims behind it to {claims}")
 
     if show_mistakes:
         typer.echo("")
@@ -129,6 +216,81 @@ def eval_command(
     # Worth a non-zero exit so CI notices without anyone reading the table.
     if report.citations_resolved != report.citations_total:
         raise typer.Exit(code=1)
+
+
+def _run_name(run: SavedRun, name: str | None) -> str:
+    """--name if given; otherwise the extractor, or llm-<model>-<effort> for a model run."""
+    if name is not None:
+        return name
+    return run.extractor if not run.calls() else f"llm-{run.model}-{run.effort}"
+
+
+def _report_stopped(exc: Exception, partial: SavedRun | None, results_dir: Path, name: str | None, save: bool) -> None:
+    typer.echo(f"The run stopped: {type(exc).__name__}: {exc}", err=True)
+    if partial is None or not partial.calls():
+        typer.echo("No model call had been billed.", err=True)
+        return
+    typer.echo(f"Before it stopped, {len(partial.contracts)} contract(s) were extracted. {partial.summary()}", err=True)
+    if save:
+        path = partial_path(results_dir, _run_name(partial, name))
+        typer.echo(f"Their claims and calls are saved in {path}.", err=True)
+    else:
+        typer.echo("Nothing was saved: without --save the run is only printed.", err=True)
+
+
+@app.command("estimate")
+def estimate_command(
+    corpus_set: CorpusSet = SET_OPTION,
+    model: str | None = typer.Option(None, "--model", help="The model to cost. Defaults to the extractor's."),
+) -> None:
+    """Estimate the tokens and cost of a model run over a set, without calling the API."""
+    corpus_dir, _, results_dir = SET_DIRS[corpus_set]
+    try:
+        estimate = estimate_run(corpus_dir, model or llm.model_name(), rules_claims=results_dir / "rules.claims.json")
+    except (FileNotFoundError, ValueError) as exc:
+        typer.echo(f"Cannot estimate: {exc}", err=True)
+        raise typer.Exit(code=1) from exc
+    for line in estimate.lines(f"{corpus_set.value} set"):
+        typer.echo(line)
+
+
+@app.command("rescore")
+def rescore_command(
+    saved: Path = typer.Argument(..., help="A saved run, evals/results/<extractor>.claims.json."),
+    corpus_set: CorpusSet = SET_OPTION,
+    corpus_dir: Path | None = typer.Option(None, "--corpus", help="Where the PDFs are. Defaults to the set's."),
+    gold_dir: Path | None = typer.Option(None, "--gold", help="Where the gold records are. Defaults to the set's."),
+) -> None:
+    """Score a saved run again from its claims, without extracting anything."""
+    default_corpus, default_gold, _ = SET_DIRS[corpus_set]
+    try:
+        run = SavedRun.model_validate_json(saved.read_text(encoding="utf-8"))
+        report = rescore(run, corpus_dir or default_corpus, gold_dir or default_gold)
+    except (OSError, CorpusChanged, ValueError) as exc:
+        typer.echo(f"Cannot rescore: {exc}", err=True)
+        raise typer.Exit(code=1) from exc
+    typer.echo(markdown_table(report))
+
+    if report.citations_resolved != report.citations_total:
+        raise typer.Exit(code=1)
+
+
+@app.command("judgment-misses")
+def judgment_misses_command(
+    saved: Path = typer.Argument(..., help="A saved run, evals/results/<extractor>.claims.json."),
+    corpus_set: CorpusSet = SET_OPTION,
+    gold_dir: Path | None = typer.Option(None, "--gold", help="Where the gold records are. Defaults to the set's."),
+) -> None:
+    """List the judgments a saved run raised or missed against the gold, with the passages behind them."""
+    _, default_gold, _ = SET_DIRS[corpus_set]
+    try:
+        run = SavedRun.model_validate_json(saved.read_text(encoding="utf-8"))
+        misses = judgment_misses(run, gold_dir or default_gold)
+    except (OSError, ValueError) as exc:
+        typer.echo(f"Cannot list the misses: {exc}", err=True)
+        raise typer.Exit(code=1) from exc
+    for line in report_lines(misses):
+        typer.echo(line)
 
 
 if __name__ == "__main__":

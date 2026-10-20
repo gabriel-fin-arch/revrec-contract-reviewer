@@ -184,6 +184,11 @@ def _variable_consideration(extraction: ContractExtraction) -> JudgmentFlag | No
 # I don't think that is mine to settle by tuning a regex. A group's tolerance
 # for a spurious flag against a missed one is a risk-appetite question, and it
 # belongs to whoever owns the review, not to me.
+#
+# Tried on 20 October 2026, in the prompt rather than here: integration only
+# where the customer can't benefit from one promise without the other. It
+# removed the two development-set flags it was aimed at and left the test set
+# where it was, so it was dropped. "Judgment precision" in docs/evaluation.md.
 def _distinct_uncertain(extraction: ContractExtraction) -> JudgmentFlag | None:
     integrated = [ob for ob in extraction.obligations if ob.integration_language.is_known]
     if not integrated:

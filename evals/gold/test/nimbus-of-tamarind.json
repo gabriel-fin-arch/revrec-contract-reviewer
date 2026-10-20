@@ -1,0 +1,34 @@
+{
+  "doc_id": "nimbus-of-tamarind",
+  "fields": {
+    "customer": "Tamarind Shipping Pte. Ltd.",
+    "supplier": "Nimbus Analytics, Inc.",
+    "agreement_type": "order_form",
+    "currency": "USD",
+    "effective_date": "2025-12-08",
+    "stated_term_months": 24,
+    "termination_for_convenience": false,
+    "termination_notice_days": null,
+    "net_days": 30,
+    "total_fixed_consideration": "560000"
+  },
+  "obligations": [
+    {
+      "kind": "software_license",
+      "stated_price": "360000"
+    },
+    {
+      "kind": "implementation",
+      "stated_price": "80000"
+    },
+    {
+      "kind": "support",
+      "stated_price": "120000"
+    }
+  ],
+  "judgments": [
+    "distinct_uncertain",
+    "significant_financing",
+    "ssp_not_observable"
+  ]
+}

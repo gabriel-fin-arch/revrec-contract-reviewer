@@ -1,0 +1,24 @@
+{
+  "doc_id": "nimbus-sow-harbourline",
+  "fields": {
+    "customer": "Harbourline Port Authority",
+    "supplier": "Nimbus Analytics, Inc.",
+    "agreement_type": "statement_of_work",
+    "currency": "USD",
+    "effective_date": "2025-12-01",
+    "stated_term_months": null,
+    "termination_for_convenience": false,
+    "termination_notice_days": null,
+    "net_days": 30,
+    "total_fixed_consideration": "180000"
+  },
+  "obligations": [
+    {
+      "kind": "professional_services",
+      "stated_price": "180000"
+    }
+  ],
+  "judgments": [
+    "variable_consideration_constraint"
+  ]
+}

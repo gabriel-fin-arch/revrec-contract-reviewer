@@ -57,4 +57,3 @@ def test_a_file_that_is_not_a_pdf_is_unreadable_rather_than_a_parser_error(tmp_p
 
     with pytest.raises(UnreadableContract, match=r"fake\.pdf could not be read as a PDF"):
         load_contract(fake)
-

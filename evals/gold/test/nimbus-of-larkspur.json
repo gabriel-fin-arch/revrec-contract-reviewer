@@ -1,0 +1,33 @@
+{
+  "doc_id": "nimbus-of-larkspur",
+  "fields": {
+    "customer": "Larkspur Health Systems, Inc.",
+    "supplier": "Nimbus Analytics, Inc.",
+    "agreement_type": "order_form",
+    "currency": "USD",
+    "effective_date": "2025-11-17",
+    "stated_term_months": 36,
+    "termination_for_convenience": false,
+    "termination_notice_days": null,
+    "net_days": 30,
+    "total_fixed_consideration": "459000"
+  },
+  "obligations": [
+    {
+      "kind": "saas_subscription",
+      "stated_price": "360000"
+    },
+    {
+      "kind": "implementation",
+      "stated_price": "45000"
+    },
+    {
+      "kind": "support",
+      "stated_price": "54000"
+    }
+  ],
+  "judgments": [
+    "material_right",
+    "ssp_not_observable"
+  ]
+}

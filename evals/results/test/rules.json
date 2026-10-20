@@ -1,0 +1,247 @@
+{
+  "extractor": "rules",
+  "model": null,
+  "per_contract": [
+    {
+      "doc_id": "nimbus-amendment-wexford",
+      "fields": {
+        "true_positives": 6,
+        "false_positives": 0,
+        "false_negatives": 2
+      },
+      "silence": {
+        "true_positives": 2,
+        "false_positives": 0,
+        "false_negatives": 0
+      },
+      "obligations": {
+        "true_positives": 0,
+        "false_positives": 0,
+        "false_negatives": 1
+      },
+      "judgments": {
+        "true_positives": 1,
+        "false_positives": 0,
+        "false_negatives": 1
+      },
+      "citations_total": 9,
+      "citations_resolved": 9,
+      "dropped_for_no_evidence": 0,
+      "mistakes": [
+        "stated_term_months: missed (gold 36, status absent)",
+        "total_fixed_consideration: missed (gold '306000', status absent)",
+        "obligation missed: saas_subscription at 306000 (x1)",
+        "judgment expected but not raised: ssp_not_observable"
+      ]
+    },
+    {
+      "doc_id": "nimbus-of-alder",
+      "fields": {
+        "true_positives": 9,
+        "false_positives": 0,
+        "false_negatives": 0
+      },
+      "silence": {
+        "true_positives": 1,
+        "false_positives": 0,
+        "false_negatives": 0
+      },
+      "obligations": {
+        "true_positives": 1,
+        "false_positives": 0,
+        "false_negatives": 0
+      },
+      "judgments": {
+        "true_positives": 0,
+        "false_positives": 0,
+        "false_negatives": 0
+      },
+      "citations_total": 14,
+      "citations_resolved": 14,
+      "dropped_for_no_evidence": 0,
+      "mistakes": []
+    },
+    {
+      "doc_id": "nimbus-of-fenwick",
+      "fields": {
+        "true_positives": 9,
+        "false_positives": 0,
+        "false_negatives": 1
+      },
+      "silence": {
+        "true_positives": 0,
+        "false_positives": 0,
+        "false_negatives": 0
+      },
+      "obligations": {
+        "true_positives": 0,
+        "false_positives": 0,
+        "false_negatives": 1
+      },
+      "judgments": {
+        "true_positives": 1,
+        "false_positives": 0,
+        "false_negatives": 1
+      },
+      "citations_total": 10,
+      "citations_resolved": 10,
+      "dropped_for_no_evidence": 0,
+      "mistakes": [
+        "total_fixed_consideration: missed (gold '66000', status absent)",
+        "obligation missed: saas_subscription at 66000 (x1)",
+        "judgment expected but not raised: variable_consideration_constraint"
+      ]
+    },
+    {
+      "doc_id": "nimbus-of-larkspur",
+      "fields": {
+        "true_positives": 8,
+        "false_positives": 0,
+        "false_negatives": 1
+      },
+      "silence": {
+        "true_positives": 1,
+        "false_positives": 0,
+        "false_negatives": 0
+      },
+      "obligations": {
+        "true_positives": 2,
+        "false_positives": 1,
+        "false_negatives": 1
+      },
+      "judgments": {
+        "true_positives": 1,
+        "false_positives": 0,
+        "false_negatives": 1
+      },
+      "citations_total": 20,
+      "citations_resolved": 20,
+      "dropped_for_no_evidence": 0,
+      "mistakes": [
+        "termination_for_convenience: missed (gold False, status absent)",
+        "obligation not in gold: other at 45000 (x1)",
+        "obligation missed: implementation at 45000 (x1)",
+        "judgment expected but not raised: material_right"
+      ]
+    },
+    {
+      "doc_id": "nimbus-of-saltmarsh",
+      "fields": {
+        "true_positives": 9,
+        "false_positives": 0,
+        "false_negatives": 0
+      },
+      "silence": {
+        "true_positives": 1,
+        "false_positives": 0,
+        "false_negatives": 0
+      },
+      "obligations": {
+        "true_positives": 1,
+        "false_positives": 1,
+        "false_negatives": 1
+      },
+      "judgments": {
+        "true_positives": 1,
+        "false_positives": 0,
+        "false_negatives": 1
+      },
+      "citations_total": 18,
+      "citations_resolved": 18,
+      "dropped_for_no_evidence": 0,
+      "mistakes": [
+        "obligation not in gold: other at 72000 (x1)",
+        "obligation missed: third_party_resale at 72000 (x1)",
+        "judgment expected but not raised: principal_vs_agent"
+      ]
+    },
+    {
+      "doc_id": "nimbus-of-tamarind",
+      "fields": {
+        "true_positives": 8,
+        "false_positives": 0,
+        "false_negatives": 1
+      },
+      "silence": {
+        "true_positives": 1,
+        "false_positives": 0,
+        "false_negatives": 0
+      },
+      "obligations": {
+        "true_positives": 2,
+        "false_positives": 1,
+        "false_negatives": 1
+      },
+      "judgments": {
+        "true_positives": 1,
+        "false_positives": 0,
+        "false_negatives": 2
+      },
+      "citations_total": 19,
+      "citations_resolved": 19,
+      "dropped_for_no_evidence": 0,
+      "mistakes": [
+        "termination_for_convenience: missed (gold False, status absent)",
+        "obligation not in gold: other at 80000 (x1)",
+        "obligation missed: implementation at 80000 (x1)",
+        "judgment expected but not raised: distinct_uncertain",
+        "judgment expected but not raised: significant_financing"
+      ]
+    },
+    {
+      "doc_id": "nimbus-sow-harbourline",
+      "fields": {
+        "true_positives": 6,
+        "false_positives": 0,
+        "false_negatives": 2
+      },
+      "silence": {
+        "true_positives": 2,
+        "false_positives": 0,
+        "false_negatives": 0
+      },
+      "obligations": {
+        "true_positives": 0,
+        "false_positives": 0,
+        "false_negatives": 1
+      },
+      "judgments": {
+        "true_positives": 0,
+        "false_positives": 0,
+        "false_negatives": 1
+      },
+      "citations_total": 6,
+      "citations_resolved": 6,
+      "dropped_for_no_evidence": 0,
+      "mistakes": [
+        "termination_for_convenience: missed (gold False, status absent)",
+        "total_fixed_consideration: missed (gold '180000', status absent)",
+        "obligation missed: professional_services at 180000 (x1)",
+        "judgment expected but not raised: variable_consideration_constraint"
+      ]
+    }
+  ],
+  "fields": {
+    "true_positives": 55,
+    "false_positives": 0,
+    "false_negatives": 7
+  },
+  "silence": {
+    "true_positives": 8,
+    "false_positives": 0,
+    "false_negatives": 0
+  },
+  "obligations": {
+    "true_positives": 6,
+    "false_positives": 3,
+    "false_negatives": 6
+  },
+  "judgments": {
+    "true_positives": 5,
+    "false_positives": 0,
+    "false_negatives": 7
+  },
+  "citations_total": 96,
+  "citations_resolved": 96,
+  "dropped_for_no_evidence": 0
+}
