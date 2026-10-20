@@ -355,6 +355,15 @@ uv run pytest -q
 uv run pre-commit install
 ```
 
+Or without Python or uv, with Docker: the image reviews the committed corpus
+offline and writes the memos to a folder you mount (on Linux, add
+`--user "$(id -u):$(id -g)"`; see the `Dockerfile`).
+
+```bash
+docker build -t revrec-contract-reviewer .
+docker run --rm -v "$PWD/out:/app/out" revrec-contract-reviewer
+```
+
 ## Licence
 
 MIT.

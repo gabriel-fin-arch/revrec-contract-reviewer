@@ -40,6 +40,25 @@ jobs:
           uv run revrec generate-corpus --set test
           uv run revrec eval --set test --extractor rules
 
+  container:
+    # The image a reviewer can run without Python or uv: built from this
+    # commit, the offline review run in it with a host folder for the memos,
+    # and the memos checked on the host side.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Build the image
+        run: docker build -t revrec-contract-reviewer .
+
+      - name: Run the offline review in it
+        run: |
+          mkdir -p memos
+          docker run --rm --user "$(id -u):$(id -g)" -v "$PWD/memos:/app/out" revrec-contract-reviewer | tee review.txt
+          grep -q "contracts need a reviewer" review.txt
+          test -f memos/index.html
+          test "$(ls memos/*.html | wc -l)" -gt 10
+
   lowest-versions:
     # The floors in pyproject are a promise the job above never tests: it
     # resolves to the newest of everything. This one installs the oldest

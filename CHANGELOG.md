@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- A `Dockerfile` that reviews the committed corpus offline with one command
+  and writes the memos and the index to a mounted folder. Runtime
+  dependencies only, a non-root user, no `.env` or API key in the image
+  (`.dockerignore`). CI builds the image, runs the review in it and checks
+  the memos reach the host. It runs `review` until the `demo` command lands.
 - pre-commit: ruff, whitespace, end-of-file, YAML, TOML, merge-conflict and
   large-file checks, and two that refuse a commit holding a `.env` or
   anything shaped like an Anthropic API key. ruff runs at the project's own
