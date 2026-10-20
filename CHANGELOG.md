@@ -2,6 +2,20 @@
 
 ## Unreleased
 
+- The development gold for Tessellate was inconsistent with Aster's, and is
+  corrected. Tessellate's SOW says "a single integrated engagement", phases
+  "not separately saleable" and "no usable output until cutover" -- almost
+  word for word what Aster says, where the gold expects the distinct-or-not
+  question. The gold now expects `distinct_uncertain` on Tessellate too.
+  Every saved development run is rescored from its claims, and the September
+  run, which kept only its counts, is corrected from its own saved record: it
+  lists the flag as raised but not expected, so its tallies move by exactly
+  that one flag (judgment precision 0.76 to 0.79). Judgment precision /
+  recall on the development set: rules 0.95 / 0.83 to 0.95 / 0.79, Claude
+  Opus 5.5 0.87 / 0.87 to 0.87 / 0.83, Claude Opus 5 0.85 / 0.96 to
+  0.88 / 0.96, the dropped prompt change's run 0.89 / 0.74 to 0.95 / 0.75.
+  The README's published blocks are re-rendered, `docs/evaluation.md` moves
+  with them, and the PDFs are byte for byte what they were.
 - The test-set gold for Harbourline was incomplete, and is corrected. The
   contract names the handover workshop among the deliverables, so it is a
   training obligation, and a single fixed fee over three deliverables raises

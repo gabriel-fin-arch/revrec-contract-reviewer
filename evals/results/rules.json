@@ -345,7 +345,7 @@
       "judgments": {
         "true_positives": 1,
         "false_positives": 0,
-        "false_negatives": 0
+        "false_negatives": 1
       },
       "citations_total": 10,
       "citations_resolved": 10,
@@ -353,7 +353,8 @@
       "mistakes": [
         "net_days: missed (gold 30, status absent)",
         "total_fixed_consideration: missed (gold '240000', status absent)",
-        "obligation missed: professional_services at 240000 (x1)"
+        "obligation missed: professional_services at 240000 (x1)",
+        "judgment expected but not raised: distinct_uncertain"
       ]
     }
   ],
@@ -375,7 +376,7 @@
   "judgments": {
     "true_positives": 19,
     "false_positives": 1,
-    "false_negatives": 4
+    "false_negatives": 5
   },
   "citations_total": 210,
   "citations_resolved": 210,

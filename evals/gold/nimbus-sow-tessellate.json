@@ -19,6 +19,7 @@
     }
   ],
   "judgments": [
+    "distinct_uncertain",
     "variable_consideration_constraint"
   ]
 }

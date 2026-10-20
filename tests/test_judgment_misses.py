@@ -39,6 +39,7 @@ def test_the_opus_5_5_development_run_shows_its_false_positives_with_the_passage
     assert {(miss.doc_id, miss.judgment) for miss in misses if not miss.raised} == {
         ("nimbus-amendment-orchid", "ssp_not_observable"),
         ("nimbus-of-northgate", "significant_financing"),
+        ("nimbus-sow-tessellate", "distinct_uncertain"),
         ("nimbus-sow-tessellate", "variable_consideration_constraint"),
     }
 
@@ -48,7 +49,7 @@ def test_the_report_counts_the_misses_by_type():
 
     assert lines[0] == "Raised and not in the gold: 3 (distinct_uncertain 2, variable_consideration_constraint 1)"
     assert (
-        "In the gold and not raised: 3 (significant_financing 1, ssp_not_observable 1, "
+        "In the gold and not raised: 4 (distinct_uncertain 1, significant_financing 1, ssp_not_observable 1, "
         "variable_consideration_constraint 1)"
     ) in lines
 

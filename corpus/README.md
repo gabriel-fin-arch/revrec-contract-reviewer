@@ -25,7 +25,7 @@ next to each other.
 | `nimbus-of-helix` | order_form | GBP | enforceable_term, ssp_not_observable, variable_consideration_constraint |
 | `nimbus-amendment-orchid` | amendment | EUR | contract_modification, ssp_not_observable |
 | `nimbus-of-beacon` | order_form | USD | principal_vs_agent, ssp_not_observable |
-| `nimbus-sow-tessellate` | statement_of_work | USD | variable_consideration_constraint |
+| `nimbus-sow-tessellate` | statement_of_work | USD | distinct_uncertain, variable_consideration_constraint |
 | `nimbus-of-northgate` | order_form | USD | significant_financing, ssp_not_observable, variable_consideration_constraint |
 | `nimbus-of-pinegrove` | order_form | USD | _none_ |
 | `nimbus-msa-vantage` | master_agreement | USD | enforceable_term |
@@ -57,7 +57,7 @@ The one contract in the corpus where an obligation transfers at a point in time.
 
 ### `nimbus-sow-tessellate`
 
-Variable consideration in both directions -- a bonus for early delivery and a penalty for late -- on a single performance obligation. Because there is only one obligation there is nothing to allocate, so no SSP question arises. The corpus should not produce the same three flags on every document.
+Variable consideration in both directions -- a bonus for early delivery and a penalty for late -- on what is meant to be a single performance obligation, so no SSP question arises. But 'single integrated engagement', 'not separately saleable' and 'no usable output until cutover' read almost word for word like Aster, where the distinct-or-not question is expected, so it is expected here too. The corpus should not produce the same three flags on every document.
 
 ### `nimbus-of-northgate`
 
