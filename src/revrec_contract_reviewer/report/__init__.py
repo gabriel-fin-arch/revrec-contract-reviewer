@@ -6,5 +6,15 @@ from revrec_contract_reviewer.report.memo import (
     write_index,
     write_review,
 )
+from revrec_contract_reviewer.report.pdf import render_pdf_memo, write_pdf_memo
+from revrec_contract_reviewer.report.worklist import write_worklist
 
-__all__ = ["render_index", "render_memo", "write_index", "write_review"]
+__all__ = [
+    "render_index",
+    "render_memo",
+    "render_pdf_memo",
+    "write_index",
+    "write_pdf_memo",
+    "write_review",
+    "write_worklist",
+]
