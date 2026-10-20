@@ -203,12 +203,12 @@
       "obligations": {
         "true_positives": 0,
         "false_positives": 0,
-        "false_negatives": 1
+        "false_negatives": 2
       },
       "judgments": {
         "true_positives": 0,
         "false_positives": 0,
-        "false_negatives": 1
+        "false_negatives": 2
       },
       "citations_total": 6,
       "citations_resolved": 6,
@@ -217,6 +217,8 @@
         "termination_for_convenience: missed (gold False, status absent)",
         "total_fixed_consideration: missed (gold '180000', status absent)",
         "obligation missed: professional_services at 180000 (x1)",
+        "obligation missed: training at - (x1)",
+        "judgment expected but not raised: ssp_not_observable",
         "judgment expected but not raised: variable_consideration_constraint"
       ]
     }
@@ -234,12 +236,12 @@
   "obligations": {
     "true_positives": 6,
     "false_positives": 3,
-    "false_negatives": 6
+    "false_negatives": 7
   },
   "judgments": {
     "true_positives": 5,
     "false_positives": 0,
-    "false_negatives": 7
+    "false_negatives": 8
   },
   "citations_total": 96,
   "citations_resolved": 96,

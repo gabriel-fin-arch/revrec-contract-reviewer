@@ -186,22 +186,19 @@
         "false_negatives": 0
       },
       "obligations": {
-        "true_positives": 1,
-        "false_positives": 1,
+        "true_positives": 2,
+        "false_positives": 0,
         "false_negatives": 0
       },
       "judgments": {
-        "true_positives": 1,
-        "false_positives": 1,
+        "true_positives": 2,
+        "false_positives": 0,
         "false_negatives": 0
       },
       "citations_total": 21,
       "citations_resolved": 21,
       "dropped_for_no_evidence": 0,
-      "mistakes": [
-        "obligation not in gold: training at - (x1)",
-        "judgment raised but not expected: ssp_not_observable"
-      ]
+      "mistakes": []
     }
   ],
   "fields": {
@@ -215,13 +212,13 @@
     "false_negatives": 0
   },
   "obligations": {
-    "true_positives": 11,
-    "false_positives": 2,
+    "true_positives": 12,
+    "false_positives": 1,
     "false_negatives": 1
   },
   "judgments": {
-    "true_positives": 11,
-    "false_positives": 2,
+    "true_positives": 12,
+    "false_positives": 1,
     "false_negatives": 1
   },
   "citations_total": 173,

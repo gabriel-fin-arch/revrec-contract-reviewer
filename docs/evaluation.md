@@ -256,15 +256,15 @@ again afterwards.
 | Measure | Development (12) | Test (7) |
 |---|---|---|
 | Contract fields | 1.00 / 0.91 | 1.00 / 0.89 |
-| Performance obligations | 0.79 / 0.75 | 0.67 / 0.50 |
-| Judgment flags | 0.95 / 0.83 | 1.00 / 0.42 |
+| Performance obligations | 0.79 / 0.75 | 0.67 / 0.46 |
+| Judgment flags | 0.95 / 0.83 | 1.00 / 0.38 |
 
 Precision / recall. On the test set: unstated fields left blank 8/8, citations
 re-resolved 96/96 (100%), claims dropped for no evidence 0. Saved run:
 [`evals/results/test/rules.json`](../evals/results/test/rules.json), with its
 claims in `rules.claims.json` beside it.
 
-Precision holds and recall falls, most of all on judgments: 5 of the 12
+Precision holds and recall falls, most of all on judgments: 5 of the 13
 expected were raised, and none was raised that shouldn't have been. What was
 missed, contract by contract, as `eval --set test --mistakes` lists it:
 
@@ -272,7 +272,9 @@ missed, contract by contract, as `eval --set test --mistakes` lists it:
   read, nor the obligation it prices. Fenwick's service credits were not raised
   as variable consideration, nor Wexford's allocation question.
 - **Harbourline**'s fixed fee, in a milestone table, was not read as a total,
-  and its late-delivery reduction was not raised as variable consideration.
+  its late-delivery reduction was not raised as variable consideration, and
+  neither the handover workshop nor the allocation question behind it was
+  found.
 - **Larkspur**, **Tamarind** and **Harbourline** say there is no termination
   for convenience in three different ways ("may not be terminated for
   convenience", "non-cancellable", "only for ... material breach"), and none
@@ -335,25 +337,25 @@ run-to-run variance described above.
 | Measure | Rules | Claude Opus 5.5 | Claude Opus 5 |
 |---|---|---|---|
 | Contract fields | 1.00 / 0.89 | 0.98 / 0.97 | 0.98 / 0.97 |
-| Performance obligations | 0.67 / 0.50 | 0.85 / 0.92 | 0.85 / 0.92 |
-| Judgment flags | 1.00 / 0.42 | 0.85 / 0.92 | 0.65 / 0.92 |
+| Performance obligations | 0.67 / 0.46 | 0.92 / 0.92 | 0.92 / 0.92 |
+| Judgment flags | 1.00 / 0.38 | 0.92 / 0.92 | 0.71 / 0.92 |
 
 Unstated fields left blank: 8/8 on every run. Citations re-resolved: 173/173
 for Opus 5.5, 180/180 for Opus 5. Claims dropped for no evidence: 2 and 3.
 
-Both models find 11 of the 12 expected judgments. What separates them is what
-else they raise. Claude Opus 5.5 raised two more: variable consideration on
-Saltmarsh, and the allocation question on Harbourline. Claude Opus 5 raised six:
-the distinct-or-not question and principal versus agent on Larkspur, the first
-of them on configuration services the contract says the customer can use the
-platform without; distinct-or-not and variable consideration on Saltmarsh; a
-material right on Wexford, which has no renewal; and the allocation question on
-Harbourline. On contracts nobody tuned against, the older model reads the
-taxonomy more liberally, which is the failure the September run already showed.
+Both models find 12 of the 13 expected judgments; both miss the allocation
+question on Wexford. What separates them is what else they raise. Claude Opus
+5.5 raised one more: variable consideration on Saltmarsh. Claude Opus 5 raised
+five: the distinct-or-not question and principal versus agent on Larkspur, the
+first of them on configuration services the contract says the customer can use
+the platform without; distinct-or-not and variable consideration on Saltmarsh;
+and a material right on Wexford, which has no renewal. On contracts nobody
+tuned against, the older model reads the taxonomy more liberally, which is the
+failure the September run already showed.
 
 ### Open questions about the test gold
 
-Two places where both models disagree with the gold in the same way. Neither is
+One place where both models disagree with the gold in the same way. It is not
 changed here: correcting the test set's answers after seeing results is right
 only for an authoring error, and a change would be recorded in the CHANGELOG
 with its reason.
@@ -363,10 +365,12 @@ with its reason.
   what the amendment prints for the period it covers ("thirty-six months",
   "EUR 306,000"); 24 months is the extension, and EUR 102,000 the annual fee.
   Whether a reviewer would read it as the models do is open.
-- **Harbourline.** Both models find a training obligation in the handover
-  workshop, which the gold doesn't list, and raise the allocation question
-  because of it. The workshop is named among the deliverables, so the gold may
-  be the one that's incomplete.
+
+A second disagreement stood here and is resolved: both models found a training
+obligation in Harbourline's handover workshop, which the gold didn't list, and
+raised the allocation question because of it. The workshop is named among the
+deliverables, so the gold was the one that was incomplete -- an authoring
+error, corrected in the gold with its reason in the CHANGELOG.
 
 ## Judgment precision: one change, argued from the development set, and dropped
 
@@ -459,14 +463,14 @@ Judgment flags, precision / recall:
 |---|---|---|
 | Development | 0.87 / 0.87 | 0.89 / 0.74 |
 | Development without Aster | 0.84 / 0.84 | 0.89 / 0.89 |
-| Test | 0.85 / 0.92 | 0.85 / 0.92 |
+| Test | 0.92 / 0.92 | 0.92 / 0.92 |
 
-**On the test set, nothing changed.** The same eleven judgments found, the same
-one missed (the allocation question on Wexford), the same two raised against
-the gold (variable consideration on Saltmarsh, the allocation question on
-Harbourline). Claude Opus 5.5 raised no distinct-or-not question on the test
+**On the test set, nothing changed.** The same twelve judgments found, the same
+one missed (the allocation question on Wexford), the same one raised against
+the gold (variable consideration on Saltmarsh). Claude Opus 5.5 raised no
+distinct-or-not question on the test
 set it shouldn't have, before or after, so there was nothing there for this
-change to fix. Performance obligations moved from 0.85 / 0.92 to 0.77 / 0.83,
+change to fix. Performance obligations moved from 0.92 / 0.92 to 0.85 / 0.85,
 on Harbourline, where the after run split the work into more promises.
 
 **On the development set, the change did what it was for and one thing it

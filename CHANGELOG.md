@@ -2,6 +2,19 @@
 
 ## Unreleased
 
+- The test-set gold for Harbourline was incomplete, and is corrected. The
+  contract names the handover workshop among the deliverables, so it is a
+  training obligation, and a single fixed fee over three deliverables raises
+  the allocation question; both models found both and were scored wrong for
+  it. The gold now lists the training obligation and `ssp_not_observable`,
+  the spec's truth with them, and every saved test-set run is rescored from
+  its claims: on the test set, judgment precision / recall goes from
+  0.85 / 0.92 to 0.92 / 0.92 for Claude Opus 5.5 and from 0.65 / 0.92 to
+  0.71 / 0.92 for Claude Opus 5, and the rules' recall falls to 0.46 on
+  obligations and 0.38 on judgments. Correcting a held-out answer after
+  seeing results is only right for an authoring error; this was one, found
+  because both models disagreed with the gold in the same way, and the PDFs
+  are byte for byte what they were. Wexford's disagreement is left open.
 - A `Dockerfile` that reviews the committed corpus offline with one command
   and writes the memos and the index to a mounted folder. Runtime
   dependencies only, a non-root user, no `.env` or API key in the image

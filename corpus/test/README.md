@@ -17,7 +17,7 @@ again afterwards.
 |---|---|---|---|
 | `nimbus-of-larkspur` | order_form | USD | material_right, ssp_not_observable |
 | `nimbus-of-fenwick` | order_form | GBP | enforceable_term, variable_consideration_constraint |
-| `nimbus-sow-harbourline` | statement_of_work | USD | variable_consideration_constraint |
+| `nimbus-sow-harbourline` | statement_of_work | USD | ssp_not_observable, variable_consideration_constraint |
 | `nimbus-amendment-wexford` | amendment | EUR | contract_modification, ssp_not_observable |
 | `nimbus-of-saltmarsh` | order_form | USD | principal_vs_agent, ssp_not_observable |
 | `nimbus-of-tamarind` | order_form | USD | distinct_uncertain, significant_financing, ssp_not_observable |
@@ -35,7 +35,7 @@ The fee is stated in a sentence rather than a table, as short order forms often 
 
 ### `nimbus-sow-harbourline`
 
-A fixed fee invoiced on milestones, which the contract says in so many words, and a reduction for late delivery that makes the price variable anyway. One deliverable, so nothing to allocate; termination only for breach, so no question about the enforceable term.
+A fixed fee invoiced on milestones, which the contract says in so many words, and a reduction for late delivery that makes the price variable anyway. Three deliverables under one unstated split -- the handover workshop is a training obligation -- so the allocation is a question; termination only for breach, so no question about the enforceable term.
 
 ### `nimbus-amendment-wexford`
 
