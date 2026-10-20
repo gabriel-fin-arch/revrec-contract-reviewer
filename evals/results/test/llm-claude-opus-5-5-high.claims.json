@@ -1,0 +1,4125 @@
+{
+  "extractor": "llm",
+  "model": "claude-opus-5-5",
+  "run_at": "2026-10-19T11:30:07Z",
+  "effort": "high",
+  "contracts": [
+    {
+      "doc_id": "nimbus-amendment-wexford",
+      "pdf_sha256": "5e63506777db50c3aa499be3aec34b177c772d7abf109c8bd8179ba6288a0260",
+      "claims": {
+        "fields": [
+          {
+            "value": "amendment",
+            "quotes": [
+              "AMENDMENT NO. 1 TO ORDER FORM NA-OF-2023-207"
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "agreement_type"
+          },
+          {
+            "value": "Wexford Instruments GmbH",
+            "quotes": [
+              "Wexford Instruments GmbH (\"Customer\")"
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "customer"
+          },
+          {
+            "value": "Nimbus Analytics GmbH",
+            "quotes": [
+              "Nimbus Analytics GmbH (\"Nimbus\")"
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "supplier"
+          },
+          {
+            "value": "Order Form NA-OF-2023-207 dated 1 January 2024",
+            "quotes": [
+              "amends Order Form NA-OF-2023-207 dated 1 January 2024"
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "amends"
+          },
+          {
+            "value": "EUR",
+            "quotes": [
+              "the annual subscription fee is reduced from EUR 120,000 to EUR 102,000"
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "currency"
+          },
+          {
+            "value": "306000",
+            "quotes": [
+              "The total subscription fees payable for the period from 1 January 2026 to 31 December 2028 (thirty-six months)",
+              "are therefore EUR 306,000"
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "total_fixed_consideration"
+          },
+          {
+            "value": "2025-11-03",
+            "quotes": [
+              "This Amendment No. 1 is entered into as of 3 November 2025"
+            ],
+            "conflicting": false,
+            "note": "The revised fees apply with effect from 1 January 2026.",
+            "field": "effective_date"
+          },
+          {
+            "value": "24",
+            "quotes": [
+              "The Subscription Term is extended by twenty-four (24) months and now ends on 31 December 2028."
+            ],
+            "conflicting": false,
+            "note": "24 months is the stated extension. The amendment separately describes the fee period from 1 January 2026 to 31 December 2028 as thirty-six months.",
+            "field": "stated_term_months"
+          },
+          {
+            "value": "30",
+            "quotes": [
+              "payable within thirty (30) days of the invoice date"
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "net_days"
+          },
+          {
+            "value": "annually, invoiced on 1 January of each year",
+            "quotes": [
+              "invoiced in three annual instalments of EUR 102,000 on 1 January of each year"
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "billing_frequency"
+          }
+        ],
+        "obligations": [
+          {
+            "label": "Nimbus Quality Analytics Platform subscription",
+            "kind": "saas_subscription",
+            "quotes": [
+              "Customer subscribes to the Nimbus Quality Analytics Platform"
+            ],
+            "stated_price": [
+              {
+                "value": "102000",
+                "quotes": [
+                  "the annual subscription fee is reduced from EUR 120,000 to EUR 102,000"
+                ],
+                "conflicting": false,
+                "note": "Annual fee from 1 January 2026. It replaces the prior annual fee of EUR 120,000."
+              }
+            ],
+            "list_price": [],
+            "duration_months": [
+              {
+                "value": "36",
+                "quotes": [
+                  "The total subscription fees payable for the period from 1 January 2026 to 31 December 2028 (thirty-six months)"
+                ],
+                "conflicting": false,
+                "note": "This is the period covered by the revised fees. The Subscription Term extension itself is 24 months."
+              }
+            ],
+            "recognition": [
+              {
+                "value": "undetermined",
+                "quotes": [
+                  "Customer subscribes to the Nimbus Quality Analytics Platform"
+                ],
+                "conflicting": false,
+                "note": "The contract says nothing about how control passes."
+              }
+            ],
+            "integration_language": []
+          }
+        ],
+        "variable_consideration": []
+      },
+      "extraction": {
+        "doc_id": "nimbus-amendment-wexford",
+        "agreement_type": {
+          "value": "amendment",
+          "status": "extracted",
+          "citations": [
+            {
+              "page": 1,
+              "start": 0,
+              "end": 44,
+              "quote": "AMENDMENT NO. 1 TO ORDER FORM NA-OF-2023-207",
+              "clause": "Preamble"
+            }
+          ],
+          "note": ""
+        },
+        "customer": {
+          "value": "Wexford Instruments GmbH",
+          "status": "extracted",
+          "citations": [
+            {
+              "page": 1,
+              "start": 200,
+              "end": 237,
+              "quote": "Wexford Instruments GmbH (\"Customer\")",
+              "clause": "Preamble"
+            }
+          ],
+          "note": ""
+        },
+        "supplier": {
+          "value": "Nimbus Analytics GmbH",
+          "status": "extracted",
+          "citations": [
+            {
+              "page": 1,
+              "start": 163,
+              "end": 195,
+              "quote": "Nimbus Analytics GmbH (\"Nimbus\")",
+              "clause": "Preamble"
+            }
+          ],
+          "note": ""
+        },
+        "amends": {
+          "value": "Order Form NA-OF-2023-207 dated 1 January 2024",
+          "status": "extracted",
+          "citations": [
+            {
+              "page": 1,
+              "start": 242,
+              "end": 295,
+              "quote": "amends Order Form NA-OF-2023-207 dated 1 January 2024",
+              "clause": "Preamble"
+            }
+          ],
+          "note": ""
+        },
+        "currency": {
+          "value": "EUR",
+          "status": "extracted",
+          "citations": [
+            {
+              "page": 1,
+              "start": 755,
+              "end": 825,
+              "quote": "the annual subscription fee is reduced from EUR 120,000 to EUR 102,000",
+              "clause": "2 Revised Fees"
+            }
+          ],
+          "note": ""
+        },
+        "total_fixed_consideration": {
+          "value": "306000",
+          "status": "extracted",
+          "citations": [
+            {
+              "page": 1,
+              "start": 924,
+              "end": 1034,
+              "quote": "The total subscription fees payable for the period from 1 January 2026 to 31 December 2028 (thirty-six months)",
+              "clause": "2 Revised Fees"
+            },
+            {
+              "page": 1,
+              "start": 1035,
+              "end": 1060,
+              "quote": "are therefore EUR 306,000",
+              "clause": "2 Revised Fees"
+            }
+          ],
+          "note": ""
+        },
+        "term": {
+          "effective_date": {
+            "value": "2025-11-03",
+            "status": "extracted",
+            "citations": [
+              {
+                "page": 1,
+                "start": 96,
+                "end": 154,
+                "quote": "This Amendment No. 1 is entered into as of 3 November 2025",
+                "clause": "Preamble"
+              }
+            ],
+            "note": "The revised fees apply with effect from 1 January 2026."
+          },
+          "stated_term_months": {
+            "value": 24,
+            "status": "extracted",
+            "citations": [
+              {
+                "page": 1,
+                "start": 611,
+                "end": 705,
+                "quote": "The Subscription Term is extended by twenty-four (24) months and now ends on 31 December 2028.",
+                "clause": "1 Extension of the Subscription Term"
+              }
+            ],
+            "note": "24 months is the stated extension. The amendment separately describes the fee period from 1 January 2026 to 31 December 2028 as thirty-six months."
+          },
+          "auto_renews": {
+            "value": null,
+            "status": "absent",
+            "citations": [],
+            "note": null
+          },
+          "termination_for_convenience": {
+            "value": null,
+            "status": "absent",
+            "citations": [],
+            "note": null
+          },
+          "termination_notice_days": {
+            "value": null,
+            "status": "absent",
+            "citations": [],
+            "note": null
+          },
+          "termination_compensation": {
+            "value": null,
+            "status": "absent",
+            "citations": [],
+            "note": null
+          }
+        },
+        "payment": {
+          "net_days": {
+            "value": 30,
+            "status": "extracted",
+            "citations": [
+              {
+                "page": 1,
+                "start": 1146,
+                "end": 1197,
+                "quote": "payable within thirty (30) days of the invoice date",
+                "clause": "2 Revised Fees"
+              }
+            ],
+            "note": ""
+          },
+          "billing_frequency": {
+            "value": "annually, invoiced on 1 January of each year",
+            "status": "extracted",
+            "citations": [
+              {
+                "page": 1,
+                "start": 1062,
+                "end": 1139,
+                "quote": "invoiced in three annual instalments of EUR 102,000 on 1 January of each year",
+                "clause": "2 Revised Fees"
+              }
+            ],
+            "note": ""
+          },
+          "upfront_fee": {
+            "value": null,
+            "status": "absent",
+            "citations": [],
+            "note": null
+          },
+          "upfront_fee_refundable": {
+            "value": null,
+            "status": "absent",
+            "citations": [],
+            "note": null
+          },
+          "payment_spread_months": {
+            "value": null,
+            "status": "absent",
+            "citations": [],
+            "note": null
+          }
+        },
+        "renewal": {
+          "renewal_term_months": {
+            "value": null,
+            "status": "absent",
+            "citations": [],
+            "note": null
+          },
+          "renewal_price": {
+            "value": null,
+            "status": "absent",
+            "citations": [],
+            "note": null
+          },
+          "described_as_discounted": {
+            "value": null,
+            "status": "absent",
+            "citations": [],
+            "note": null
+          }
+        },
+        "obligations": [
+          {
+            "label": "Nimbus Quality Analytics Platform subscription",
+            "kind": "saas_subscription",
+            "evidence": [
+              {
+                "page": 1,
+                "start": 337,
+                "end": 397,
+                "quote": "Customer subscribes to the Nimbus Quality Analytics Platform",
+                "clause": "Preamble"
+              }
+            ],
+            "stated_price": {
+              "value": "102000",
+              "status": "extracted",
+              "citations": [
+                {
+                  "page": 1,
+                  "start": 755,
+                  "end": 825,
+                  "quote": "the annual subscription fee is reduced from EUR 120,000 to EUR 102,000",
+                  "clause": "2 Revised Fees"
+                }
+              ],
+              "note": "Annual fee from 1 January 2026. It replaces the prior annual fee of EUR 120,000."
+            },
+            "list_price": {
+              "value": null,
+              "status": "absent",
+              "citations": [],
+              "note": null
+            },
+            "duration_months": {
+              "value": 36,
+              "status": "extracted",
+              "citations": [
+                {
+                  "page": 1,
+                  "start": 924,
+                  "end": 1034,
+                  "quote": "The total subscription fees payable for the period from 1 January 2026 to 31 December 2028 (thirty-six months)",
+                  "clause": "2 Revised Fees"
+                }
+              ],
+              "note": "This is the period covered by the revised fees. The Subscription Term extension itself is 24 months."
+            },
+            "recognition": {
+              "value": "undetermined",
+              "status": "extracted",
+              "citations": [
+                {
+                  "page": 1,
+                  "start": 337,
+                  "end": 397,
+                  "quote": "Customer subscribes to the Nimbus Quality Analytics Platform",
+                  "clause": "Preamble"
+                }
+              ],
+              "note": "The contract says nothing about how control passes."
+            },
+            "integration_language": {
+              "value": null,
+              "status": "absent",
+              "citations": [],
+              "note": null
+            }
+          }
+        ],
+        "variable_consideration": [],
+        "third_party_components": {
+          "value": null,
+          "status": "absent",
+          "citations": [],
+          "note": null
+        },
+        "extractor": "llm",
+        "model": "claude-opus-5-5",
+        "dropped_for_no_evidence": 0
+      },
+      "call": {
+        "model": "claude-opus-5-5",
+        "effort": "high",
+        "stop_reason": "end_turn",
+        "input_tokens": 731,
+        "output_tokens": 2054,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 4530,
+        "seconds": 19.109,
+        "cost_usd": "0.044910",
+        "prices_as_of": "2026-10-18"
+      }
+    },
+    {
+      "doc_id": "nimbus-of-alder",
+      "pdf_sha256": "5177f52fefc1be7aa6965581609ffcd84e09877571a2fb0ada9e223bc7fb0a49",
+      "claims": {
+        "fields": [
+          {
+            "value": "order_form",
+            "quotes": [
+              "ORDER FORM NA-OF-2025-0451"
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "agreement_type"
+          },
+          {
+            "value": "Alder Creek Veterinary Group, LLC",
+            "quotes": [
+              "Nimbus Analytics, Inc. and Alder Creek Veterinary Group, LLC"
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "customer"
+          },
+          {
+            "value": "Nimbus Analytics, Inc.",
+            "quotes": [
+              "Nimbus Analytics, Inc. and Alder Creek Veterinary Group, LLC"
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "supplier"
+          },
+          {
+            "value": "USD",
+            "quotes": [
+              "Total committed fees USD 9,600"
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "currency"
+          },
+          {
+            "value": "9600",
+            "quotes": [
+              "Total committed fees USD 9,600"
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "total_fixed_consideration"
+          },
+          {
+            "value": "2025-10-27",
+            "quotes": [
+              "This Order Form is entered into as of October 27, 2025"
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "effective_date"
+          },
+          {
+            "value": "12",
+            "quotes": [
+              "for a term of twelve\n(12) months commencing November 1, 2025"
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "stated_term_months"
+          },
+          {
+            "value": "true",
+            "quotes": [
+              "The subscription renews automatically for successive twelve (12) month terms"
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "auto_renews"
+          },
+          {
+            "value": "false",
+            "quotes": [
+              "Neither party may terminate this Order Form for convenience during a term."
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "termination_for_convenience"
+          },
+          {
+            "value": "30",
+            "quotes": [
+              "payable within thirty (30) days of the invoice date"
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "net_days"
+          },
+          {
+            "value": "annually in advance",
+            "quotes": [
+              "The subscription fee is invoiced annually in advance"
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "billing_frequency"
+          },
+          {
+            "value": "12",
+            "quotes": [
+              "The subscription renews automatically for successive twelve (12) month terms"
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "renewal_term_months"
+          },
+          {
+            "value": "Nimbus's then-current list price",
+            "quotes": [
+              "at Nimbus's then-current list price"
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "renewal_price"
+          },
+          {
+            "value": "false",
+            "quotes": [
+              "at Nimbus's then-current list price"
+            ],
+            "conflicting": false,
+            "note": "Renewal is priced at then-current list price; the document does not describe it as a discount.",
+            "field": "renewal_described_as_discounted"
+          }
+        ],
+        "obligations": [
+          {
+            "label": "Nimbus Clinic Scheduling Insights service",
+            "kind": "saas_subscription",
+            "quotes": [
+              "Nimbus will provide Customer with access to the Nimbus Clinic Scheduling Insights service"
+            ],
+            "stated_price": [
+              {
+                "value": "9600",
+                "quotes": [
+                  "Total committed fees USD 9,600"
+                ],
+                "conflicting": false,
+                "note": ""
+              }
+            ],
+            "list_price": [],
+            "duration_months": [
+              {
+                "value": "12",
+                "quotes": [
+                  "for a term of twelve\n(12) months commencing November 1, 2025"
+                ],
+                "conflicting": false,
+                "note": ""
+              }
+            ],
+            "recognition": [
+              {
+                "value": "undetermined",
+                "quotes": [
+                  "Nimbus will provide Customer with access to the Nimbus Clinic Scheduling Insights service"
+                ],
+                "conflicting": false,
+                "note": "The contract does not address how control passes."
+              }
+            ],
+            "integration_language": []
+          }
+        ],
+        "variable_consideration": []
+      },
+      "extraction": {
+        "doc_id": "nimbus-of-alder",
+        "agreement_type": {
+          "value": "order_form",
+          "status": "extracted",
+          "citations": [
+            {
+              "page": 1,
+              "start": 0,
+              "end": 26,
+              "quote": "ORDER FORM NA-OF-2025-0451",
+              "clause": "Preamble"
+            }
+          ],
+          "note": ""
+        },
+        "customer": {
+          "value": "Alder Creek Veterinary Group, LLC",
+          "status": "extracted",
+          "citations": [
+            {
+              "page": 1,
+              "start": 27,
+              "end": 87,
+              "quote": "Nimbus Analytics, Inc. and Alder Creek Veterinary Group, LLC",
+              "clause": "Preamble"
+            }
+          ],
+          "note": ""
+        },
+        "supplier": {
+          "value": "Nimbus Analytics, Inc.",
+          "status": "extracted",
+          "citations": [
+            {
+              "page": 1,
+              "start": 27,
+              "end": 87,
+              "quote": "Nimbus Analytics, Inc. and Alder Creek Veterinary Group, LLC",
+              "clause": "Preamble"
+            }
+          ],
+          "note": ""
+        },
+        "amends": {
+          "value": null,
+          "status": "absent",
+          "citations": [],
+          "note": null
+        },
+        "currency": {
+          "value": "USD",
+          "status": "extracted",
+          "citations": [
+            {
+              "page": 1,
+              "start": 566,
+              "end": 596,
+              "quote": "Total committed fees USD 9,600",
+              "clause": "1 Subscription"
+            }
+          ],
+          "note": ""
+        },
+        "total_fixed_consideration": {
+          "value": "9600",
+          "status": "extracted",
+          "citations": [
+            {
+              "page": 1,
+              "start": 566,
+              "end": 596,
+              "quote": "Total committed fees USD 9,600",
+              "clause": "1 Subscription"
+            }
+          ],
+          "note": ""
+        },
+        "term": {
+          "effective_date": {
+            "value": "2025-10-27",
+            "status": "extracted",
+            "citations": [
+              {
+                "page": 1,
+                "start": 88,
+                "end": 142,
+                "quote": "This Order Form is entered into as of October 27, 2025",
+                "clause": "Preamble"
+              }
+            ],
+            "note": ""
+          },
+          "stated_term_months": {
+            "value": 12,
+            "status": "extracted",
+            "citations": [
+              {
+                "page": 1,
+                "start": 388,
+                "end": 448,
+                "quote": "for a term of twelve\n(12) months commencing November 1, 2025",
+                "clause": "1 Subscription"
+              }
+            ],
+            "note": ""
+          },
+          "auto_renews": {
+            "value": true,
+            "status": "extracted",
+            "citations": [
+              {
+                "page": 1,
+                "start": 732,
+                "end": 808,
+                "quote": "The subscription renews automatically for successive twelve (12) month terms",
+                "clause": "3 Renewal"
+              }
+            ],
+            "note": ""
+          },
+          "termination_for_convenience": {
+            "value": false,
+            "status": "extracted",
+            "citations": [
+              {
+                "page": 1,
+                "start": 971,
+                "end": 1045,
+                "quote": "Neither party may terminate this Order Form for convenience during a term.",
+                "clause": "4 Termination"
+              }
+            ],
+            "note": ""
+          },
+          "termination_notice_days": {
+            "value": null,
+            "status": "absent",
+            "citations": [],
+            "note": null
+          },
+          "termination_compensation": {
+            "value": null,
+            "status": "absent",
+            "citations": [],
+            "note": null
+          }
+        },
+        "payment": {
+          "net_days": {
+            "value": 30,
+            "status": "extracted",
+            "citations": [
+              {
+                "page": 1,
+                "start": 668,
+                "end": 719,
+                "quote": "payable within thirty (30) days of the invoice date",
+                "clause": "2 Payment"
+              }
+            ],
+            "note": ""
+          },
+          "billing_frequency": {
+            "value": "annually in advance",
+            "status": "extracted",
+            "citations": [
+              {
+                "page": 1,
+                "start": 608,
+                "end": 660,
+                "quote": "The subscription fee is invoiced annually in advance",
+                "clause": "2 Payment"
+              }
+            ],
+            "note": ""
+          },
+          "upfront_fee": {
+            "value": null,
+            "status": "absent",
+            "citations": [],
+            "note": null
+          },
+          "upfront_fee_refundable": {
+            "value": null,
+            "status": "absent",
+            "citations": [],
+            "note": null
+          },
+          "payment_spread_months": {
+            "value": null,
+            "status": "absent",
+            "citations": [],
+            "note": null
+          }
+        },
+        "renewal": {
+          "renewal_term_months": {
+            "value": 12,
+            "status": "extracted",
+            "citations": [
+              {
+                "page": 1,
+                "start": 732,
+                "end": 808,
+                "quote": "The subscription renews automatically for successive twelve (12) month terms",
+                "clause": "3 Renewal"
+              }
+            ],
+            "note": ""
+          },
+          "renewal_price": {
+            "value": null,
+            "status": "absent",
+            "citations": [],
+            "note": "Dropped: could not read a value from \"Nimbus's then-current list price\"."
+          },
+          "described_as_discounted": {
+            "value": false,
+            "status": "extracted",
+            "citations": [
+              {
+                "page": 1,
+                "start": 809,
+                "end": 844,
+                "quote": "at Nimbus's then-current list price",
+                "clause": "3 Renewal"
+              }
+            ],
+            "note": "Renewal is priced at then-current list price; the document does not describe it as a discount."
+          }
+        },
+        "obligations": [
+          {
+            "label": "Nimbus Clinic Scheduling Insights service",
+            "kind": "saas_subscription",
+            "evidence": [
+              {
+                "page": 1,
+                "start": 298,
+                "end": 387,
+                "quote": "Nimbus will provide Customer with access to the Nimbus Clinic Scheduling Insights service",
+                "clause": "1 Subscription"
+              }
+            ],
+            "stated_price": {
+              "value": "9600",
+              "status": "extracted",
+              "citations": [
+                {
+                  "page": 1,
+                  "start": 566,
+                  "end": 596,
+                  "quote": "Total committed fees USD 9,600",
+                  "clause": "1 Subscription"
+                }
+              ],
+              "note": ""
+            },
+            "list_price": {
+              "value": null,
+              "status": "absent",
+              "citations": [],
+              "note": null
+            },
+            "duration_months": {
+              "value": 12,
+              "status": "extracted",
+              "citations": [
+                {
+                  "page": 1,
+                  "start": 388,
+                  "end": 448,
+                  "quote": "for a term of twelve\n(12) months commencing November 1, 2025",
+                  "clause": "1 Subscription"
+                }
+              ],
+              "note": ""
+            },
+            "recognition": {
+              "value": "undetermined",
+              "status": "extracted",
+              "citations": [
+                {
+                  "page": 1,
+                  "start": 298,
+                  "end": 387,
+                  "quote": "Nimbus will provide Customer with access to the Nimbus Clinic Scheduling Insights service",
+                  "clause": "1 Subscription"
+                }
+              ],
+              "note": "The contract does not address how control passes."
+            },
+            "integration_language": {
+              "value": null,
+              "status": "absent",
+              "citations": [],
+              "note": null
+            }
+          }
+        ],
+        "variable_consideration": [],
+        "third_party_components": {
+          "value": null,
+          "status": "absent",
+          "citations": [],
+          "note": null
+        },
+        "extractor": "llm",
+        "model": "claude-opus-5-5",
+        "dropped_for_no_evidence": 1
+      },
+      "call": {
+        "model": "claude-opus-5-5",
+        "effort": "high",
+        "stop_reason": "end_turn",
+        "input_tokens": 611,
+        "output_tokens": 1534,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 4530,
+        "seconds": 12.829,
+        "cost_usd": "0.034030",
+        "prices_as_of": "2026-10-18"
+      }
+    },
+    {
+      "doc_id": "nimbus-of-fenwick",
+      "pdf_sha256": "cb2cfc02822685cfb67a04c679dfef51eae4ab1989f4d5e77a77ea2d004ad193",
+      "claims": {
+        "fields": [
+          {
+            "value": "order_form",
+            "quotes": [
+              "ORDER FORM NAL-2025-0131"
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "agreement_type"
+          },
+          {
+            "value": "Fenwick Rowe Engineering Ltd",
+            "quotes": [
+              "Fenwick Rowe Engineering Ltd (\"Customer\")"
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "customer"
+          },
+          {
+            "value": "Nimbus Analytics Ltd",
+            "quotes": [
+              "Nimbus Analytics Ltd, a company registered in England"
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "supplier"
+          },
+          {
+            "value": "GBP",
+            "quotes": [
+              "All amounts are stated in Pounds Sterling and are exclusive of value added tax."
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "currency"
+          },
+          {
+            "value": "66000",
+            "quotes": [
+              "The subscription fee for the term is GBP 66,000"
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "total_fixed_consideration"
+          },
+          {
+            "value": "2025-10-06",
+            "quotes": [
+              "This Order Form is made on 6 October 2025"
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "effective_date"
+          },
+          {
+            "value": "12",
+            "quotes": [
+              "for a term of twelve (12)\nmonths commencing 1 November 2025"
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "stated_term_months"
+          },
+          {
+            "value": "true",
+            "quotes": [
+              "Customer may terminate this Order Form for convenience by giving thirty (30) days' written notice to Nimbus."
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "termination_for_convenience"
+          },
+          {
+            "value": "30",
+            "quotes": [
+              "Customer may terminate this Order Form for convenience by giving thirty (30) days' written notice to Nimbus."
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "termination_notice_days"
+          },
+          {
+            "value": "Instalments falling due up to the effective date of termination plus an early termination charge equal to 50% of the instalments that would have fallen due for the remainder of the term",
+            "quotes": [
+              "On such termination Customer shall pay, in addition to the instalments falling due up to the effective date of\ntermination, an early termination charge equal to fifty percent (50%) of the instalments that would have fallen due\nfor the remainder of the term."
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "termination_compensation"
+          },
+          {
+            "value": "14",
+            "quotes": [
+              "All invoices are payable within fourteen (14) days of the invoice date."
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "net_days"
+          },
+          {
+            "value": "monthly in advance",
+            "quotes": [
+              "invoiced in twelve (12) equal monthly instalments of GBP 5,500",
+              "in advance on the first day of each month."
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "billing_frequency"
+          }
+        ],
+        "obligations": [
+          {
+            "label": "Access to the Nimbus Asset Monitoring Platform",
+            "kind": "saas_subscription",
+            "quotes": [
+              "Nimbus will provide Customer with access to the Nimbus Asset Monitoring Platform for a term of twelve (12)"
+            ],
+            "stated_price": [
+              {
+                "value": "66000",
+                "quotes": [
+                  "The subscription fee for the term is GBP 66,000"
+                ],
+                "conflicting": false,
+                "note": ""
+              }
+            ],
+            "list_price": [],
+            "duration_months": [
+              {
+                "value": "12",
+                "quotes": [
+                  "for a term of twelve (12)\nmonths commencing 1 November 2025"
+                ],
+                "conflicting": false,
+                "note": ""
+              }
+            ],
+            "recognition": [
+              {
+                "value": "undetermined",
+                "quotes": [
+                  "Nimbus will provide Customer with access to the Nimbus Asset Monitoring Platform for a term of twelve (12)"
+                ],
+                "conflicting": false,
+                "note": "The contract does not describe how control passes."
+              }
+            ],
+            "integration_language": []
+          }
+        ],
+        "variable_consideration": [
+          {
+            "kind": "service_level_credit",
+            "description": "If monthly availability falls below 99.5%, Customer receives a service credit of 5% of that month's instalment for each full 0.5% of shortfall, capped at 25% of the instalment.",
+            "quotes": [
+              "Nimbus will make the Platform available at least 99.5% of the time in each calendar month, excluding scheduled",
+              "If availability in a month falls below that level, Customer will receive a service credit of five percent (5%) of that",
+              "month's instalment for each full 0.5% of shortfall, up to a maximum of twenty-five percent (25%) of the"
+            ],
+            "cap": [
+              {
+                "value": "25",
+                "quotes": [
+                  "up to a maximum of twenty-five percent (25%) of the"
+                ],
+                "conflicting": false,
+                "note": "Cap is 25% of the relevant monthly instalment, not a fixed amount."
+              }
+            ],
+            "estimable_from_contract": false
+          }
+        ]
+      },
+      "extraction": {
+        "doc_id": "nimbus-of-fenwick",
+        "agreement_type": {
+          "value": "order_form",
+          "status": "extracted",
+          "citations": [
+            {
+              "page": 1,
+              "start": 0,
+              "end": 24,
+              "quote": "ORDER FORM NAL-2025-0131",
+              "clause": "Preamble"
+            }
+          ],
+          "note": ""
+        },
+        "customer": {
+          "value": "Fenwick Rowe Engineering Ltd",
+          "status": "extracted",
+          "citations": [
+            {
+              "page": 1,
+              "start": 209,
+              "end": 250,
+              "quote": "Fenwick Rowe Engineering Ltd (\"Customer\")",
+              "clause": "Preamble"
+            }
+          ],
+          "note": ""
+        },
+        "supplier": {
+          "value": "Nimbus Analytics Ltd",
+          "status": "extracted",
+          "citations": [
+            {
+              "page": 1,
+              "start": 129,
+              "end": 182,
+              "quote": "Nimbus Analytics Ltd, a company registered in England",
+              "clause": "Preamble"
+            }
+          ],
+          "note": ""
+        },
+        "amends": {
+          "value": null,
+          "status": "absent",
+          "citations": [],
+          "note": null
+        },
+        "currency": {
+          "value": "GBP",
+          "status": "extracted",
+          "citations": [
+            {
+              "page": 1,
+              "start": 1583,
+              "end": 1662,
+              "quote": "All amounts are stated in Pounds Sterling and are exclusive of value added tax.",
+              "clause": "4 Payment"
+            }
+          ],
+          "note": ""
+        },
+        "total_fixed_consideration": {
+          "value": "66000",
+          "status": "extracted",
+          "citations": [
+            {
+              "page": 1,
+              "start": 480,
+              "end": 527,
+              "quote": "The subscription fee for the term is GBP 66,000",
+              "clause": "1 Subscription"
+            }
+          ],
+          "note": ""
+        },
+        "term": {
+          "effective_date": {
+            "value": "2025-10-06",
+            "status": "extracted",
+            "citations": [
+              {
+                "page": 1,
+                "start": 79,
+                "end": 120,
+                "quote": "This Order Form is made on 6 October 2025",
+                "clause": "Preamble"
+              }
+            ],
+            "note": ""
+          },
+          "stated_term_months": {
+            "value": 12,
+            "status": "extracted",
+            "citations": [
+              {
+                "page": 1,
+                "start": 419,
+                "end": 478,
+                "quote": "for a term of twelve (12)\nmonths commencing 1 November 2025",
+                "clause": "1 Subscription"
+              }
+            ],
+            "note": ""
+          },
+          "auto_renews": {
+            "value": null,
+            "status": "absent",
+            "citations": [],
+            "note": null
+          },
+          "termination_for_convenience": {
+            "value": true,
+            "status": "extracted",
+            "citations": [
+              {
+                "page": 1,
+                "start": 1133,
+                "end": 1241,
+                "quote": "Customer may terminate this Order Form for convenience by giving thirty (30) days' written notice to Nimbus.",
+                "clause": "3 Termination"
+              }
+            ],
+            "note": ""
+          },
+          "termination_notice_days": {
+            "value": 30,
+            "status": "extracted",
+            "citations": [
+              {
+                "page": 1,
+                "start": 1133,
+                "end": 1241,
+                "quote": "Customer may terminate this Order Form for convenience by giving thirty (30) days' written notice to Nimbus.",
+                "clause": "3 Termination"
+              }
+            ],
+            "note": ""
+          },
+          "termination_compensation": {
+            "value": "Instalments falling due up to the effective date of termination plus an early termination charge equal to 50% of the instalments that would have fallen due for the remainder of the term",
+            "status": "extracted",
+            "citations": [
+              {
+                "page": 1,
+                "start": 1242,
+                "end": 1499,
+                "quote": "On such termination Customer shall pay, in addition to the instalments falling due up to the effective date of\ntermination, an early termination charge equal to fifty percent (50%) of the instalments that would have fallen due\nfor the remainder of the term.",
+                "clause": "3 Termination"
+              }
+            ],
+            "note": ""
+          }
+        },
+        "payment": {
+          "net_days": {
+            "value": 14,
+            "status": "extracted",
+            "citations": [
+              {
+                "page": 1,
+                "start": 1511,
+                "end": 1582,
+                "quote": "All invoices are payable within fourteen (14) days of the invoice date.",
+                "clause": "4 Payment"
+              }
+            ],
+            "note": ""
+          },
+          "billing_frequency": {
+            "value": "monthly in advance",
+            "status": "extracted",
+            "citations": [
+              {
+                "page": 1,
+                "start": 529,
+                "end": 591,
+                "quote": "invoiced in twelve (12) equal monthly instalments of GBP 5,500",
+                "clause": "1 Subscription"
+              },
+              {
+                "page": 1,
+                "start": 592,
+                "end": 634,
+                "quote": "in advance on the first day of each month.",
+                "clause": "1 Subscription"
+              }
+            ],
+            "note": ""
+          },
+          "upfront_fee": {
+            "value": null,
+            "status": "absent",
+            "citations": [],
+            "note": null
+          },
+          "upfront_fee_refundable": {
+            "value": null,
+            "status": "absent",
+            "citations": [],
+            "note": null
+          },
+          "payment_spread_months": {
+            "value": null,
+            "status": "absent",
+            "citations": [],
+            "note": null
+          }
+        },
+        "renewal": {
+          "renewal_term_months": {
+            "value": null,
+            "status": "absent",
+            "citations": [],
+            "note": null
+          },
+          "renewal_price": {
+            "value": null,
+            "status": "absent",
+            "citations": [],
+            "note": null
+          },
+          "described_as_discounted": {
+            "value": null,
+            "status": "absent",
+            "citations": [],
+            "note": null
+          }
+        },
+        "obligations": [
+          {
+            "label": "Access to the Nimbus Asset Monitoring Platform",
+            "kind": "saas_subscription",
+            "evidence": [
+              {
+                "page": 1,
+                "start": 338,
+                "end": 444,
+                "quote": "Nimbus will provide Customer with access to the Nimbus Asset Monitoring Platform for a term of twelve (12)",
+                "clause": "1 Subscription"
+              }
+            ],
+            "stated_price": {
+              "value": "66000",
+              "status": "extracted",
+              "citations": [
+                {
+                  "page": 1,
+                  "start": 480,
+                  "end": 527,
+                  "quote": "The subscription fee for the term is GBP 66,000",
+                  "clause": "1 Subscription"
+                }
+              ],
+              "note": ""
+            },
+            "list_price": {
+              "value": null,
+              "status": "absent",
+              "citations": [],
+              "note": null
+            },
+            "duration_months": {
+              "value": 12,
+              "status": "extracted",
+              "citations": [
+                {
+                  "page": 1,
+                  "start": 419,
+                  "end": 478,
+                  "quote": "for a term of twelve (12)\nmonths commencing 1 November 2025",
+                  "clause": "1 Subscription"
+                }
+              ],
+              "note": ""
+            },
+            "recognition": {
+              "value": "undetermined",
+              "status": "extracted",
+              "citations": [
+                {
+                  "page": 1,
+                  "start": 338,
+                  "end": 444,
+                  "quote": "Nimbus will provide Customer with access to the Nimbus Asset Monitoring Platform for a term of twelve (12)",
+                  "clause": "1 Subscription"
+                }
+              ],
+              "note": "The contract does not describe how control passes."
+            },
+            "integration_language": {
+              "value": null,
+              "status": "absent",
+              "citations": [],
+              "note": null
+            }
+          }
+        ],
+        "variable_consideration": [
+          {
+            "kind": "service_level_credit",
+            "description": "If monthly availability falls below 99.5%, Customer receives a service credit of 5% of that month's instalment for each full 0.5% of shortfall, capped at 25% of the instalment.",
+            "evidence": [
+              {
+                "page": 1,
+                "start": 653,
+                "end": 763,
+                "quote": "Nimbus will make the Platform available at least 99.5% of the time in each calendar month, excluding scheduled",
+                "clause": "2 Service Levels"
+              },
+              {
+                "page": 1,
+                "start": 820,
+                "end": 938,
+                "quote": "If availability in a month falls below that level, Customer will receive a service credit of five percent (5%) of that",
+                "clause": "2 Service Levels"
+              },
+              {
+                "page": 1,
+                "start": 939,
+                "end": 1042,
+                "quote": "month's instalment for each full 0.5% of shortfall, up to a maximum of twenty-five percent (25%) of the",
+                "clause": "2 Service Levels"
+              }
+            ],
+            "cap": {
+              "value": "25",
+              "status": "extracted",
+              "citations": [
+                {
+                  "page": 1,
+                  "start": 991,
+                  "end": 1042,
+                  "quote": "up to a maximum of twenty-five percent (25%) of the",
+                  "clause": "2 Service Levels"
+                }
+              ],
+              "note": "Cap is 25% of the relevant monthly instalment, not a fixed amount."
+            },
+            "estimable_from_contract": false
+          }
+        ],
+        "third_party_components": {
+          "value": null,
+          "status": "absent",
+          "citations": [],
+          "note": null
+        },
+        "extractor": "llm",
+        "model": "claude-opus-5-5",
+        "dropped_for_no_evidence": 0
+      },
+      "call": {
+        "model": "claude-opus-5-5",
+        "effort": "high",
+        "stop_reason": "end_turn",
+        "input_tokens": 814,
+        "output_tokens": 2060,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 4530,
+        "seconds": 16.295,
+        "cost_usd": "0.045362",
+        "prices_as_of": "2026-10-18"
+      }
+    },
+    {
+      "doc_id": "nimbus-of-larkspur",
+      "pdf_sha256": "9ec5db1969b0f8ed6a067536c6fe7391bae0966d42aa7be410e49cc56a117430",
+      "claims": {
+        "fields": [
+          {
+            "value": "order_form",
+            "quotes": [
+              "ORDER FORM NA-OF-2025-0467"
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "agreement_type"
+          },
+          {
+            "value": "Larkspur Health Systems, Inc.",
+            "quotes": [
+              "Larkspur Health Systems, Inc. (\"Customer\")"
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "customer"
+          },
+          {
+            "value": "Nimbus Analytics, Inc.",
+            "quotes": [
+              "Nimbus Analytics, Inc. (\"Nimbus\")"
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "supplier"
+          },
+          {
+            "value": "USD",
+            "quotes": [
+              "Total committed fees USD 459,000"
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "currency"
+          },
+          {
+            "value": "459000",
+            "quotes": [
+              "Total committed fees USD 459,000"
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "total_fixed_consideration"
+          },
+          {
+            "value": "2025-11-17",
+            "quotes": [
+              "This Order Form is entered into as of November 17, 2025"
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "effective_date"
+          },
+          {
+            "value": "36",
+            "quotes": [
+              "The Subscription Term commences on December 1, 2025 and continues for thirty-six (36) months."
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "stated_term_months"
+          },
+          {
+            "value": "false",
+            "quotes": [
+              "Customer may renew the subscription for one further term of twelve (12) months by written notice given at least"
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "auto_renews"
+          },
+          {
+            "value": "false",
+            "quotes": [
+              "This Order Form may not be terminated for convenience by either party."
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "termination_for_convenience"
+          },
+          {
+            "value": "30",
+            "quotes": [
+              "All invoices are payable within thirty (30) days of"
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "net_days"
+          },
+          {
+            "value": "annually in advance",
+            "quotes": [
+              "The subscription and support fees for each contract year are invoiced annually in advance"
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "billing_frequency"
+          },
+          {
+            "value": "45000",
+            "quotes": [
+              "Configuration Services USD 45,000",
+              "the Configuration\nServices fee is invoiced at the start of the Subscription Term"
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "upfront_fee"
+          },
+          {
+            "value": "12",
+            "quotes": [
+              "one further term of twelve (12) months"
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "renewal_term_months"
+          },
+          {
+            "value": "Nimbus's then-current list price less a discount of fifteen percent (15%)",
+            "quotes": [
+              "The renewal fee is Nimbus's then-current list price less a\ndiscount of fifteen percent (15%)."
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "renewal_price"
+          },
+          {
+            "value": "true",
+            "quotes": [
+              "The renewal fee is Nimbus's then-current list price less a\ndiscount of fifteen percent (15%)."
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "renewal_described_as_discounted"
+          }
+        ],
+        "obligations": [
+          {
+            "label": "Clinical Operations Analytics subscription",
+            "kind": "saas_subscription",
+            "quotes": [
+              "Clinical Operations Analytics subscription (36 months) USD 360,000"
+            ],
+            "stated_price": [
+              {
+                "value": "360000",
+                "quotes": [
+                  "Clinical Operations Analytics subscription (36 months) USD 360,000"
+                ],
+                "conflicting": false,
+                "note": ""
+              }
+            ],
+            "list_price": [],
+            "duration_months": [
+              {
+                "value": "36",
+                "quotes": [
+                  "Clinical Operations Analytics subscription (36 months) USD 360,000"
+                ],
+                "conflicting": false,
+                "note": ""
+              }
+            ],
+            "recognition": [
+              {
+                "value": "undetermined",
+                "quotes": [
+                  "Clinical Operations Analytics subscription (36 months) USD 360,000"
+                ],
+                "conflicting": false,
+                "note": ""
+              }
+            ],
+            "integration_language": []
+          },
+          {
+            "label": "Configuration Services",
+            "kind": "implementation",
+            "quotes": [
+              "Configuration Services USD 45,000",
+              "Nimbus will configure the Platform's standard clinical operations dashboards and load Customer's facility and"
+            ],
+            "stated_price": [
+              {
+                "value": "45000",
+                "quotes": [
+                  "Configuration Services USD 45,000"
+                ],
+                "conflicting": false,
+                "note": ""
+              }
+            ],
+            "list_price": [],
+            "duration_months": [],
+            "recognition": [
+              {
+                "value": "undetermined",
+                "quotes": [
+                  "Configuration Services USD 45,000"
+                ],
+                "conflicting": false,
+                "note": ""
+              }
+            ],
+            "integration_language": []
+          },
+          {
+            "label": "Premium Support",
+            "kind": "support",
+            "quotes": [
+              "Premium Support, 36 months USD 54,000",
+              "Premium Support provides access to the Nimbus support desk at all hours, a named technical account manager,"
+            ],
+            "stated_price": [
+              {
+                "value": "54000",
+                "quotes": [
+                  "Premium Support, 36 months USD 54,000"
+                ],
+                "conflicting": false,
+                "note": ""
+              }
+            ],
+            "list_price": [],
+            "duration_months": [
+              {
+                "value": "36",
+                "quotes": [
+                  "Premium Support, 36 months USD 54,000"
+                ],
+                "conflicting": false,
+                "note": ""
+              }
+            ],
+            "recognition": [
+              {
+                "value": "undetermined",
+                "quotes": [
+                  "Premium Support, 36 months USD 54,000"
+                ],
+                "conflicting": false,
+                "note": ""
+              }
+            ],
+            "integration_language": []
+          }
+        ],
+        "variable_consideration": []
+      },
+      "extraction": {
+        "doc_id": "nimbus-of-larkspur",
+        "agreement_type": {
+          "value": "order_form",
+          "status": "extracted",
+          "citations": [
+            {
+              "page": 1,
+              "start": 0,
+              "end": 26,
+              "quote": "ORDER FORM NA-OF-2025-0467",
+              "clause": "Preamble"
+            }
+          ],
+          "note": ""
+        },
+        "customer": {
+          "value": "Larkspur Health Systems, Inc.",
+          "status": "extracted",
+          "citations": [
+            {
+              "page": 1,
+              "start": 186,
+              "end": 228,
+              "quote": "Larkspur Health Systems, Inc. (\"Customer\")",
+              "clause": "Preamble"
+            }
+          ],
+          "note": ""
+        },
+        "supplier": {
+          "value": "Nimbus Analytics, Inc.",
+          "status": "extracted",
+          "citations": [
+            {
+              "page": 1,
+              "start": 148,
+              "end": 181,
+              "quote": "Nimbus Analytics, Inc. (\"Nimbus\")",
+              "clause": "Preamble"
+            }
+          ],
+          "note": ""
+        },
+        "amends": {
+          "value": null,
+          "status": "absent",
+          "citations": [],
+          "note": null
+        },
+        "currency": {
+          "value": "USD",
+          "status": "extracted",
+          "citations": [
+            {
+              "page": 1,
+              "start": 594,
+              "end": 626,
+              "quote": "Total committed fees USD 459,000",
+              "clause": "2 Products and Services"
+            }
+          ],
+          "note": ""
+        },
+        "total_fixed_consideration": {
+          "value": "459000",
+          "status": "extracted",
+          "citations": [
+            {
+              "page": 1,
+              "start": 594,
+              "end": 626,
+              "quote": "Total committed fees USD 459,000",
+              "clause": "2 Products and Services"
+            }
+          ],
+          "note": ""
+        },
+        "term": {
+          "effective_date": {
+            "value": "2025-11-17",
+            "status": "extracted",
+            "citations": [
+              {
+                "page": 1,
+                "start": 84,
+                "end": 139,
+                "quote": "This Order Form is entered into as of November 17, 2025",
+                "clause": "Preamble"
+              }
+            ],
+            "note": ""
+          },
+          "stated_term_months": {
+            "value": 36,
+            "status": "extracted",
+            "citations": [
+              {
+                "page": 1,
+                "start": 296,
+                "end": 389,
+                "quote": "The Subscription Term commences on December 1, 2025 and continues for thirty-six (36) months.",
+                "clause": "1 Subscription Term"
+              }
+            ],
+            "note": ""
+          },
+          "auto_renews": {
+            "value": false,
+            "status": "extracted",
+            "citations": [
+              {
+                "page": 1,
+                "start": 1362,
+                "end": 1473,
+                "quote": "Customer may renew the subscription for one further term of twelve (12) months by written notice given at least",
+                "clause": "5 Renewal"
+              }
+            ],
+            "note": ""
+          },
+          "termination_for_convenience": {
+            "value": false,
+            "status": "extracted",
+            "citations": [
+              {
+                "page": 1,
+                "start": 1901,
+                "end": 1971,
+                "quote": "This Order Form may not be terminated for convenience by either party.",
+                "clause": "6 Invoicing and Termination"
+              }
+            ],
+            "note": ""
+          },
+          "termination_notice_days": {
+            "value": null,
+            "status": "absent",
+            "citations": [],
+            "note": null
+          },
+          "termination_compensation": {
+            "value": null,
+            "status": "absent",
+            "citations": [],
+            "note": null
+          }
+        },
+        "payment": {
+          "net_days": {
+            "value": 30,
+            "status": "extracted",
+            "citations": [
+              {
+                "page": 1,
+                "start": 1831,
+                "end": 1882,
+                "quote": "All invoices are payable within thirty (30) days of",
+                "clause": "6 Invoicing and Termination"
+              }
+            ],
+            "note": ""
+          },
+          "billing_frequency": {
+            "value": "annually in advance",
+            "status": "extracted",
+            "citations": [
+              {
+                "page": 1,
+                "start": 1654,
+                "end": 1743,
+                "quote": "The subscription and support fees for each contract year are invoiced annually in advance",
+                "clause": "6 Invoicing and Termination"
+              }
+            ],
+            "note": ""
+          },
+          "upfront_fee": {
+            "value": "45000",
+            "status": "extracted",
+            "citations": [
+              {
+                "page": 1,
+                "start": 522,
+                "end": 555,
+                "quote": "Configuration Services USD 45,000",
+                "clause": "2 Products and Services"
+              },
+              {
+                "page": 1,
+                "start": 1749,
+                "end": 1829,
+                "quote": "the Configuration\nServices fee is invoiced at the start of the Subscription Term",
+                "clause": "6 Invoicing and Termination"
+              }
+            ],
+            "note": ""
+          },
+          "upfront_fee_refundable": {
+            "value": null,
+            "status": "absent",
+            "citations": [],
+            "note": null
+          },
+          "payment_spread_months": {
+            "value": null,
+            "status": "absent",
+            "citations": [],
+            "note": null
+          }
+        },
+        "renewal": {
+          "renewal_term_months": {
+            "value": 12,
+            "status": "extracted",
+            "citations": [
+              {
+                "page": 1,
+                "start": 1402,
+                "end": 1440,
+                "quote": "one further term of twelve (12) months",
+                "clause": "5 Renewal"
+              }
+            ],
+            "note": ""
+          },
+          "renewal_price": {
+            "value": "-15",
+            "status": "extracted",
+            "citations": [
+              {
+                "page": 1,
+                "start": 1531,
+                "end": 1624,
+                "quote": "The renewal fee is Nimbus's then-current list price less a\ndiscount of fifteen percent (15%).",
+                "clause": "5 Renewal"
+              }
+            ],
+            "note": ""
+          },
+          "described_as_discounted": {
+            "value": true,
+            "status": "extracted",
+            "citations": [
+              {
+                "page": 1,
+                "start": 1531,
+                "end": 1624,
+                "quote": "The renewal fee is Nimbus's then-current list price less a\ndiscount of fifteen percent (15%).",
+                "clause": "5 Renewal"
+              }
+            ],
+            "note": ""
+          }
+        },
+        "obligations": [
+          {
+            "label": "Clinical Operations Analytics subscription",
+            "kind": "saas_subscription",
+            "evidence": [
+              {
+                "page": 1,
+                "start": 455,
+                "end": 521,
+                "quote": "Clinical Operations Analytics subscription (36 months) USD 360,000",
+                "clause": "2 Products and Services"
+              }
+            ],
+            "stated_price": {
+              "value": "360000",
+              "status": "extracted",
+              "citations": [
+                {
+                  "page": 1,
+                  "start": 455,
+                  "end": 521,
+                  "quote": "Clinical Operations Analytics subscription (36 months) USD 360,000",
+                  "clause": "2 Products and Services"
+                }
+              ],
+              "note": ""
+            },
+            "list_price": {
+              "value": null,
+              "status": "absent",
+              "citations": [],
+              "note": null
+            },
+            "duration_months": {
+              "value": 36,
+              "status": "extracted",
+              "citations": [
+                {
+                  "page": 1,
+                  "start": 455,
+                  "end": 521,
+                  "quote": "Clinical Operations Analytics subscription (36 months) USD 360,000",
+                  "clause": "2 Products and Services"
+                }
+              ],
+              "note": ""
+            },
+            "recognition": {
+              "value": "undetermined",
+              "status": "extracted",
+              "citations": [
+                {
+                  "page": 1,
+                  "start": 455,
+                  "end": 521,
+                  "quote": "Clinical Operations Analytics subscription (36 months) USD 360,000",
+                  "clause": "2 Products and Services"
+                }
+              ],
+              "note": ""
+            },
+            "integration_language": {
+              "value": null,
+              "status": "absent",
+              "citations": [],
+              "note": null
+            }
+          },
+          {
+            "label": "Configuration Services",
+            "kind": "implementation",
+            "evidence": [
+              {
+                "page": 1,
+                "start": 522,
+                "end": 555,
+                "quote": "Configuration Services USD 45,000",
+                "clause": "2 Products and Services"
+              },
+              {
+                "page": 1,
+                "start": 653,
+                "end": 762,
+                "quote": "Nimbus will configure the Platform's standard clinical operations dashboards and load Customer's facility and",
+                "clause": "3 Configuration Services"
+              }
+            ],
+            "stated_price": {
+              "value": "45000",
+              "status": "extracted",
+              "citations": [
+                {
+                  "page": 1,
+                  "start": 522,
+                  "end": 555,
+                  "quote": "Configuration Services USD 45,000",
+                  "clause": "2 Products and Services"
+                }
+              ],
+              "note": ""
+            },
+            "list_price": {
+              "value": null,
+              "status": "absent",
+              "citations": [],
+              "note": null
+            },
+            "duration_months": {
+              "value": null,
+              "status": "absent",
+              "citations": [],
+              "note": null
+            },
+            "recognition": {
+              "value": "undetermined",
+              "status": "extracted",
+              "citations": [
+                {
+                  "page": 1,
+                  "start": 522,
+                  "end": 555,
+                  "quote": "Configuration Services USD 45,000",
+                  "clause": "2 Products and Services"
+                }
+              ],
+              "note": ""
+            },
+            "integration_language": {
+              "value": null,
+              "status": "absent",
+              "citations": [],
+              "note": null
+            }
+          },
+          {
+            "label": "Premium Support",
+            "kind": "support",
+            "evidence": [
+              {
+                "page": 1,
+                "start": 556,
+                "end": 593,
+                "quote": "Premium Support, 36 months USD 54,000",
+                "clause": "2 Products and Services"
+              },
+              {
+                "page": 1,
+                "start": 1171,
+                "end": 1278,
+                "quote": "Premium Support provides access to the Nimbus support desk at all hours, a named technical account manager,",
+                "clause": "4 Premium Support"
+              }
+            ],
+            "stated_price": {
+              "value": "54000",
+              "status": "extracted",
+              "citations": [
+                {
+                  "page": 1,
+                  "start": 556,
+                  "end": 593,
+                  "quote": "Premium Support, 36 months USD 54,000",
+                  "clause": "2 Products and Services"
+                }
+              ],
+              "note": ""
+            },
+            "list_price": {
+              "value": null,
+              "status": "absent",
+              "citations": [],
+              "note": null
+            },
+            "duration_months": {
+              "value": 36,
+              "status": "extracted",
+              "citations": [
+                {
+                  "page": 1,
+                  "start": 556,
+                  "end": 593,
+                  "quote": "Premium Support, 36 months USD 54,000",
+                  "clause": "2 Products and Services"
+                }
+              ],
+              "note": ""
+            },
+            "recognition": {
+              "value": "undetermined",
+              "status": "extracted",
+              "citations": [
+                {
+                  "page": 1,
+                  "start": 556,
+                  "end": 593,
+                  "quote": "Premium Support, 36 months USD 54,000",
+                  "clause": "2 Products and Services"
+                }
+              ],
+              "note": ""
+            },
+            "integration_language": {
+              "value": null,
+              "status": "absent",
+              "citations": [],
+              "note": null
+            }
+          }
+        ],
+        "variable_consideration": [],
+        "third_party_components": {
+          "value": null,
+          "status": "absent",
+          "citations": [],
+          "note": null
+        },
+        "extractor": "llm",
+        "model": "claude-opus-5-5",
+        "dropped_for_no_evidence": 0
+      },
+      "call": {
+        "model": "claude-opus-5-5",
+        "effort": "high",
+        "stop_reason": "end_turn",
+        "input_tokens": 901,
+        "output_tokens": 2448,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 4530,
+        "seconds": 20.314,
+        "cost_usd": "0.053470",
+        "prices_as_of": "2026-10-18"
+      }
+    },
+    {
+      "doc_id": "nimbus-of-saltmarsh",
+      "pdf_sha256": "680872f00fe30d8912c6e4e4adfd1ec87d54f6612d68386ce9bcaf659809ce18",
+      "claims": {
+        "fields": [
+          {
+            "value": "order_form",
+            "quotes": [
+              "ORDER FORM NA-OF-2026-0012"
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "agreement_type"
+          },
+          {
+            "value": "Saltmarsh Grain Cooperative",
+            "quotes": [
+              "Saltmarsh Grain Cooperative (\"Customer\")"
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "customer"
+          },
+          {
+            "value": "Nimbus Analytics, Inc.",
+            "quotes": [
+              "Nimbus Analytics, Inc. (\"Nimbus\")"
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "supplier"
+          },
+          {
+            "value": "USD",
+            "quotes": [
+              "Total committed fees USD 240,000"
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "currency"
+          },
+          {
+            "value": "240000",
+            "quotes": [
+              "Total committed fees USD 240,000"
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "total_fixed_consideration"
+          },
+          {
+            "value": "2026-01-12",
+            "quotes": [
+              "This Order Form is entered into as of January 12, 2026"
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "effective_date"
+          },
+          {
+            "value": "24",
+            "quotes": [
+              "The Subscription Term commences on February 1, 2026 and continues for twenty-four (24) months."
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "stated_term_months"
+          },
+          {
+            "value": "false",
+            "quotes": [
+              "Neither party may terminate this Order Form for convenience."
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "termination_for_convenience"
+          },
+          {
+            "value": "30",
+            "quotes": [
+              "payable within thirty (30) days of the invoice date."
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "net_days"
+          },
+          {
+            "value": "annually in advance",
+            "quotes": [
+              "Committed fees are invoiced annually in advance"
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "billing_frequency"
+          },
+          {
+            "value": "Orbisat Imaging Ltd, an unaffiliated third party, supplies the satellite imagery feed; Nimbus purchases the licence, sublicenses it to Customer and sets the price; Orbisat delivers directly and is responsible for accuracy and coverage.",
+            "quotes": [
+              "The imagery feed is supplied by Orbisat Imaging Ltd, which is not affiliated with Nimbus.",
+              "Nimbus sets the price of the feed to Customer.",
+              "Orbisat delivers the imagery directly to Customer's account and is responsible for its accuracy and coverage.",
+              "Customer raises any question about the feed with Nimbus support, which passes it to Orbisat."
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "third_party_components"
+          }
+        ],
+        "obligations": [
+          {
+            "label": "Crop Yield Analytics subscription",
+            "kind": "saas_subscription",
+            "quotes": [
+              "Crop Yield Analytics subscription (24 months) USD 168,000"
+            ],
+            "stated_price": [
+              {
+                "value": "168000",
+                "quotes": [
+                  "Crop Yield Analytics subscription (24 months) USD 168,000"
+                ],
+                "conflicting": false,
+                "note": ""
+              }
+            ],
+            "list_price": [],
+            "duration_months": [
+              {
+                "value": "24",
+                "quotes": [
+                  "Crop Yield Analytics subscription (24 months) USD 168,000"
+                ],
+                "conflicting": false,
+                "note": ""
+              }
+            ],
+            "recognition": [
+              {
+                "value": "undetermined",
+                "quotes": [
+                  "Crop Yield Analytics subscription (24 months) USD 168,000"
+                ],
+                "conflicting": false,
+                "note": "The contract does not describe how control passes."
+              }
+            ],
+            "integration_language": []
+          },
+          {
+            "label": "Orbisat satellite imagery feed",
+            "kind": "third_party_resale",
+            "quotes": [
+              "Orbisat satellite imagery feed (24 months) USD 72,000",
+              "The imagery feed is supplied by Orbisat Imaging Ltd, which is not affiliated with Nimbus."
+            ],
+            "stated_price": [
+              {
+                "value": "72000",
+                "quotes": [
+                  "Orbisat satellite imagery feed (24 months) USD 72,000"
+                ],
+                "conflicting": false,
+                "note": ""
+              }
+            ],
+            "list_price": [],
+            "duration_months": [
+              {
+                "value": "24",
+                "quotes": [
+                  "Orbisat satellite imagery feed (24 months) USD 72,000"
+                ],
+                "conflicting": false,
+                "note": ""
+              }
+            ],
+            "recognition": [
+              {
+                "value": "undetermined",
+                "quotes": [
+                  "Orbisat delivers the imagery directly to Customer's account and is responsible for its accuracy and coverage."
+                ],
+                "conflicting": false,
+                "note": "Delivery is described but the contract does not state how control passes."
+              }
+            ],
+            "integration_language": []
+          }
+        ],
+        "variable_consideration": [
+          {
+            "kind": "refund_right",
+            "description": "If Orbisat ceases to supply the feed, Nimbus may substitute comparable imagery or refund the unused portion of the feed fee.",
+            "quotes": [
+              "or refund the unused portion of the feed fee."
+            ],
+            "cap": [],
+            "estimable_from_contract": false
+          }
+        ]
+      },
+      "extraction": {
+        "doc_id": "nimbus-of-saltmarsh",
+        "agreement_type": {
+          "value": "order_form",
+          "status": "extracted",
+          "citations": [
+            {
+              "page": 1,
+              "start": 0,
+              "end": 26,
+              "quote": "ORDER FORM NA-OF-2026-0012",
+              "clause": "Preamble"
+            }
+          ],
+          "note": ""
+        },
+        "customer": {
+          "value": "Saltmarsh Grain Cooperative",
+          "status": "extracted",
+          "citations": [
+            {
+              "page": 1,
+              "start": 208,
+              "end": 248,
+              "quote": "Saltmarsh Grain Cooperative (\"Customer\")",
+              "clause": "Preamble"
+            }
+          ],
+          "note": ""
+        },
+        "supplier": {
+          "value": "Nimbus Analytics, Inc.",
+          "status": "extracted",
+          "citations": [
+            {
+              "page": 1,
+              "start": 170,
+              "end": 203,
+              "quote": "Nimbus Analytics, Inc. (\"Nimbus\")",
+              "clause": "Preamble"
+            }
+          ],
+          "note": ""
+        },
+        "amends": {
+          "value": null,
+          "status": "absent",
+          "citations": [],
+          "note": null
+        },
+        "currency": {
+          "value": "USD",
+          "status": "extracted",
+          "citations": [
+            {
+              "page": 1,
+              "start": 565,
+              "end": 597,
+              "quote": "Total committed fees USD 240,000",
+              "clause": "1 Bundle Contents"
+            }
+          ],
+          "note": ""
+        },
+        "total_fixed_consideration": {
+          "value": "240000",
+          "status": "extracted",
+          "citations": [
+            {
+              "page": 1,
+              "start": 565,
+              "end": 597,
+              "quote": "Total committed fees USD 240,000",
+              "clause": "1 Bundle Contents"
+            }
+          ],
+          "note": ""
+        },
+        "term": {
+          "effective_date": {
+            "value": "2026-01-12",
+            "status": "extracted",
+            "citations": [
+              {
+                "page": 1,
+                "start": 107,
+                "end": 161,
+                "quote": "This Order Form is entered into as of January 12, 2026",
+                "clause": "Preamble"
+              }
+            ],
+            "note": ""
+          },
+          "stated_term_months": {
+            "value": 24,
+            "status": "extracted",
+            "citations": [
+              {
+                "page": 1,
+                "start": 349,
+                "end": 443,
+                "quote": "The Subscription Term commences on February 1, 2026 and continues for twenty-four (24) months.",
+                "clause": "1 Bundle Contents"
+              }
+            ],
+            "note": ""
+          },
+          "auto_renews": {
+            "value": null,
+            "status": "absent",
+            "citations": [],
+            "note": null
+          },
+          "termination_for_convenience": {
+            "value": false,
+            "status": "extracted",
+            "citations": [
+              {
+                "page": 1,
+                "start": 1448,
+                "end": 1508,
+                "quote": "Neither party may terminate this Order Form for convenience.",
+                "clause": "3 Payment and Termination"
+              }
+            ],
+            "note": ""
+          },
+          "termination_notice_days": {
+            "value": null,
+            "status": "absent",
+            "citations": [],
+            "note": null
+          },
+          "termination_compensation": {
+            "value": null,
+            "status": "absent",
+            "citations": [],
+            "note": null
+          }
+        },
+        "payment": {
+          "net_days": {
+            "value": 30,
+            "status": "extracted",
+            "citations": [
+              {
+                "page": 1,
+                "start": 1395,
+                "end": 1447,
+                "quote": "payable within thirty (30) days of the invoice date.",
+                "clause": "3 Payment and Termination"
+              }
+            ],
+            "note": ""
+          },
+          "billing_frequency": {
+            "value": "annually in advance",
+            "status": "extracted",
+            "citations": [
+              {
+                "page": 1,
+                "start": 1291,
+                "end": 1338,
+                "quote": "Committed fees are invoiced annually in advance",
+                "clause": "3 Payment and Termination"
+              }
+            ],
+            "note": ""
+          },
+          "upfront_fee": {
+            "value": null,
+            "status": "absent",
+            "citations": [],
+            "note": null
+          },
+          "upfront_fee_refundable": {
+            "value": null,
+            "status": "absent",
+            "citations": [],
+            "note": null
+          },
+          "payment_spread_months": {
+            "value": null,
+            "status": "absent",
+            "citations": [],
+            "note": null
+          }
+        },
+        "renewal": {
+          "renewal_term_months": {
+            "value": null,
+            "status": "absent",
+            "citations": [],
+            "note": null
+          },
+          "renewal_price": {
+            "value": null,
+            "status": "absent",
+            "citations": [],
+            "note": null
+          },
+          "described_as_discounted": {
+            "value": null,
+            "status": "absent",
+            "citations": [],
+            "note": null
+          }
+        },
+        "obligations": [
+          {
+            "label": "Crop Yield Analytics subscription",
+            "kind": "saas_subscription",
+            "evidence": [
+              {
+                "page": 1,
+                "start": 453,
+                "end": 510,
+                "quote": "Crop Yield Analytics subscription (24 months) USD 168,000",
+                "clause": "1 Bundle Contents"
+              }
+            ],
+            "stated_price": {
+              "value": "168000",
+              "status": "extracted",
+              "citations": [
+                {
+                  "page": 1,
+                  "start": 453,
+                  "end": 510,
+                  "quote": "Crop Yield Analytics subscription (24 months) USD 168,000",
+                  "clause": "1 Bundle Contents"
+                }
+              ],
+              "note": ""
+            },
+            "list_price": {
+              "value": null,
+              "status": "absent",
+              "citations": [],
+              "note": null
+            },
+            "duration_months": {
+              "value": 24,
+              "status": "extracted",
+              "citations": [
+                {
+                  "page": 1,
+                  "start": 453,
+                  "end": 510,
+                  "quote": "Crop Yield Analytics subscription (24 months) USD 168,000",
+                  "clause": "1 Bundle Contents"
+                }
+              ],
+              "note": ""
+            },
+            "recognition": {
+              "value": "undetermined",
+              "status": "extracted",
+              "citations": [
+                {
+                  "page": 1,
+                  "start": 453,
+                  "end": 510,
+                  "quote": "Crop Yield Analytics subscription (24 months) USD 168,000",
+                  "clause": "1 Bundle Contents"
+                }
+              ],
+              "note": "The contract does not describe how control passes."
+            },
+            "integration_language": {
+              "value": null,
+              "status": "absent",
+              "citations": [],
+              "note": null
+            }
+          },
+          {
+            "label": "Orbisat satellite imagery feed",
+            "kind": "third_party_resale",
+            "evidence": [
+              {
+                "page": 1,
+                "start": 511,
+                "end": 564,
+                "quote": "Orbisat satellite imagery feed (24 months) USD 72,000",
+                "clause": "1 Bundle Contents"
+              },
+              {
+                "page": 1,
+                "start": 619,
+                "end": 708,
+                "quote": "The imagery feed is supplied by Orbisat Imaging Ltd, which is not affiliated with Nimbus.",
+                "clause": "2 Satellite Imagery"
+              }
+            ],
+            "stated_price": {
+              "value": "72000",
+              "status": "extracted",
+              "citations": [
+                {
+                  "page": 1,
+                  "start": 511,
+                  "end": 564,
+                  "quote": "Orbisat satellite imagery feed (24 months) USD 72,000",
+                  "clause": "1 Bundle Contents"
+                }
+              ],
+              "note": ""
+            },
+            "list_price": {
+              "value": null,
+              "status": "absent",
+              "citations": [],
+              "note": null
+            },
+            "duration_months": {
+              "value": 24,
+              "status": "extracted",
+              "citations": [
+                {
+                  "page": 1,
+                  "start": 511,
+                  "end": 564,
+                  "quote": "Orbisat satellite imagery feed (24 months) USD 72,000",
+                  "clause": "1 Bundle Contents"
+                }
+              ],
+              "note": ""
+            },
+            "recognition": {
+              "value": "undetermined",
+              "status": "extracted",
+              "citations": [
+                {
+                  "page": 1,
+                  "start": 899,
+                  "end": 1008,
+                  "quote": "Orbisat delivers the imagery directly to Customer's account and is responsible for its accuracy and coverage.",
+                  "clause": "2 Satellite Imagery"
+                }
+              ],
+              "note": "Delivery is described but the contract does not state how control passes."
+            },
+            "integration_language": {
+              "value": null,
+              "status": "absent",
+              "citations": [],
+              "note": null
+            }
+          }
+        ],
+        "variable_consideration": [
+          {
+            "kind": "refund_right",
+            "description": "If Orbisat ceases to supply the feed, Nimbus may substitute comparable imagery or refund the unused portion of the feed fee.",
+            "evidence": [
+              {
+                "page": 1,
+                "start": 1218,
+                "end": 1263,
+                "quote": "or refund the unused portion of the feed fee.",
+                "clause": "2 Satellite Imagery"
+              }
+            ],
+            "cap": {
+              "value": null,
+              "status": "absent",
+              "citations": [],
+              "note": null
+            },
+            "estimable_from_contract": false
+          }
+        ],
+        "third_party_components": {
+          "value": "Orbisat Imaging Ltd, an unaffiliated third party, supplies the satellite imagery feed; Nimbus purchases the licence, sublicenses it to Customer and sets the price; Orbisat delivers directly and is responsible for accuracy and coverage.",
+          "status": "extracted",
+          "citations": [
+            {
+              "page": 1,
+              "start": 619,
+              "end": 708,
+              "quote": "The imagery feed is supplied by Orbisat Imaging Ltd, which is not affiliated with Nimbus.",
+              "clause": "2 Satellite Imagery"
+            },
+            {
+              "page": 1,
+              "start": 852,
+              "end": 898,
+              "quote": "Nimbus sets the price of the feed to Customer.",
+              "clause": "2 Satellite Imagery"
+            },
+            {
+              "page": 1,
+              "start": 899,
+              "end": 1008,
+              "quote": "Orbisat delivers the imagery directly to Customer's account and is responsible for its accuracy and coverage.",
+              "clause": "2 Satellite Imagery"
+            },
+            {
+              "page": 1,
+              "start": 1009,
+              "end": 1101,
+              "quote": "Customer raises any question about the feed with Nimbus support, which passes it to Orbisat.",
+              "clause": "2 Satellite Imagery"
+            }
+          ],
+          "note": ""
+        },
+        "extractor": "llm",
+        "model": "claude-opus-5-5",
+        "dropped_for_no_evidence": 0
+      },
+      "call": {
+        "model": "claude-opus-5-5",
+        "effort": "high",
+        "stop_reason": "end_turn",
+        "input_tokens": 804,
+        "output_tokens": 2505,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 4530,
+        "seconds": 19.183,
+        "cost_usd": "0.054222",
+        "prices_as_of": "2026-10-18"
+      }
+    },
+    {
+      "doc_id": "nimbus-of-tamarind",
+      "pdf_sha256": "be55e7c821240afcc3f0b0eb28d255871fac71672174999ae79c678965017ccd",
+      "claims": {
+        "fields": [
+          {
+            "value": "order_form",
+            "quotes": [
+              "ORDER FORM NA-OF-2025-0489"
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "agreement_type"
+          },
+          {
+            "value": "Tamarind Shipping Pte. Ltd.",
+            "quotes": [
+              "Tamarind Shipping Pte. Ltd. (\"Customer\"), a company incorporated in Singapore"
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "customer"
+          },
+          {
+            "value": "Nimbus Analytics, Inc.",
+            "quotes": [
+              "Nimbus Analytics, Inc. (\"Nimbus\")"
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "supplier"
+          },
+          {
+            "value": "USD",
+            "quotes": [
+              "Total USD 560,000"
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "currency"
+          },
+          {
+            "value": "560000",
+            "quotes": [
+              "Total USD 560,000"
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "total_fixed_consideration"
+          },
+          {
+            "value": "2025-12-08",
+            "quotes": [
+              "This Order Form is entered into as of December 8, 2025"
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "effective_date"
+          },
+          {
+            "value": "false",
+            "quotes": [
+              "This Order Form is non-cancellable."
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "termination_for_convenience"
+          },
+          {
+            "value": "30",
+            "quotes": [
+              "All invoices are\npayable within thirty (30) days of the invoice date."
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "net_days"
+          },
+          {
+            "value": "Licence fee in quarterly instalments; customisation fee on completion; support annually in advance",
+            "quotes": [
+              "The licence fee is payable in eight (8) equal quarterly instalments of USD 45,000",
+              "The customisation fee is invoiced on completion, and support is invoiced annually in advance."
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "billing_frequency"
+          },
+          {
+            "value": "21",
+            "quotes": [
+              "The licence fee is payable in eight (8) equal quarterly instalments of USD 45,000, the first on delivery of the\nSoftware and the last twenty-one (21) months later. No interest is charged on the instalments."
+            ],
+            "conflicting": false,
+            "note": "Instalment schedule applies to the licence fee only.",
+            "field": "payment_spread_months"
+          },
+          {
+            "value": "12",
+            "quotes": [
+              "may be renewed\nannually at Nimbus's then-current rates"
+            ],
+            "conflicting": false,
+            "note": "Support renewal option stated as 'annually'.",
+            "field": "renewal_term_months"
+          },
+          {
+            "value": "Nimbus's then-current rates",
+            "quotes": [
+              "may be renewed\nannually at Nimbus's then-current rates"
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "renewal_price"
+          },
+          {
+            "value": "false",
+            "quotes": [
+              "may be renewed\nannually at Nimbus's then-current rates"
+            ],
+            "conflicting": false,
+            "note": "Renewal priced at then-current rates; no discount framing in the document.",
+            "field": "renewal_described_as_discounted"
+          }
+        ],
+        "obligations": [
+          {
+            "label": "Fleet Planner perpetual licence (60 vessels)",
+            "kind": "software_license",
+            "quotes": [
+              "Nimbus grants Customer a perpetual, non-exclusive licence to install and use the Nimbus Fleet Planner software",
+              "The Software is delivered by download\non the date of this Order Form."
+            ],
+            "stated_price": [
+              {
+                "value": "360000",
+                "quotes": [
+                  "Fleet Planner perpetual licence (60 vessels) USD 360,000"
+                ],
+                "conflicting": false,
+                "note": ""
+              }
+            ],
+            "list_price": [],
+            "duration_months": [],
+            "recognition": [
+              {
+                "value": "undetermined",
+                "quotes": [
+                  "The Software is delivered by download\non the date of this Order Form."
+                ],
+                "conflicting": false,
+                "note": "Contract states a delivery date but also states the Software cannot be used for its intended purpose until customisation is complete."
+              }
+            ],
+            "integration_language": [
+              {
+                "value": "Software requires customisation before Customer can use it for its intended purpose",
+                "quotes": [
+                  "The Software as delivered does not support those rules, and Customer cannot use it for its intended\nscheduling purpose until the customisation is complete."
+                ],
+                "conflicting": false,
+                "note": ""
+              }
+            ]
+          },
+          {
+            "label": "Fleet rules customisation",
+            "kind": "implementation",
+            "quotes": [
+              "Nimbus will modify the Software's scheduling engine to apply Customer's fleet rules for crew rotation and port\nrotation."
+            ],
+            "stated_price": [
+              {
+                "value": "80000",
+                "quotes": [
+                  "Fleet rules customisation USD 80,000"
+                ],
+                "conflicting": false,
+                "note": ""
+              }
+            ],
+            "list_price": [],
+            "duration_months": [],
+            "recognition": [
+              {
+                "value": "undetermined",
+                "quotes": [
+                  "The customisation is expected to take sixteen (16) weeks from delivery of the Software."
+                ],
+                "conflicting": false,
+                "note": ""
+              }
+            ],
+            "integration_language": [
+              {
+                "value": "Customisation modifies the licensed Software's scheduling engine",
+                "quotes": [
+                  "Nimbus will modify the Software's scheduling engine to apply Customer's fleet rules for crew rotation and port\nrotation."
+                ],
+                "conflicting": false,
+                "note": ""
+              }
+            ]
+          },
+          {
+            "label": "Support and updates, 24 months",
+            "kind": "support",
+            "quotes": [
+              "Support and updates are provided for twenty-four (24) months from delivery of the Software"
+            ],
+            "stated_price": [
+              {
+                "value": "120000",
+                "quotes": [
+                  "Support and updates, 24 months USD 120,000"
+                ],
+                "conflicting": false,
+                "note": ""
+              }
+            ],
+            "list_price": [],
+            "duration_months": [
+              {
+                "value": "24",
+                "quotes": [
+                  "Support and updates are provided for twenty-four (24) months from delivery of the Software"
+                ],
+                "conflicting": false,
+                "note": ""
+              }
+            ],
+            "recognition": [
+              {
+                "value": "undetermined",
+                "quotes": [
+                  "Support and updates are provided for twenty-four (24) months from delivery of the Software"
+                ],
+                "conflicting": false,
+                "note": ""
+              }
+            ],
+            "integration_language": []
+          }
+        ],
+        "variable_consideration": []
+      },
+      "extraction": {
+        "doc_id": "nimbus-of-tamarind",
+        "agreement_type": {
+          "value": "order_form",
+          "status": "extracted",
+          "citations": [
+            {
+              "page": 1,
+              "start": 0,
+              "end": 26,
+              "quote": "ORDER FORM NA-OF-2025-0489",
+              "clause": "Preamble"
+            }
+          ],
+          "note": ""
+        },
+        "customer": {
+          "value": "Tamarind Shipping Pte. Ltd.",
+          "status": "extracted",
+          "citations": [
+            {
+              "page": 1,
+              "start": 204,
+              "end": 281,
+              "quote": "Tamarind Shipping Pte. Ltd. (\"Customer\"), a company incorporated in Singapore",
+              "clause": "Preamble"
+            }
+          ],
+          "note": ""
+        },
+        "supplier": {
+          "value": "Nimbus Analytics, Inc.",
+          "status": "extracted",
+          "citations": [
+            {
+              "page": 1,
+              "start": 166,
+              "end": 199,
+              "quote": "Nimbus Analytics, Inc. (\"Nimbus\")",
+              "clause": "Preamble"
+            }
+          ],
+          "note": ""
+        },
+        "amends": {
+          "value": null,
+          "status": "absent",
+          "citations": [],
+          "note": null
+        },
+        "currency": {
+          "value": "USD",
+          "status": "extracted",
+          "citations": [
+            {
+              "page": 1,
+              "start": 1179,
+              "end": 1196,
+              "quote": "Total USD 560,000",
+              "clause": "3 Fees"
+            }
+          ],
+          "note": ""
+        },
+        "total_fixed_consideration": {
+          "value": "560000",
+          "status": "extracted",
+          "citations": [
+            {
+              "page": 1,
+              "start": 1179,
+              "end": 1196,
+              "quote": "Total USD 560,000",
+              "clause": "3 Fees"
+            }
+          ],
+          "note": ""
+        },
+        "term": {
+          "effective_date": {
+            "value": "2025-12-08",
+            "status": "extracted",
+            "citations": [
+              {
+                "page": 1,
+                "start": 103,
+                "end": 157,
+                "quote": "This Order Form is entered into as of December 8, 2025",
+                "clause": "Preamble"
+              }
+            ],
+            "note": ""
+          },
+          "stated_term_months": {
+            "value": null,
+            "status": "absent",
+            "citations": [],
+            "note": null
+          },
+          "auto_renews": {
+            "value": null,
+            "status": "absent",
+            "citations": [],
+            "note": null
+          },
+          "termination_for_convenience": {
+            "value": false,
+            "status": "extracted",
+            "citations": [
+              {
+                "page": 1,
+                "start": 1579,
+                "end": 1614,
+                "quote": "This Order Form is non-cancellable.",
+                "clause": "4 Payment"
+              }
+            ],
+            "note": ""
+          },
+          "termination_notice_days": {
+            "value": null,
+            "status": "absent",
+            "citations": [],
+            "note": null
+          },
+          "termination_compensation": {
+            "value": null,
+            "status": "absent",
+            "citations": [],
+            "note": null
+          }
+        },
+        "payment": {
+          "net_days": {
+            "value": 30,
+            "status": "extracted",
+            "citations": [
+              {
+                "page": 1,
+                "start": 1509,
+                "end": 1578,
+                "quote": "All invoices are\npayable within thirty (30) days of the invoice date.",
+                "clause": "4 Payment"
+              }
+            ],
+            "note": ""
+          },
+          "billing_frequency": {
+            "value": "Licence fee in quarterly instalments; customisation fee on completion; support annually in advance",
+            "status": "extracted",
+            "citations": [
+              {
+                "page": 1,
+                "start": 1208,
+                "end": 1289,
+                "quote": "The licence fee is payable in eight (8) equal quarterly instalments of USD 45,000",
+                "clause": "4 Payment"
+              },
+              {
+                "page": 1,
+                "start": 1415,
+                "end": 1508,
+                "quote": "The customisation fee is invoiced on completion, and support is invoiced annually in advance.",
+                "clause": "4 Payment"
+              }
+            ],
+            "note": ""
+          },
+          "upfront_fee": {
+            "value": null,
+            "status": "absent",
+            "citations": [],
+            "note": null
+          },
+          "upfront_fee_refundable": {
+            "value": null,
+            "status": "absent",
+            "citations": [],
+            "note": null
+          },
+          "payment_spread_months": {
+            "value": 21,
+            "status": "extracted",
+            "citations": [
+              {
+                "page": 1,
+                "start": 1208,
+                "end": 1414,
+                "quote": "The licence fee is payable in eight (8) equal quarterly instalments of USD 45,000, the first on delivery of the\nSoftware and the last twenty-one (21) months later. No interest is charged on the instalments.",
+                "clause": "4 Payment"
+              }
+            ],
+            "note": "Instalment schedule applies to the licence fee only."
+          }
+        },
+        "renewal": {
+          "renewal_term_months": {
+            "value": 12,
+            "status": "extracted",
+            "citations": [
+              {
+                "page": 1,
+                "start": 1721,
+                "end": 1775,
+                "quote": "may be renewed\nannually at Nimbus's then-current rates",
+                "clause": "5 Support"
+              }
+            ],
+            "note": "Support renewal option stated as 'annually'."
+          },
+          "renewal_price": {
+            "value": null,
+            "status": "absent",
+            "citations": [],
+            "note": "Dropped: could not read a value from \"Nimbus's then-current rates\"."
+          },
+          "described_as_discounted": {
+            "value": false,
+            "status": "extracted",
+            "citations": [
+              {
+                "page": 1,
+                "start": 1721,
+                "end": 1775,
+                "quote": "may be renewed\nannually at Nimbus's then-current rates",
+                "clause": "5 Support"
+              }
+            ],
+            "note": "Renewal priced at then-current rates; no discount framing in the document."
+          }
+        },
+        "obligations": [
+          {
+            "label": "Fleet Planner perpetual licence (60 vessels)",
+            "kind": "software_license",
+            "evidence": [
+              {
+                "page": 1,
+                "start": 341,
+                "end": 451,
+                "quote": "Nimbus grants Customer a perpetual, non-exclusive licence to install and use the Nimbus Fleet Planner software",
+                "clause": "1 Licence Grant"
+              },
+              {
+                "page": 1,
+                "start": 525,
+                "end": 594,
+                "quote": "The Software is delivered by download\non the date of this Order Form.",
+                "clause": "1 Licence Grant"
+              }
+            ],
+            "stated_price": {
+              "value": "360000",
+              "status": "extracted",
+              "citations": [
+                {
+                  "page": 1,
+                  "start": 1042,
+                  "end": 1098,
+                  "quote": "Fleet Planner perpetual licence (60 vessels) USD 360,000",
+                  "clause": "3 Fees"
+                }
+              ],
+              "note": ""
+            },
+            "list_price": {
+              "value": null,
+              "status": "absent",
+              "citations": [],
+              "note": null
+            },
+            "duration_months": {
+              "value": null,
+              "status": "absent",
+              "citations": [],
+              "note": null
+            },
+            "recognition": {
+              "value": "undetermined",
+              "status": "extracted",
+              "citations": [
+                {
+                  "page": 1,
+                  "start": 525,
+                  "end": 594,
+                  "quote": "The Software is delivered by download\non the date of this Order Form.",
+                  "clause": "1 Licence Grant"
+                }
+              ],
+              "note": "Contract states a delivery date but also states the Software cannot be used for its intended purpose until customisation is complete."
+            },
+            "integration_language": {
+              "value": "Software requires customisation before Customer can use it for its intended purpose",
+              "status": "extracted",
+              "citations": [
+                {
+                  "page": 1,
+                  "start": 745,
+                  "end": 900,
+                  "quote": "The Software as delivered does not support those rules, and Customer cannot use it for its intended\nscheduling purpose until the customisation is complete.",
+                  "clause": "2 Fleet Rules Customisation"
+                }
+              ],
+              "note": ""
+            }
+          },
+          {
+            "label": "Fleet rules customisation",
+            "kind": "implementation",
+            "evidence": [
+              {
+                "page": 1,
+                "start": 624,
+                "end": 744,
+                "quote": "Nimbus will modify the Software's scheduling engine to apply Customer's fleet rules for crew rotation and port\nrotation.",
+                "clause": "2 Fleet Rules Customisation"
+              }
+            ],
+            "stated_price": {
+              "value": "80000",
+              "status": "extracted",
+              "citations": [
+                {
+                  "page": 1,
+                  "start": 1099,
+                  "end": 1135,
+                  "quote": "Fleet rules customisation USD 80,000",
+                  "clause": "3 Fees"
+                }
+              ],
+              "note": ""
+            },
+            "list_price": {
+              "value": null,
+              "status": "absent",
+              "citations": [],
+              "note": null
+            },
+            "duration_months": {
+              "value": null,
+              "status": "absent",
+              "citations": [],
+              "note": null
+            },
+            "recognition": {
+              "value": "undetermined",
+              "status": "extracted",
+              "citations": [
+                {
+                  "page": 1,
+                  "start": 901,
+                  "end": 988,
+                  "quote": "The customisation is expected to take sixteen (16) weeks from delivery of the Software.",
+                  "clause": "2 Fleet Rules Customisation"
+                }
+              ],
+              "note": ""
+            },
+            "integration_language": {
+              "value": "Customisation modifies the licensed Software's scheduling engine",
+              "status": "extracted",
+              "citations": [
+                {
+                  "page": 1,
+                  "start": 624,
+                  "end": 744,
+                  "quote": "Nimbus will modify the Software's scheduling engine to apply Customer's fleet rules for crew rotation and port\nrotation.",
+                  "clause": "2 Fleet Rules Customisation"
+                }
+              ],
+              "note": ""
+            }
+          },
+          {
+            "label": "Support and updates, 24 months",
+            "kind": "support",
+            "evidence": [
+              {
+                "page": 1,
+                "start": 1626,
+                "end": 1716,
+                "quote": "Support and updates are provided for twenty-four (24) months from delivery of the Software",
+                "clause": "5 Support"
+              }
+            ],
+            "stated_price": {
+              "value": "120000",
+              "status": "extracted",
+              "citations": [
+                {
+                  "page": 1,
+                  "start": 1136,
+                  "end": 1178,
+                  "quote": "Support and updates, 24 months USD 120,000",
+                  "clause": "3 Fees"
+                }
+              ],
+              "note": ""
+            },
+            "list_price": {
+              "value": null,
+              "status": "absent",
+              "citations": [],
+              "note": null
+            },
+            "duration_months": {
+              "value": 24,
+              "status": "extracted",
+              "citations": [
+                {
+                  "page": 1,
+                  "start": 1626,
+                  "end": 1716,
+                  "quote": "Support and updates are provided for twenty-four (24) months from delivery of the Software",
+                  "clause": "5 Support"
+                }
+              ],
+              "note": ""
+            },
+            "recognition": {
+              "value": "undetermined",
+              "status": "extracted",
+              "citations": [
+                {
+                  "page": 1,
+                  "start": 1626,
+                  "end": 1716,
+                  "quote": "Support and updates are provided for twenty-four (24) months from delivery of the Software",
+                  "clause": "5 Support"
+                }
+              ],
+              "note": ""
+            },
+            "integration_language": {
+              "value": null,
+              "status": "absent",
+              "citations": [],
+              "note": null
+            }
+          }
+        ],
+        "variable_consideration": [],
+        "third_party_components": {
+          "value": null,
+          "status": "absent",
+          "citations": [],
+          "note": null
+        },
+        "extractor": "llm",
+        "model": "claude-opus-5-5",
+        "dropped_for_no_evidence": 1
+      },
+      "call": {
+        "model": "claude-opus-5-5",
+        "effort": "high",
+        "stop_reason": "end_turn",
+        "input_tokens": 898,
+        "output_tokens": 2910,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 4530,
+        "seconds": 23.918,
+        "cost_usd": "0.062698",
+        "prices_as_of": "2026-10-18"
+      }
+    },
+    {
+      "doc_id": "nimbus-sow-harbourline",
+      "pdf_sha256": "62b1737471a99f31a2586a009ace5b6586b8a28341439edab1b36852f49ff2c8",
+      "claims": {
+        "fields": [
+          {
+            "value": "statement_of_work",
+            "quotes": [
+              "STATEMENT OF WORK SOW-2025-058"
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "agreement_type"
+          },
+          {
+            "value": "Harbourline Port Authority",
+            "quotes": [
+              "Harbourline Port Authority (\"Customer\")"
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "customer"
+          },
+          {
+            "value": "Nimbus Analytics, Inc.",
+            "quotes": [
+              "Nimbus Analytics, Inc. (\"Nimbus\")"
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "supplier"
+          },
+          {
+            "value": "USD",
+            "quotes": [
+              "Total fixed fee USD 180,000"
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "currency"
+          },
+          {
+            "value": "180000",
+            "quotes": [
+              "Total fixed fee USD 180,000"
+            ],
+            "conflicting": false,
+            "note": "The fixed fee is subject to a delay reduction of up to USD 20,000 under section 3, reported separately as variable consideration.",
+            "field": "total_fixed_consideration"
+          },
+          {
+            "value": "2025-12-01",
+            "quotes": [
+              "This Statement of Work is entered into as of December 1, 2025"
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "effective_date"
+          },
+          {
+            "value": "false",
+            "quotes": [
+              "Either party may terminate this Statement of Work only for the other party's material breach that remains uncured"
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "termination_for_convenience"
+          },
+          {
+            "value": "30",
+            "quotes": [
+              "Invoices are payable within thirty (30) days of the invoice date."
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "net_days"
+          },
+          {
+            "value": "on milestones",
+            "quotes": [
+              "The milestones below set when it is invoiced, not whether it is earned."
+            ],
+            "conflicting": false,
+            "note": "",
+            "field": "billing_frequency"
+          }
+        ],
+        "obligations": [
+          {
+            "label": "Berth scheduling model (design document and trained models with source code)",
+            "kind": "professional_services",
+            "quotes": [
+              "Nimbus will design, build and document a berth scheduling model",
+              "The deliverables are the design document, the trained models with their source code, and a handover workshop"
+            ],
+            "stated_price": [
+              {
+                "value": "180000",
+                "quotes": [
+                  "Total fixed fee USD 180,000"
+                ],
+                "conflicting": false,
+                "note": "Single fixed fee stated for the whole Statement of Work; not allocated between deliverables."
+              }
+            ],
+            "list_price": [],
+            "duration_months": [],
+            "recognition": [
+              {
+                "value": "undetermined",
+                "quotes": [
+                  "will deliver it as a set of models and reports running in\nCustomer's own analytics environment."
+                ],
+                "conflicting": false,
+                "note": "The contract describes where the models run but does not expressly address how control passes."
+              }
+            ],
+            "integration_language": []
+          },
+          {
+            "label": "Handover workshop for Customer's analytics team",
+            "kind": "training",
+            "quotes": [
+              "a handover workshop\nfor Customer's analytics team."
+            ],
+            "stated_price": [],
+            "list_price": [],
+            "duration_months": [],
+            "recognition": [
+              {
+                "value": "undetermined",
+                "quotes": [
+                  "a handover workshop\nfor Customer's analytics team."
+                ],
+                "conflicting": false,
+                "note": ""
+              }
+            ],
+            "integration_language": []
+          }
+        ],
+        "variable_consideration": [
+          {
+            "kind": "late_delivery_penalty",
+            "description": "Fixed fee reduced by USD 2,000 for each full week Acceptance occurs after the March 31, 2026 target date for reasons attributable to Nimbus, up to USD 20,000.",
+            "quotes": [
+              "The target Acceptance Date is March 31, 2026. If Acceptance occurs after that date for reasons attributable to",
+              "the fixed fee is reduced by USD 2,000 for each full week of delay, up to a maximum reduction of USD\n20,000."
+            ],
+            "cap": [
+              {
+                "value": "20000",
+                "quotes": [
+                  "up to a maximum reduction of USD\n20,000."
+                ],
+                "conflicting": false,
+                "note": ""
+              }
+            ],
+            "estimable_from_contract": false
+          }
+        ]
+      },
+      "extraction": {
+        "doc_id": "nimbus-sow-harbourline",
+        "agreement_type": {
+          "value": "statement_of_work",
+          "status": "extracted",
+          "citations": [
+            {
+              "page": 1,
+              "start": 0,
+              "end": 30,
+              "quote": "STATEMENT OF WORK SOW-2025-058",
+              "clause": "Preamble"
+            }
+          ],
+          "note": ""
+        },
+        "customer": {
+          "value": "Harbourline Port Authority",
+          "status": "extracted",
+          "citations": [
+            {
+              "page": 1,
+              "start": 261,
+              "end": 300,
+              "quote": "Harbourline Port Authority (\"Customer\")",
+              "clause": "Preamble"
+            }
+          ],
+          "note": ""
+        },
+        "supplier": {
+          "value": "Nimbus Analytics, Inc.",
+          "status": "extracted",
+          "citations": [
+            {
+              "page": 1,
+              "start": 223,
+              "end": 256,
+              "quote": "Nimbus Analytics, Inc. (\"Nimbus\")",
+              "clause": "Preamble"
+            }
+          ],
+          "note": ""
+        },
+        "amends": {
+          "value": null,
+          "status": "absent",
+          "citations": [],
+          "note": null
+        },
+        "currency": {
+          "value": "USD",
+          "status": "extracted",
+          "citations": [
+            {
+              "page": 1,
+              "start": 982,
+              "end": 1009,
+              "quote": "Total fixed fee USD 180,000",
+              "clause": "2 Fees"
+            }
+          ],
+          "note": ""
+        },
+        "total_fixed_consideration": {
+          "value": "180000",
+          "status": "extracted",
+          "citations": [
+            {
+              "page": 1,
+              "start": 982,
+              "end": 1009,
+              "quote": "Total fixed fee USD 180,000",
+              "clause": "2 Fees"
+            }
+          ],
+          "note": "The fixed fee is subject to a delay reduction of up to USD 20,000 under section 3, reported separately as variable consideration."
+        },
+        "term": {
+          "effective_date": {
+            "value": "2025-12-01",
+            "status": "extracted",
+            "citations": [
+              {
+                "page": 1,
+                "start": 111,
+                "end": 172,
+                "quote": "This Statement of Work is entered into as of December 1, 2025",
+                "clause": "Preamble"
+              }
+            ],
+            "note": ""
+          },
+          "stated_term_months": {
+            "value": null,
+            "status": "absent",
+            "citations": [],
+            "note": null
+          },
+          "auto_renews": {
+            "value": null,
+            "status": "absent",
+            "citations": [],
+            "note": null
+          },
+          "termination_for_convenience": {
+            "value": false,
+            "status": "extracted",
+            "citations": [
+              {
+                "page": 1,
+                "start": 1560,
+                "end": 1673,
+                "quote": "Either party may terminate this Statement of Work only for the other party's material breach that remains uncured",
+                "clause": "5 Termination and Payment"
+              }
+            ],
+            "note": ""
+          },
+          "termination_notice_days": {
+            "value": null,
+            "status": "absent",
+            "citations": [],
+            "note": null
+          },
+          "termination_compensation": {
+            "value": null,
+            "status": "absent",
+            "citations": [],
+            "note": null
+          }
+        },
+        "payment": {
+          "net_days": {
+            "value": 30,
+            "status": "extracted",
+            "citations": [
+              {
+                "page": 1,
+                "start": 1719,
+                "end": 1784,
+                "quote": "Invoices are payable within thirty (30) days of the invoice date.",
+                "clause": "5 Termination and Payment"
+              }
+            ],
+            "note": ""
+          },
+          "billing_frequency": {
+            "value": "on milestones",
+            "status": "extracted",
+            "citations": [
+              {
+                "page": 1,
+                "start": 775,
+                "end": 846,
+                "quote": "The milestones below set when it is invoiced, not whether it is earned.",
+                "clause": "2 Fees"
+              }
+            ],
+            "note": ""
+          },
+          "upfront_fee": {
+            "value": null,
+            "status": "absent",
+            "citations": [],
+            "note": null
+          },
+          "upfront_fee_refundable": {
+            "value": null,
+            "status": "absent",
+            "citations": [],
+            "note": null
+          },
+          "payment_spread_months": {
+            "value": null,
+            "status": "absent",
+            "citations": [],
+            "note": null
+          }
+        },
+        "renewal": {
+          "renewal_term_months": {
+            "value": null,
+            "status": "absent",
+            "citations": [],
+            "note": null
+          },
+          "renewal_price": {
+            "value": null,
+            "status": "absent",
+            "citations": [],
+            "note": null
+          },
+          "described_as_discounted": {
+            "value": null,
+            "status": "absent",
+            "citations": [],
+            "note": null
+          }
+        },
+        "obligations": [
+          {
+            "label": "Berth scheduling model (design document and trained models with source code)",
+            "kind": "professional_services",
+            "evidence": [
+              {
+                "page": 1,
+                "start": 338,
+                "end": 401,
+                "quote": "Nimbus will design, build and document a berth scheduling model",
+                "clause": "1 Scope of Work"
+              },
+              {
+                "page": 1,
+                "start": 596,
+                "end": 704,
+                "quote": "The deliverables are the design document, the trained models with their source code, and a handover workshop",
+                "clause": "1 Scope of Work"
+              }
+            ],
+            "stated_price": {
+              "value": "180000",
+              "status": "extracted",
+              "citations": [
+                {
+                  "page": 1,
+                  "start": 982,
+                  "end": 1009,
+                  "quote": "Total fixed fee USD 180,000",
+                  "clause": "2 Fees"
+                }
+              ],
+              "note": "Single fixed fee stated for the whole Statement of Work; not allocated between deliverables."
+            },
+            "list_price": {
+              "value": null,
+              "status": "absent",
+              "citations": [],
+              "note": null
+            },
+            "duration_months": {
+              "value": null,
+              "status": "absent",
+              "citations": [],
+              "note": null
+            },
+            "recognition": {
+              "value": "undetermined",
+              "status": "extracted",
+              "citations": [
+                {
+                  "page": 1,
+                  "start": 500,
+                  "end": 595,
+                  "quote": "will deliver it as a set of models and reports running in\nCustomer's own analytics environment.",
+                  "clause": "1 Scope of Work"
+                }
+              ],
+              "note": "The contract describes where the models run but does not expressly address how control passes."
+            },
+            "integration_language": {
+              "value": null,
+              "status": "absent",
+              "citations": [],
+              "note": null
+            }
+          },
+          {
+            "label": "Handover workshop for Customer's analytics team",
+            "kind": "training",
+            "evidence": [
+              {
+                "page": 1,
+                "start": 685,
+                "end": 735,
+                "quote": "a handover workshop\nfor Customer's analytics team.",
+                "clause": "1 Scope of Work"
+              }
+            ],
+            "stated_price": {
+              "value": null,
+              "status": "absent",
+              "citations": [],
+              "note": null
+            },
+            "list_price": {
+              "value": null,
+              "status": "absent",
+              "citations": [],
+              "note": null
+            },
+            "duration_months": {
+              "value": null,
+              "status": "absent",
+              "citations": [],
+              "note": null
+            },
+            "recognition": {
+              "value": "undetermined",
+              "status": "extracted",
+              "citations": [
+                {
+                  "page": 1,
+                  "start": 685,
+                  "end": 735,
+                  "quote": "a handover workshop\nfor Customer's analytics team.",
+                  "clause": "1 Scope of Work"
+                }
+              ],
+              "note": ""
+            },
+            "integration_language": {
+              "value": null,
+              "status": "absent",
+              "citations": [],
+              "note": null
+            }
+          }
+        ],
+        "variable_consideration": [
+          {
+            "kind": "late_delivery_penalty",
+            "description": "Fixed fee reduced by USD 2,000 for each full week Acceptance occurs after the March 31, 2026 target date for reasons attributable to Nimbus, up to USD 20,000.",
+            "evidence": [
+              {
+                "page": 1,
+                "start": 1027,
+                "end": 1137,
+                "quote": "The target Acceptance Date is March 31, 2026. If Acceptance occurs after that date for reasons attributable to",
+                "clause": "3 Delivery Date"
+              },
+              {
+                "page": 1,
+                "start": 1146,
+                "end": 1253,
+                "quote": "the fixed fee is reduced by USD 2,000 for each full week of delay, up to a maximum reduction of USD\n20,000.",
+                "clause": "3 Delivery Date"
+              }
+            ],
+            "cap": {
+              "value": "20000",
+              "status": "extracted",
+              "citations": [
+                {
+                  "page": 1,
+                  "start": 1213,
+                  "end": 1253,
+                  "quote": "up to a maximum reduction of USD\n20,000.",
+                  "clause": "3 Delivery Date"
+                }
+              ],
+              "note": ""
+            },
+            "estimable_from_contract": false
+          }
+        ],
+        "third_party_components": {
+          "value": null,
+          "status": "absent",
+          "citations": [],
+          "note": null
+        },
+        "extractor": "llm",
+        "model": "claude-opus-5-5",
+        "dropped_for_no_evidence": 0
+      },
+      "call": {
+        "model": "claude-opus-5-5",
+        "effort": "high",
+        "stop_reason": "end_turn",
+        "input_tokens": 840,
+        "output_tokens": 1872,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 4530,
+        "seconds": 16.129,
+        "cost_usd": "0.041706",
+        "prices_as_of": "2026-10-18"
+      }
+    }
+  ]
+}

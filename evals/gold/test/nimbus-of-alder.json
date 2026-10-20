@@ -1,0 +1,22 @@
+{
+  "doc_id": "nimbus-of-alder",
+  "fields": {
+    "customer": "Alder Creek Veterinary Group, LLC",
+    "supplier": "Nimbus Analytics, Inc.",
+    "agreement_type": "order_form",
+    "currency": "USD",
+    "effective_date": "2025-10-27",
+    "stated_term_months": 12,
+    "termination_for_convenience": false,
+    "termination_notice_days": null,
+    "net_days": 30,
+    "total_fixed_consideration": "9600"
+  },
+  "obligations": [
+    {
+      "kind": "saas_subscription",
+      "stated_price": "9600"
+    }
+  ],
+  "judgments": []
+}

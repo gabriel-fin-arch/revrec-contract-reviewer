@@ -23,7 +23,7 @@ from typing import Any
 
 from pydantic import BaseModel
 
-from revrec_contract_reviewer.corpus.library import CORPUS
+from revrec_contract_reviewer.corpus import CorpusSet, specs_for
 from revrec_contract_reviewer.corpus.spec import ContractSpec
 from revrec_contract_reviewer.fileio import write_lf
 
@@ -91,15 +91,15 @@ def _record_for(spec: ContractSpec) -> GoldRecord:
     )
 
 
-def build_gold() -> list[GoldRecord]:
-    return [_record_for(spec) for spec in CORPUS]
+def build_gold(corpus_set: CorpusSet = CorpusSet.DEVELOPMENT) -> list[GoldRecord]:
+    return [_record_for(spec) for spec in specs_for(corpus_set)]
 
 
-def write_gold(out_dir: Path) -> list[Path]:
-    """Write one JSON file per contract."""
+def write_gold(out_dir: Path, corpus_set: CorpusSet = CorpusSet.DEVELOPMENT) -> list[Path]:
+    """Write one JSON file per contract in the set."""
     out_dir.mkdir(parents=True, exist_ok=True)
     written = []
-    for record in build_gold():
+    for record in build_gold(corpus_set):
         target = write_lf(
             out_dir / f"{record.doc_id}.json",
             json.dumps(record.model_dump(), indent=2, ensure_ascii=False) + "\n",

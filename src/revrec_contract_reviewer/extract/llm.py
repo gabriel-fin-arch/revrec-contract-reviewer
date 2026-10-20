@@ -20,19 +20,35 @@ carried by position on the page is gone before the model sees it.
 from __future__ import annotations
 
 import os
+from time import perf_counter
+from typing import Literal, cast, get_args
 
 import anthropic
+from anthropic.types import OutputConfigParam
 
+from revrec_contract_reviewer.extract.metering import CallRecord
 from revrec_contract_reviewer.extract.schema import FIELD_GUIDANCE, WireExtraction
 from revrec_contract_reviewer.models.document import ContractDocument
 
-# Claude Opus 5 produced the published eval numbers, on 10 September 2026. Opus
-# 5.5 hasn't been measured yet.
+# Measured at effort high on 19 October 2026, alongside Claude Opus 5
+# (evals/results/llm-*-high.json). Claude Opus 5's first run, from 10
+# September 2026, is evals/results/llm.json.
 DEFAULT_MODEL = "claude-opus-5-5"
+
+# Set explicitly rather than left to the model: Claude Opus 5.5 defaults to
+# medium and Claude Opus 5 to high, so leaving it out would make two runs
+# differ in more than the model. REVREC_EFFORT, or eval --effort, overrides it.
+Effort = Literal["low", "medium", "high", "xhigh", "max"]
+DEFAULT_EFFORT: Effort = "high"
+EFFORTS: tuple[str, ...] = get_args(Effort)
 
 
 class ModelDeclined(Exception):
-    """The model returned a refusal instead of an extraction."""
+    """The model returned a refusal, or nothing parseable, instead of an extraction."""
+
+    def __init__(self, message: str, call: CallRecord | None = None) -> None:
+        super().__init__(message)
+        self.call = call
 
 SYSTEM_PROMPT = """You are assisting a group financial controller with an ASC 606 review of contracts \
 entered into by subsidiaries of the group. Your job is to read one contract and report what it says. \
@@ -111,6 +127,14 @@ def model_name() -> str:
     return os.environ.get("ANTHROPIC_MODEL") or DEFAULT_MODEL
 
 
+def effort_level(effort: str | None = None) -> Effort:
+    """The effort to ask for: the argument, else REVREC_EFFORT, else DEFAULT_EFFORT."""
+    chosen = effort or os.environ.get("REVREC_EFFORT") or DEFAULT_EFFORT
+    if chosen not in EFFORTS:
+        raise ValueError(f"REVREC_EFFORT must be one of {', '.join(EFFORTS)}, not {chosen!r}")
+    return cast(Effort, chosen)
+
+
 def _with_page_markers(document: ContractDocument) -> str:
     """The document text, with page boundaries called out.
 
@@ -124,15 +148,33 @@ def _with_page_markers(document: ContractDocument) -> str:
     return "\n\n".join(parts)
 
 
+MAX_TOKENS = 16000
+
+
 def extract(document: ContractDocument, client: anthropic.Anthropic | None = None) -> tuple[WireExtraction, str]:
     """Extract `document` with the model. Returns the claims and the model id that produced them."""
+    claims, call = extract_measured(document, client=client)
+    return claims, call.model
+
+
+def extract_measured(
+    document: ContractDocument,
+    client: anthropic.Anthropic | None = None,
+    effort: str | None = None,
+) -> tuple[WireExtraction, CallRecord]:
+    """Extract `document` with the model, and record the call: model, effort,
+    stop reason, tokens, cost at the published price, and wall-clock time."""
     client = client or anthropic.Anthropic()
     model = model_name()
+    level = effort_level(effort)
+    output_config: OutputConfigParam = {"effort": level}
 
+    started = perf_counter()
     response = client.messages.parse(
         model=model,
-        max_tokens=16000,
+        max_tokens=MAX_TOKENS,
         thinking={"type": "adaptive"},
+        output_config=output_config,
         system=[
             {
                 "type": "text",
@@ -150,10 +192,17 @@ def extract(document: ContractDocument, client: anthropic.Anthropic | None = Non
         ],
         output_format=WireExtraction,
     )
+    call = CallRecord.from_response(response, model=model, effort=level, seconds=perf_counter() - started)
 
     # A refusal arrives as a successful response with nothing parsed, so it has
-    # to be checked for rather than caught.
+    # to be checked for rather than caught; so does a response cut off at
+    # max_tokens, whose JSON never closed. The call record goes with the
+    # exception, since the tokens were spent either way.
     if response.stop_reason == "refusal":
-        raise ModelDeclined(f"{model} declined to extract {document.doc_id}")
+        raise ModelDeclined(f"{model} declined to extract {document.doc_id}", call)
+    if response.parsed_output is None:
+        raise ModelDeclined(
+            f"{model} returned nothing parseable for {document.doc_id} (stop reason: {response.stop_reason})", call
+        )
 
-    return response.parsed_output, model
+    return response.parsed_output, call
