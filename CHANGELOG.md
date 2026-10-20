@@ -2,6 +2,32 @@
 
 ## Unreleased
 
+- A model run that stops part-way keeps what it paid for. `evaluate` hands
+  over the run so far after every contract, and once more with the reason if
+  an extraction raises; `eval --save` writes it to
+  `<name>.partial.claims.json` as it goes and removes it when the run
+  finishes. A stopped run says how many calls it made and what they cost, or
+  that none was billed, and a refusal or a cut-off answer is kept with it.
+  Before, the run was written only at the end, so the calls before a failure
+  were paid for and lost: the runs of 19 October for the change below stopped
+  when the API refused requests for lack of credit, and whatever went
+  through before that wasn't kept.
+- One change for judgment precision, argued from the development set,
+  measured and dropped. The prompt's guidance on `integration_language` was
+  tightened to promises the customer can't benefit from separately, since two
+  of the three judgments Claude Opus 5.5 raised against the development gold
+  came from passages that only say services are related. Measured on 20
+  October with Claude Opus 5.5 at effort high (19 calls, USD 0.94): on the
+  test set judgment precision / recall stayed at 0.85 / 0.92, with the same
+  misses; on the development set the two targeted flags went, one appeared on
+  Tessellate, and Aster came back nearly empty, 0.87 / 0.87 to 0.89 / 0.74.
+  The test set decides, so the prompt is back to its 19 October text; the
+  runs are kept in `evals/results/` with a test that rescores them.
+  `revrec judgment-misses` lists the judgments a saved run raised or missed
+  with the passages behind them, without calling the API, and
+  `eval --save --name` saves a run beside the one before it.
+  `docs/evaluation.md` has the cases, the change, the results and an open
+  question about the development gold (Aster and Tessellate).
 - Measured Claude Opus 5.5, the default model, at effort high on both sets, and
   repeated Claude Opus 5 the same way, on 19 October 2026: 38 calls, USD 2.04 at
   the published prices. Judgment precision / recall: Opus 5.5 0.87 / 0.87 on

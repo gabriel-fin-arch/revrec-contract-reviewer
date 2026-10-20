@@ -148,6 +148,13 @@ new run sits next to `llm.json` instead of replacing it. A call that returns
 nothing usable, a refusal or a response cut off at `max_tokens`, raises with
 its record attached, since its tokens were spent either way.
 
+With `--save`, the run so far is also written after every contract, to
+`<name>.partial.claims.json`, and removed when the run finishes and the report
+and claims are written. A run that stops part-way, on a refused key or a
+balance that has run out, keeps there the claims and calls it had already
+paid for, with the reason it stopped, and `eval` says how many calls that was
+and what they cost.
+
 `uv run revrec estimate --set development --model claude-opus-5-5` says what a
 run would cost before it is made, without calling the API: input from the
 character counts of the instructions, the schema and each contract, output
@@ -360,6 +367,135 @@ with its reason.
   workshop, which the gold doesn't list, and raise the allocation question
   because of it. The workshop is named among the deliverables, so the gold may
   be the one that's incomplete.
+
+## Judgment precision: one change, argued from the development set, and dropped
+
+A judgment is raised by a rule in `assess/judgments.py` from what the
+extractor read, so every false positive has a passage behind it.
+`revrec judgment-misses` lists them from a saved run, with no extraction and
+no API call. On the development set, the Claude Opus 5.5 run of 19 October:
+
+| Judgment raised, not in the gold | Contract | The passage behind it |
+|---|---|---|
+| distinct-or-not | Meridian change order 03 | "The additional services are of the same nature as those already being provided under the Agreement and are delivered by the same study team as part of the same integrated engagement." |
+| distinct-or-not | Beacon | "The Software requires the Cartos Spatial Database" |
+| variable consideration | Calderwood master agreement | "termination of the affected Order Form and a refund of prepaid fees for the unused portion of the Subscription Term." |
+
+Claude Opus 5 raised the first and the third too, plus the allocation question
+on Aster, through a second obligation it built from the pass-through costs,
+and distinct-or-not on Tessellate.
+
+Two of the three come from `integration_language`, the passage the
+distinct-or-not rule acts on. Neither describes promises the customer can't
+benefit from separately. The change order adds more of a service that, by the
+corpus's own account, is a single performance obligation; "the same nature",
+"the same study team" and "the same integrated engagement" say the new
+services are related to the old ones, and the question that does arise, how
+to account for the modification, is already flagged. Beacon's licence needs a
+database that Cartos, an unaffiliated third party, licenses at a price it
+sets: a product sold separately. The questions it does raise, principal or
+agent on the database and the allocation, are already flagged.
+
+So the change was one paragraph of the prompt's guidance on
+`integration_language`, which read:
+
+> Only report integration_language where the contract actually describes one
+> promise as customising, integrating with, or depending on another, so that
+> the customer cannot benefit from one without the other. Do not supply it
+> because the arrangement looks like it might be. Services being of the same
+> nature as others, delivered by the same team, or part of the same
+> engagement are related, not integrated; and a product that needs another
+> product sold separately, by the supplier or anyone else, does not depend on
+> it in this sense.
+
+The first two sentences were there before, less the clause about benefit.
+It was the tighter definition the comment on `_distinct_uncertain` names as
+the real fix, inseparable rather than related, written into the prompt
+rather than tuned into a rule. That comment also says where to draw the line
+is a risk-appetite call for whoever owns the review, so the line drawn here
+is one for review, and the test set decides whether it stays.
+
+What it leaves alone: the refund on the Calderwood master agreement. It is
+the remedy for a breach of warranty, and whether a breach remedy belongs with
+variable consideration is a question about the taxonomy rather than about
+reading the contract. The issue asks for one change.
+
+What could go the wrong way: Aster says its activities are "provided as an
+integrated service" and that the sponsor gets no "separately usable
+deliverable" from any one of them, and the gold expects distinct-or-not there.
+That is integration in the new sense, so it should still be reported. If it
+isn't, the change costs a true positive.
+
+**An open question about the development gold.** Tessellate says almost the
+same as Aster: "a single integrated engagement", phases "not separately
+saleable", "no usable output until cutover". The gold expects distinct-or-not
+on Aster and not on Tessellate. Under the new guidance the two read the same
+way. The gold is not changed here.
+
+The test set's misses on 19 October were already published in the section
+above when this was written. The change is argued from the development cases
+only, and the test set decides whether it stays: if test-set precision
+doesn't improve, this file says so and the change is dropped.
+
+### Before and after
+
+Same model and effort as the runs of 19 October, Claude Opus 5.5 at `high`;
+those runs are the before. The after runs were made on 20 October, after an
+estimate of USD 0.77 to 6.44 for the two (`revrec estimate`) and my approval,
+and are saved beside them as `llm-claude-opus-5-5-high-integration.json`
+(`eval --save --name`). All 19 calls ended `end_turn`:
+
+| Run | Calls | Input tokens | Output tokens | Cost (USD) | Seconds in calls | Longest call |
+|---|---|---|---|---|---|---|
+| After, development | 12 | 67,583 | 25,696 | 0.60 | 211.6 | 29.4 s |
+| After, test | 7 | 37,918 | 15,393 | 0.34 | 127.0 | 25.9 s |
+
+Earlier attempts that day and the day before stopped when the API refused
+requests for lack of credit; nothing from them is used here.
+
+Judgment flags, precision / recall:
+
+| Set | Before | After |
+|---|---|---|
+| Development | 0.87 / 0.87 | 0.89 / 0.74 |
+| Development without Aster | 0.84 / 0.84 | 0.89 / 0.89 |
+| Test | 0.85 / 0.92 | 0.85 / 0.92 |
+
+**On the test set, nothing changed.** The same eleven judgments found, the same
+one missed (the allocation question on Wexford), the same two raised against
+the gold (variable consideration on Saltmarsh, the allocation question on
+Harbourline). Claude Opus 5.5 raised no distinct-or-not question on the test
+set it shouldn't have, before or after, so there was nothing there for this
+change to fix. Performance obligations moved from 0.85 / 0.92 to 0.77 / 0.83,
+on Harbourline, where the after run split the work into more promises.
+
+**On the development set, the change did what it was for and one thing it
+wasn't.** The two false positives it was aimed at are gone: no distinct-or-not
+on the Meridian change order or on Beacon. A new one appeared on Tessellate,
+"a single integrated engagement ... not separately saleable", which is the
+open question above: under the new guidance Tessellate reads like Aster. The
+refund on the Calderwood master agreement is still raised, as expected.
+
+And Aster came back nearly empty. The model returned one claim, that the
+document is a master agreement, and nothing else: no parties, no fees, no
+obligation, none of its four judgments. Before, the same contract gave
+twelve fields, the obligation and all four judgments. The call ended
+normally (`end_turn`, 1,127 output tokens against 3,027 before). Nothing in
+the change is about the agreement type, and one run can't say whether the
+change or run-to-run variance did it. Without Aster, the development set went
+from 0.84 / 0.84 to 0.89 / 0.89.
+
+**The change is dropped.** The rule set before the runs was that the test set
+decides, and the test set didn't improve. The prompt is back to its 19
+October text, so the published numbers above are still those of the model
+that runs by default. The after runs stay in `evals/results/` as the record
+of what was tried, and a test scores each one again from its claims.
+
+What the measurement can't separate: one run per set, and a ±0.05 variance on
+the judgment row (see Run-to-run variance), against a change that moved two
+flags out of twenty-three. A larger test set with distinct-or-not questions
+in it is what would decide this kind of change; this one has none that
+Claude Opus 5.5 gets wrong.
 
 ## What this harness cannot tell you
 

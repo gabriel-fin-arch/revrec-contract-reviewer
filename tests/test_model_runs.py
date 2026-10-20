@@ -153,6 +153,31 @@ def test_a_saved_model_run_is_named_for_its_model_and_effort(tmp_path: Path, mon
     assert "Model run:" in result.output and "USD 1.20" in result.output
 
 
+def test_a_run_after_a_change_can_be_saved_beside_the_one_before_it(tmp_path: Path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key-not-used")
+    runner = CliRunner()
+    runner.invoke(app, ["generate-corpus"])
+    runner.invoke(app, ["build-gold"])
+
+    def stubbed(document, client=None, effort=None):
+        call = CallRecord(model=llm.model_name(), effort=effort or "high", seconds=0.5, cost_usd=Decimal("0.1"))
+        return PAYLOAD, call
+
+    monkeypatch.setattr(llm, "extract_measured", stubbed)
+
+    named = runner.invoke(app, ["eval", "--extractor", "llm", "--save", "--name", "llm-after-change"])
+    refused = runner.invoke(app, ["eval", "--extractor", "llm", "--save", "--name", "../elsewhere"])
+
+    assert named.exit_code in (0, 1), named.output
+    results = tmp_path / "evals" / "results"
+    assert (results / "llm-after-change.json").is_file()
+    assert (results / "llm-after-change.claims.json").is_file()
+    assert not (results / f"llm-{llm.model_name()}-high.json").exists()
+    assert refused.exit_code == 2
+    assert "--name takes" in refused.output
+
+
 def test_an_unknown_effort_is_refused_before_anything_runs(tmp_path: Path, monkeypatch):
     monkeypatch.chdir(tmp_path)
 
