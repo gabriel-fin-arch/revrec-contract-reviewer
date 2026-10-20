@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.1.0 - 2026-10-20
+
 - The development gold for Tessellate was inconsistent with Aster's, and is
   corrected. Tessellate's SOW says "a single integrated engagement", phases
   "not separately saleable" and "no usable output until cutover" -- almost
