@@ -20,7 +20,9 @@ dependencies = [
     # 4.4.6 is the first that rebuilds the committed corpus byte for byte.
     "reportlab>=4.4.6",
     "jinja2>=3.1",
-    "anthropic>=0.77",
+    # 0.78 is the first whose output_config takes an effort; 0.77 has only
+    # the format, and an effort sent through it could be lost without a word.
+    "anthropic>=0.78",
     "python-dotenv>=1.0",
     # Writes the reviewer worklist as an .xlsx workbook (report/worklist.py).
     "openpyxl>=3.1",

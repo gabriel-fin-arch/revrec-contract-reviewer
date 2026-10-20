@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from datetime import UTC, datetime
 from pathlib import Path
 
 import anthropic
@@ -63,6 +64,7 @@ def evaluate(
     gold_dir: Path,
     choice: ExtractorChoice = ExtractorChoice.AUTO,
     client: anthropic.Anthropic | None = None,
+    effort: str | None = None,
 ) -> tuple[EvalReport, SavedRun]:
     """Review every contract in the gold set, score it, and keep the run.
 
@@ -76,6 +78,7 @@ def evaluate(
     saved: list[SavedContract] = []
     extractor = "rules"
     model: str | None = None
+    run_at = datetime.now(UTC).isoformat(timespec="seconds").replace("+00:00", "Z")
 
     for doc_id, record in sorted(gold.items()):
         path = corpus_dir / f"{doc_id}.pdf"
@@ -83,14 +86,21 @@ def evaluate(
             raise FileNotFoundError(f"gold record {doc_id} has no contract at {path}")
 
         document = segmented(load_contract(path))
-        claims, extraction = extract_with_claims(document, choice, client=client)
+        claims, extraction, call = extract_with_claims(document, choice, client=client, effort=effort)
         extractor = extraction.extractor
         model = extraction.model or model
         scores.append(score_contract(assess(extraction), document, record))
-        saved.append(SavedContract(doc_id=doc_id, pdf_sha256=pdf_sha256(path), claims=claims, extraction=extraction))
+        saved.append(
+            SavedContract(doc_id=doc_id, pdf_sha256=pdf_sha256(path), claims=claims, extraction=extraction, call=call)
+        )
 
+    efforts = {contract.call.effort for contract in saved if contract.call is not None}
     return aggregate(scores, extractor=extractor, model=model), SavedRun(
-        extractor=extractor, model=model, contracts=saved
+        extractor=extractor,
+        model=model,
+        run_at=run_at,
+        effort=efforts.pop() if len(efforts) == 1 else None,
+        contracts=saved,
     )
 
 

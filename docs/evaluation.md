@@ -113,10 +113,11 @@ argument for it than a headline number would be.
 Same 12 contracts. Run on Claude Opus 5 (`claude-opus-5`) on 10 September 2026.
 For a few days this file called it a Claude Opus 4 run from November 2025,
 after I relabelled it in a history rewrite to fit the backdated commits (see
-[PROVENANCE.md](../PROVENANCE.md#the-model-run)). The extractor now defaults
-to Claude Opus 5.5; these numbers have not been re-measured on it. The corpus
-PDFs and the gold set are the ones the run was saved with. `llm.json` keeps only
-the counts, so the run can't be re-scored against later changes to the code.
+[PROVENANCE.md](../PROVENANCE.md#the-model-run)). The corpus PDFs and the gold
+set are the ones the run was saved with. `llm.json` keeps only the counts, so
+the run can't be re-scored against later changes to the code. The extractor now
+defaults to Claude Opus 5.5, measured with Claude Opus 5 again on 19 October:
+see [the runs of 19 October](#claude-opus-55-and-claude-opus-5-19-october-2026).
 
 | Measure | Precision | Recall | F1 |
 |---|---|---|---|
@@ -130,10 +131,28 @@ dropped for no evidence: 2.
 Saved run: [`evals/results/llm.json`](../evals/results/llm.json). Claude Opus 5
 is still available, so it can be repeated with `ANTHROPIC_MODEL=claude-opus-5`.
 To measure the current default, set `ANTHROPIC_API_KEY` and run
-`uv run revrec eval --extractor llm --mistakes`; `--save` writes to
-`evals/results/llm.json`, and the claims to `llm.claims.json`, and would
-replace this run, so move it first. A run saved that way keeps its claims,
-so unlike this one it can be scored again.
+`uv run revrec eval --extractor llm --effort high --mistakes --save`.
+
+### How a model run is measured
+
+The request sets the effort explicitly, `high` unless `--effort` or
+`REVREC_EFFORT` says otherwise: Claude Opus 5.5 defaults to `medium` and Claude
+Opus 5 to `high`, so leaving it out would make two runs differ in more than
+the model. Every call is recorded with the run (`extract/metering.py`): model,
+effort, stop reason, input, output and cache tokens as the API reports them,
+wall-clock seconds, and the cost at Anthropic's published prices, which the
+code holds with the date they were read. Thinking is billed as output and is
+inside the output count. `eval` prints the totals, and `--save` writes the
+report as `llm-<model>-<effort>.json` with its claims and calls beside it, so a
+new run sits next to `llm.json` instead of replacing it. A call that returns
+nothing usable, a refusal or a response cut off at `max_tokens`, raises with
+its record attached, since its tokens were spent either way.
+
+`uv run revrec estimate --set development --model claude-opus-5-5` says what a
+run would cost before it is made, without calling the API: input from the
+character counts of the instructions, the schema and each contract, output
+between the claims alone and `max_tokens` on every call, which no call can
+exceed. No model run is made without that estimate and my approval first.
 
 ### Against the baseline
 
@@ -260,6 +279,87 @@ missed, contract by contract, as `eval --set test --mistakes` lists it:
 
 That is the shape of a rule set fitted to the phrasing of the documents it was
 written on. It is reported here and not fixed here.
+
+## Claude Opus 5.5 and Claude Opus 5, 19 October 2026
+
+Both models, at effort `high`, on both sets, with the harness described under
+[How a model run is measured](#how-a-model-run-is-measured). Run after a cost
+estimate (`revrec estimate`: USD 1.71 to 14.45 for the four) and my approval.
+
+| Run | Calls | Input tokens | Output tokens | Cost (USD) | Seconds in calls | Longest call |
+|---|---|---|---|---|---|---|
+| Claude Opus 5.5, development | 12 | 66,539 | 28,781 | 0.66 | 243.7 | 25.5 s |
+| Claude Opus 5.5, test | 7 | 37,309 | 15,383 | 0.34 | 127.8 | 23.9 s |
+| Claude Opus 5, development | 12 | 66,515 | 24,361 | 0.72 | 248.3 | 46.8 s |
+| Claude Opus 5, test | 7 | 37,295 | 11,355 | 0.33 | 112.4 | 24.1 s |
+
+USD 2.04 in all, at the published prices of 18 October. Input counts include the
+instructions read from the prompt cache. All 38 calls ended `end_turn`; the
+largest produced 4,001 output tokens, against a `max_tokens` of 16,000. Saved
+runs: `evals/results/llm-claude-opus-5-5-high.json` and
+`llm-claude-opus-5-high.json`, the same names under `evals/results/test/`,
+each with its claims and calls in `.claims.json` beside it. A test scores each
+one again from its claims and checks it gives its report.
+
+### Development set
+
+| Measure | Rules | Claude Opus 5.5 | Claude Opus 5 | Claude Opus 5, 10 September |
+|---|---|---|---|---|
+| Contract fields | 1.00 / 0.91 | 0.99 / 0.95 | 1.00 / 0.98 | 1.00 / 0.97 |
+| Performance obligations | 0.79 / 0.75 | 0.95 / 0.95 | 0.83 / 0.95 | 0.83 / 0.95 |
+| Judgment flags | 0.95 / 0.83 | 0.87 / 0.87 | 0.85 / 0.96 | 0.76 / 0.96 |
+
+Unstated fields left blank: 21/21 on every run. Citations re-resolved: 300/300
+for Opus 5.5, 335/335 for Opus 5. Claims dropped for no evidence: 6 and 3.
+
+Claude Opus 5.5 raised three judgments the gold doesn't expect (distinct-or-not
+on the Meridian change order and on Beacon, variable consideration on the
+Calderwood master agreement) and missed three (the allocation question on
+Orchid, financing on Northgate, variable consideration on Tessellate). Claude
+Opus 5 raised four it shouldn't have and missed one, Northgate's financing.
+
+The same model at the same effort scored 0.76 on judgment precision in
+September and 0.85 now. The code has changed in between, and the September run
+kept only its counts, so it can't be scored again to separate the code from the
+run-to-run variance described above.
+
+### Test set
+
+| Measure | Rules | Claude Opus 5.5 | Claude Opus 5 |
+|---|---|---|---|
+| Contract fields | 1.00 / 0.89 | 0.98 / 0.97 | 0.98 / 0.97 |
+| Performance obligations | 0.67 / 0.50 | 0.85 / 0.92 | 0.85 / 0.92 |
+| Judgment flags | 1.00 / 0.42 | 0.85 / 0.92 | 0.65 / 0.92 |
+
+Unstated fields left blank: 8/8 on every run. Citations re-resolved: 173/173
+for Opus 5.5, 180/180 for Opus 5. Claims dropped for no evidence: 2 and 3.
+
+Both models find 11 of the 12 expected judgments. What separates them is what
+else they raise. Claude Opus 5.5 raised two more: variable consideration on
+Saltmarsh, and the allocation question on Harbourline. Claude Opus 5 raised six:
+the distinct-or-not question and principal versus agent on Larkspur, the first
+of them on configuration services the contract says the customer can use the
+platform without; distinct-or-not and variable consideration on Saltmarsh; a
+material right on Wexford, which has no renewal; and the allocation question on
+Harbourline. On contracts nobody tuned against, the older model reads the
+taxonomy more liberally, which is the failure the September run already showed.
+
+### Open questions about the test gold
+
+Two places where both models disagree with the gold in the same way. Neither is
+changed here: correcting the test set's answers after seeing results is right
+only for an authoring error, and a change would be recorded in the CHANGELOG
+with its reason.
+
+- **Wexford.** Both models read the stated term as 24 months and price the
+  obligation at EUR 102,000. The gold has 36 months and EUR 306,000, which is
+  what the amendment prints for the period it covers ("thirty-six months",
+  "EUR 306,000"); 24 months is the extension, and EUR 102,000 the annual fee.
+  Whether a reviewer would read it as the models do is open.
+- **Harbourline.** Both models find a training obligation in the handover
+  workshop, which the gold doesn't list, and raise the allocation question
+  because of it. The workshop is named among the deliverables, so the gold may
+  be the one that's incomplete.
 
 ## What this harness cannot tell you
 
