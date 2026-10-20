@@ -337,8 +337,8 @@
         "false_negatives": 1
       },
       "judgments": {
-        "true_positives": 1,
-        "false_positives": 1,
+        "true_positives": 2,
+        "false_positives": 0,
         "false_negatives": 0
       },
       "citations_total": 20,
@@ -347,8 +347,7 @@
       "mistakes": [
         "effective_date: missed (gold '2025-08-04', status ambiguous)",
         "obligation not in gold: implementation at 240000 (x1)",
-        "obligation missed: professional_services at 240000 (x1)",
-        "judgment raised but not expected: distinct_uncertain"
+        "obligation missed: professional_services at 240000 (x1)"
       ]
     }
   ],
@@ -368,8 +367,8 @@
     "false_negatives": 1
   },
   "judgments": {
-    "true_positives": 22,
-    "false_positives": 7,
+    "true_positives": 23,
+    "false_positives": 6,
     "false_negatives": 1
   },
   "citations_total": 325,

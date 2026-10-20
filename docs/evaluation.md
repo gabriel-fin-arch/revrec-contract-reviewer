@@ -56,7 +56,7 @@ than by reading the code. `revrec eval` exits non-zero if it ever drops below
 |---|---|---|---|
 | Contract fields | 1.00 | 0.91 | 0.95 |
 | Performance obligations | 0.79 | 0.75 | 0.77 |
-| Judgment flags | 0.95 | 0.83 | 0.88 |
+| Judgment flags | 0.95 | 0.79 | 0.86 |
 
 Unstated fields left blank: 21/21. Citations re-resolved: 210/210 (100%). Claims
 dropped for no evidence: 0.
@@ -95,11 +95,12 @@ the trade.
 **Termination rights that avoid the phrase.** The Meridian agreement says
 "Sponsor may terminate this Agreement or the Study at any time on thirty (30)
 days' written notice". It never says "for convenience", so the pattern misses
-it — and with it the `enforceable_term` flag, which is one of the two judgment
+it — and with it the `enforceable_term` flag, which is one of the five judgment
 recall misses.
 
-The other judgment misses are `distinct_uncertain` on two contracts, which
-requires reading integration language out of prose; and one false positive,
+The other judgment misses are `distinct_uncertain` on three contracts, which
+requires reading integration language out of prose, and `ssp_not_observable`
+on the Orchid amendment. And one false positive,
 `ssp_not_observable` on the Meridian agreement, where the rules extractor reads
 the four milestone rows as four obligations when the agreement describes a
 single integrated service. A milestone table is a payment schedule, not a list
@@ -123,7 +124,7 @@ see [the runs of 19 October](#claude-opus-55-and-claude-opus-5-19-october-2026).
 |---|---|---|---|
 | Contract fields | 1.00 | 0.97 | 0.98 |
 | Performance obligations | 0.83 | 0.95 | 0.88 |
-| Judgment flags | 0.76 | 0.96 | 0.85 |
+| Judgment flags | 0.79 | 0.96 | 0.87 |
 
 Unstated fields left blank: 21/21. Citations re-resolved: 325/325 (100%). Claims
 dropped for no evidence: 2.
@@ -168,15 +169,15 @@ exceed. No model run is made without that estimate and my approval first.
 | Contract fields | 1.00 / 0.91 | 1.00 / **0.97** |
 | Unstated fields left blank | 21 of 21 | 21 of 21 |
 | Performance obligations | 0.79 / 0.75 | **0.83** / **0.95** |
-| Judgment flags | **0.95** / 0.83 | 0.76 / **0.96** |
+| Judgment flags | **0.95** / 0.79 | 0.79 / **0.96** |
 
 The model wins on recall everywhere and it is not close: obligations from 0.75
-to 0.95, judgments from 0.83 to 0.96. Every gap the regexes had — fees stated in
+to 0.95, judgments from 0.79 to 0.96. Every gap the regexes had — fees stated in
 prose, a termination right that never says "for convenience", integration
 language buried in a scope clause — closes.
 
-**And judgment precision drops from 0.95 to 0.76.** Seven of the twelve
-contracts get a flag they should not. Six of those seven are
+**And judgment precision drops from 0.95 to 0.79.** Six of the twelve
+contracts get a flag they should not. Five of those six are
 `distinct_uncertain` or a second-order effect of finding an extra obligation:
 the model reads integration language more liberally than the taxonomy intends,
 and every extra obligation it finds also raises the allocation question.
@@ -184,7 +185,7 @@ and every extra obligation it finds also raises the allocation question.
 That trade is the wrong way round for this product and I would not ship the
 model path as-is to a controller. A reviewer's trust is spent by false positives
 long before it is spent by misses, and a tool that raises a spurious judgment on
-more than half the portfolio gets ignored inside a month. The corpus's two
+half the portfolio gets ignored inside a month. The corpus's two
 deliberately quiet contracts exist to test exactly that. The fix is
 not a threshold; it is a tighter definition of what counts as integration
 language, and that is a domain question, not a prompting one.
@@ -257,7 +258,7 @@ again afterwards.
 |---|---|---|
 | Contract fields | 1.00 / 0.91 | 1.00 / 0.89 |
 | Performance obligations | 0.79 / 0.75 | 0.67 / 0.46 |
-| Judgment flags | 0.95 / 0.83 | 1.00 / 0.38 |
+| Judgment flags | 0.95 / 0.79 | 1.00 / 0.38 |
 
 Precision / recall. On the test set: unstated fields left blank 8/8, citations
 re-resolved 96/96 (100%), claims dropped for no evidence 0. Saved run:
@@ -316,19 +317,20 @@ one again from its claims and checks it gives its report.
 |---|---|---|---|---|
 | Contract fields | 1.00 / 0.91 | 0.99 / 0.95 | 1.00 / 0.98 | 1.00 / 0.97 |
 | Performance obligations | 0.79 / 0.75 | 0.95 / 0.95 | 0.83 / 0.95 | 0.83 / 0.95 |
-| Judgment flags | 0.95 / 0.83 | 0.87 / 0.87 | 0.85 / 0.96 | 0.76 / 0.96 |
+| Judgment flags | 0.95 / 0.79 | 0.87 / 0.83 | 0.88 / 0.96 | 0.79 / 0.96 |
 
 Unstated fields left blank: 21/21 on every run. Citations re-resolved: 300/300
 for Opus 5.5, 335/335 for Opus 5. Claims dropped for no evidence: 6 and 3.
 
 Claude Opus 5.5 raised three judgments the gold doesn't expect (distinct-or-not
 on the Meridian change order and on Beacon, variable consideration on the
-Calderwood master agreement) and missed three (the allocation question on
-Orchid, financing on Northgate, variable consideration on Tessellate). Claude
-Opus 5 raised four it shouldn't have and missed one, Northgate's financing.
+Calderwood master agreement) and missed four (the allocation question on
+Orchid, financing on Northgate, and the distinct-or-not question and variable
+consideration on Tessellate). Claude
+Opus 5 raised three it shouldn't have and missed one, Northgate's financing.
 
-The same model at the same effort scored 0.76 on judgment precision in
-September and 0.85 now. The code has changed in between, and the September run
+The same model at the same effort scored 0.79 on judgment precision in
+September and 0.88 now. The code has changed in between, and the September run
 kept only its counts, so it can't be scored again to separate the code from the
 run-to-run variance described above.
 
@@ -386,8 +388,9 @@ no API call. On the development set, the Claude Opus 5.5 run of 19 October:
 | variable consideration | Calderwood master agreement | "termination of the affected Order Form and a refund of prepaid fees for the unused portion of the Subscription Term." |
 
 Claude Opus 5 raised the first and the third too, plus the allocation question
-on Aster, through a second obligation it built from the pass-through costs,
-and distinct-or-not on Tessellate.
+on Aster, through a second obligation it built from the pass-through costs. It
+also raised distinct-or-not on Tessellate, which the gold now expects: see the
+note on the development gold below.
 
 Two of the three come from `integration_language`, the passage the
 distinct-or-not rule acts on. Neither describes promises the customer can't
@@ -430,11 +433,12 @@ deliverable" from any one of them, and the gold expects distinct-or-not there.
 That is integration in the new sense, so it should still be reported. If it
 isn't, the change costs a true positive.
 
-**An open question about the development gold.** Tessellate says almost the
+**A correction to the development gold.** Tessellate says almost the
 same as Aster: "a single integrated engagement", phases "not separately
-saleable", "no usable output until cutover". The gold expects distinct-or-not
-on Aster and not on Tessellate. Under the new guidance the two read the same
-way. The gold is not changed here.
+saleable", "no usable output until cutover". The gold expected distinct-or-not
+on Aster and not on Tessellate, and under any reading of the guidance the two
+read the same way. That was an authoring error, and the gold is corrected:
+it now expects distinct-or-not on both, with the reason in the CHANGELOG.
 
 The test set's misses on 19 October were already published in the section
 above when this was written. The change is argued from the development cases
@@ -461,8 +465,8 @@ Judgment flags, precision / recall:
 
 | Set | Before | After |
 |---|---|---|
-| Development | 0.87 / 0.87 | 0.89 / 0.74 |
-| Development without Aster | 0.84 / 0.84 | 0.89 / 0.89 |
+| Development | 0.87 / 0.83 | 0.95 / 0.75 |
+| Development without Aster | 0.84 / 0.80 | 0.95 / 0.90 |
 | Test | 0.92 / 0.92 | 0.92 / 0.92 |
 
 **On the test set, nothing changed.** The same twelve judgments found, the same
@@ -475,9 +479,9 @@ on Harbourline, where the after run split the work into more promises.
 
 **On the development set, the change did what it was for and one thing it
 wasn't.** The two false positives it was aimed at are gone: no distinct-or-not
-on the Meridian change order or on Beacon. A new one appeared on Tessellate,
+on the Meridian change order or on Beacon. A new flag appeared on Tessellate,
 "a single integrated engagement ... not separately saleable", which is the
-open question above: under the new guidance Tessellate reads like Aster. The
+gold correction above: it is expected there, so the flag is a true positive. The
 refund on the Calderwood master agreement is still raised, as expected.
 
 And Aster came back nearly empty. The model returned one claim, that the
@@ -487,7 +491,7 @@ twelve fields, the obligation and all four judgments. The call ended
 normally (`end_turn`, 1,127 output tokens against 3,027 before). Nothing in
 the change is about the agreement type, and one run can't say whether the
 change or run-to-run variance did it. Without Aster, the development set went
-from 0.84 / 0.84 to 0.89 / 0.89.
+from 0.84 / 0.80 to 0.95 / 0.90.
 
 **The change is dropped.** The rule set before the runs was that the test set
 decides, and the test set didn't improve. The prompt is back to its 19
@@ -497,7 +501,7 @@ of what was tried, and a test scores each one again from its claims.
 
 What the measurement can't separate: one run per set, and a ±0.05 variance on
 the judgment row (see Run-to-run variance), against a change that moved two
-flags out of twenty-three. A larger test set with distinct-or-not questions
+flags out of twenty-four. A larger test set with distinct-or-not questions
 in it is what would decide this kind of change; this one has none that
 Claude Opus 5.5 gets wrong.
 

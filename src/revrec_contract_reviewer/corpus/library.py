@@ -674,13 +674,17 @@ NIMBUS_SOW_TESSELLATE = ContractSpec(
         net_days=30,
         total_fixed_consideration=Decimal("240000"),
         obligations=(TruthObligation(ObligationKind.PROFESSIONAL_SERVICES, Decimal("240000")),),
-        judgments=(JudgmentType.VARIABLE_CONSIDERATION_CONSTRAINT,),
+        judgments=(
+            JudgmentType.DISTINCT_UNCERTAIN,
+            JudgmentType.VARIABLE_CONSIDERATION_CONSTRAINT,
+        ),
     ),
     commentary=(
-        "Variable consideration in both directions -- a bonus for early delivery and a penalty for late -- on a "
-        "single performance obligation. Because there is only one obligation there is nothing to allocate, so no "
-        "SSP question arises. The corpus should not produce the same three flags on every "
-        "document."
+        "Variable consideration in both directions -- a bonus for early delivery and a penalty for late -- on "
+        "what is meant to be a single performance obligation, so no SSP question arises. But 'single integrated "
+        "engagement', 'not separately saleable' and 'no usable output until cutover' read almost word for word "
+        "like Aster, where the distinct-or-not question is expected, so it is expected here too. The corpus "
+        "should not produce the same three flags on every document."
     ),
 )
 

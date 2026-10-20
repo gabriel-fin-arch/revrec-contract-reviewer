@@ -30,7 +30,7 @@ repeat the rules run):
 
 - Contract fields: precision 1.00 and recall 0.91 with the offline rules, 1.00
   and 0.97 with Claude Opus 5.
-- Judgment flags: precision 0.95 and recall 0.83 with the rules, 0.76 and 0.96
+- Judgment flags: precision 0.95 and recall 0.79 with the rules, 0.79 and 0.96
   with the model.
 - Citations re-resolved against the source: 210 of 210 with the rules, 325 of
   325 with the model. [Full results](#results).
@@ -196,7 +196,7 @@ against:
 | Contract fields | 1.00 / 0.91 | 1.00 / **0.97** |
 | Unstated fields left blank | 21 of 21 | 21 of 21 |
 | Performance obligations | 0.79 / 0.75 | **0.83** / **0.95** |
-| Judgment flags | **0.95** / 0.83 | 0.76 / **0.96** |
+| Judgment flags | **0.95** / 0.79 | 0.79 / **0.96** |
 
 Citations re-resolved against the source: **100%** on both runs (210 and 325).
 Saved runs in [`evals/results/`](evals/results/).
@@ -210,7 +210,7 @@ same set, the two of 19 October 2026 included:
 | Contract fields | 1.00 / 0.91 | 0.99 / 0.95 | 1.00 / 0.98 | 1.00 / 0.97 |
 | Unstated fields left blank | 21 of 21 | 21 of 21 | 21 of 21 | 21 of 21 |
 | Performance obligations | 0.79 / 0.75 | 0.95 / 0.95 | 0.83 / 0.95 | 0.83 / 0.95 |
-| Judgment flags | 0.95 / 0.83 | 0.87 / 0.87 | 0.85 / 0.96 | 0.76 / 0.96 |
+| Judgment flags | 0.95 / 0.79 | 0.87 / 0.83 | 0.88 / 0.96 | 0.79 / 0.96 |
 
 **Test set**, 7 contracts written afterwards the same way and committed with
 their answers before anything ran on them ([`corpus/test/`](corpus/test/)):
@@ -245,13 +245,13 @@ version I pushed here on 1 October. The harness records the model it calls, and
 Opus 4 in a history rewrite to fit the backdated commits. An earlier version of
 this note then called the Opus 5 label wrong. It wasn't
 ([PROVENANCE.md](PROVENANCE.md#the-model-run)). Repeated on 19 October, the
-same model scores 0.85 on judgment precision instead of 0.76. The code has
+same model scores 0.88 on judgment precision instead of 0.79. The code has
 changed since September and that run kept only its counts, so it can't be
 scored again to say how much of the difference is the code and how much is
 run-to-run variance.
 
 In September the model won on recall everywhere, and it was not close — every gap the regexes
-had closes. **It also drops judgment precision from 0.95 to 0.76**, mostly by
+had closes. **It also drops judgment precision from 0.95 to 0.79**, mostly by
 reading integration language more liberally than the taxonomy intends. That
 trade is the wrong way round for this product: a reviewer's trust is spent by
 false positives long before it is spent by misses. I would not ship the model
