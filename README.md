@@ -23,6 +23,19 @@ evidence already pulled.
 > dates are when the history was rebuilt. [PROVENANCE.md](PROVENANCE.md) lists
 > every change and how to check it.
 
+<!-- results-headline:start -->
+**Results on the sample corpus** (12 synthetic contracts, scored against a
+committed gold set; the tests check these figures against the saved runs and
+repeat the rules run):
+
+- Contract fields: precision 1.00 and recall 0.91 with the offline rules, 1.00
+  and 0.97 with Claude Opus 5.
+- Judgment flags: precision 0.95 and recall 0.83 with the rules, 0.76 and 0.96
+  with the model.
+- Citations re-resolved against the source: 210 of 210 with the rules, 325 of
+  325 with the model. [Full results](#results).
+<!-- results-headline:end -->
+
 ## Review in 5 minutes
 
 - The business problem and the three places ASC 606 needs domain knowledge.
@@ -171,6 +184,7 @@ honest account of what a synthetic corpus can and cannot tell you, in
 has to beat; a model extractor that can't beat regexes on a corpus this clean
 isn't earning its cost.
 
+<!-- results-table:start -->
 | Measure | Rules | Claude Opus 5 |
 |---|---|---|
 | Contract fields | 1.00 / 0.91 | 1.00 / **0.97** |
@@ -180,6 +194,7 @@ isn't earning its cost.
 
 Citations re-resolved against the source: **100%** on both runs (210 and 325).
 Saved runs in [`evals/results/`](evals/results/).
+<!-- results-table:end -->
 
 The model run is on Claude Opus 5 (`claude-opus-5`), from 10 September 2026;
 it is already in the version I pushed here on 1 October. The harness records
@@ -280,7 +295,7 @@ No agent framework. This is a pipeline with one model call in it, and wrapping
 that in a graph would have added a dependency and a diagram without adding a
 capability.
 
-136 tests. CI runs ruff, the test suite, and then the whole pipeline offline
+139 tests. CI runs ruff, the test suite, and then the whole pipeline offline
 over the corpus; the eval step exits non-zero if any citation in any memo stops
 resolving against its source document. That is the one regression that leaves
 the tool untrustworthy while still looking like it worked.
