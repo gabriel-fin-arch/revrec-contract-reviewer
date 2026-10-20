@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- A `Dockerfile` that reviews the committed corpus offline with one command
+  and writes the memos and the index to a mounted folder. Runtime
+  dependencies only, a non-root user, no `.env` or API key in the image
+  (`.dockerignore`). CI builds the image, runs the review in it and checks
+  the memos reach the host. It runs `review` until the `demo` command lands.
 - The commit history has its real dates. Every commit's author date is now the
   time it was made, taken from my Claude Code session logs, and no file
   changed. The commits of 13 October are back as they were pushed that day,
