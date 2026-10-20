@@ -158,4 +158,3 @@ def test_a_single_unreadable_file_is_one_line_not_a_traceback(workspace: Path):
         assert result.exit_code == 1
         assert "Cannot review" in result.output
         assert "Traceback" not in result.output
-
