@@ -160,7 +160,6 @@ def test_a_single_unreadable_file_is_one_line_not_a_traceback(workspace: Path):
         assert "Traceback" not in result.output
 
 
-
 def test_a_folder_review_writes_a_pdf_per_memo_and_a_worklist(workspace: Path):
     runner.invoke(app, ["generate-corpus"])
 
