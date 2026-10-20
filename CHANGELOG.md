@@ -2,6 +2,30 @@
 
 ## Unreleased
 
+- The first run on the held-out test set, rules extractor: fields 1.00 / 0.89,
+  obligations 0.67 / 0.50, judgments 1.00 / 0.42, against 1.00 / 0.91,
+  0.79 / 0.75 and 0.95 / 0.83 on the development set. Saved in
+  `evals/results/test/` with its claims. The README and `docs/evaluation.md`
+  now say which numbers are which, list what the rules missed on the test
+  set, and state the rule that nothing seen there is used to tune the rules,
+  the prompt or the scorer. CI also runs the test set offline and fails if a
+  citation in it stops resolving.
+- A held-out test set: seven synthetic contracts in `corpus/test/`, generated
+  the same way as the twelve in `corpus/` from `corpus/heldout.py`, with their
+  gold records in `evals/gold/test/`. They were written after the rules and the
+  prompt and committed before either extractor ran on them. `generate-corpus`,
+  `build-gold`, `eval` and `rescore` take `--set test`. Tests check that the
+  set rebuilds byte for byte, that its gold matches its specs, that it shares
+  no contract or customer with the development set, and that no extractor
+  source or prompt names one of its contracts.
+- A saved run keeps its claims. `eval --save` writes, next to the report,
+  `<extractor>.claims.json`: for each contract, the PDF's SHA-256, every
+  claim the extractor returned with its quotes, and the extraction grounding
+  made of them. `revrec rescore` scores a saved run again from that file
+  without extracting, and refuses if a PDF has changed since the run.
+  `evals/results/rules.claims.json` is the run behind `rules.json`, and a
+  test checks that rescoring it gives `rules.json`. The September model run
+  was saved before this and still has only its counts.
 - The memo as a PDF, for filing: `review` writes `<contract>.pdf` beside each
   HTML memo, with the same content in the same order, every quote with its
   clause and page. A test reads the PDF back with pdfplumber and checks each

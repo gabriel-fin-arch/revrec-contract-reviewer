@@ -1,0 +1,25 @@
+{
+  "doc_id": "nimbus-amendment-wexford",
+  "fields": {
+    "customer": "Wexford Instruments GmbH",
+    "supplier": "Nimbus Analytics GmbH",
+    "agreement_type": "amendment",
+    "currency": "EUR",
+    "effective_date": "2025-11-03",
+    "stated_term_months": 36,
+    "termination_for_convenience": null,
+    "termination_notice_days": null,
+    "net_days": 30,
+    "total_fixed_consideration": "306000"
+  },
+  "obligations": [
+    {
+      "kind": "saas_subscription",
+      "stated_price": "306000"
+    }
+  ],
+  "judgments": [
+    "contract_modification",
+    "ssp_not_observable"
+  ]
+}

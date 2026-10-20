@@ -199,6 +199,15 @@ Citations re-resolved against the source: **100%** on both runs (210 and 325).
 Saved runs in [`evals/results/`](evals/results/).
 <!-- results-table:end -->
 
+Those twelve are the development set: the regexes and the prompt were written
+against them. Seven more contracts, written afterwards the same way and
+committed with their answers before anything ran on them, are held out in
+[`corpus/test/`](corpus/test/). On them the regexes score 1.00 / 0.89 on
+fields, 0.67 / 0.50 on obligations and 1.00 / 0.42 on judgments: judgment
+recall halves on contracts they weren't written against. That is what a
+held-out set is for, and the rules are not being adjusted against those seven.
+The model has not been run on them yet.
+
 The model run is on Claude Opus 5 (`claude-opus-5`), from 10 September 2026;
 it is already in the version I pushed here on 1 October. The harness records
 the model it calls, and `llm.json` said `claude-opus-5` until 13 October, when I
@@ -299,8 +308,9 @@ No agent framework. This is a pipeline with one model call in it, and wrapping
 that in a graph would have added a dependency and a diagram without adding a
 capability.
 
-190 tests. CI runs ruff, the test suite, and then the whole pipeline offline
-over the corpus; the eval step exits non-zero if any citation in any memo stops
+203 tests. CI runs ruff, the test suite, and then the whole pipeline offline
+over the corpus and the held-out set; the eval step exits non-zero if any
+citation in any memo stops
 resolving against its source document. That is the one regression that leaves
 the tool untrustworthy while still looking like it worked.
 

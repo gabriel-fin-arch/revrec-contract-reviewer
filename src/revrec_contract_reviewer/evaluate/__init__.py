@@ -8,6 +8,14 @@ import anthropic
 
 from revrec_contract_reviewer.assess import assess
 from revrec_contract_reviewer.evaluate.gold import GoldRecord, build_gold, load_gold, write_gold
+from revrec_contract_reviewer.evaluate.runs import (
+    CorpusChanged,
+    SavedContract,
+    SavedRun,
+    claims_path,
+    pdf_sha256,
+    rescore,
+)
 from revrec_contract_reviewer.evaluate.score import (
     ContractScore,
     EvalReport,
@@ -15,19 +23,25 @@ from revrec_contract_reviewer.evaluate.score import (
     aggregate,
     score_contract,
 )
-from revrec_contract_reviewer.extract import ExtractorChoice, extract_contract
+from revrec_contract_reviewer.extract import ExtractorChoice, extract_with_claims
 from revrec_contract_reviewer.ingest import load_contract
 from revrec_contract_reviewer.segment import segmented
 
 __all__ = [
     "ContractScore",
+    "CorpusChanged",
     "EvalReport",
     "GoldRecord",
+    "SavedContract",
+    "SavedRun",
     "Tally",
     "aggregate",
     "build_gold",
+    "claims_path",
+    "evaluate",
     "load_gold",
     "markdown_table",
+    "rescore",
     "run_eval",
     "score_contract",
     "write_gold",
@@ -40,14 +54,26 @@ def run_eval(
     choice: ExtractorChoice = ExtractorChoice.AUTO,
     client: anthropic.Anthropic | None = None,
 ) -> EvalReport:
-    """Review every contract in the gold set and score the result.
+    """Review every contract in the gold set and score the result. See evaluate()."""
+    return evaluate(corpus_dir, gold_dir, choice, client=client)[0]
+
+
+def evaluate(
+    corpus_dir: Path,
+    gold_dir: Path,
+    choice: ExtractorChoice = ExtractorChoice.AUTO,
+    client: anthropic.Anthropic | None = None,
+) -> tuple[EvalReport, SavedRun]:
+    """Review every contract in the gold set, score it, and keep the run.
 
     Driven by the gold set rather than by the corpus directory: a PDF with no
     gold record is not silently skipped in a way that flatters the numbers, and
     a gold record with no PDF is an error rather than a quietly missing row.
+    The SavedRun has every claim and its grounding, for `rescore`.
     """
     gold = load_gold(gold_dir)
     scores: list[ContractScore] = []
+    saved: list[SavedContract] = []
     extractor = "rules"
     model: str | None = None
 
@@ -57,12 +83,15 @@ def run_eval(
             raise FileNotFoundError(f"gold record {doc_id} has no contract at {path}")
 
         document = segmented(load_contract(path))
-        extraction = extract_contract(document, choice, client=client)
+        claims, extraction = extract_with_claims(document, choice, client=client)
         extractor = extraction.extractor
         model = extraction.model or model
         scores.append(score_contract(assess(extraction), document, record))
+        saved.append(SavedContract(doc_id=doc_id, pdf_sha256=pdf_sha256(path), claims=claims, extraction=extraction))
 
-    return aggregate(scores, extractor=extractor, model=model)
+    return aggregate(scores, extractor=extractor, model=model), SavedRun(
+        extractor=extractor, model=model, contracts=saved
+    )
 
 
 def markdown_table(report: EvalReport) -> str:

@@ -61,7 +61,14 @@ than by reading the code. `revrec eval` exits non-zero if it ever drops below
 Unstated fields left blank: 21/21. Citations re-resolved: 210/210 (100%). Claims
 dropped for no evidence: 0.
 
-Saved run: [`evals/results/rules.json`](../evals/results/rules.json).
+Saved run: [`evals/results/rules.json`](../evals/results/rules.json), and the
+run behind it in
+[`evals/results/rules.claims.json`](../evals/results/rules.claims.json): for
+each contract, the PDF's SHA-256, every claim the extractor returned with its
+quotes, and the extraction grounding made of them.
+`uv run revrec rescore evals/results/rules.claims.json` scores that run again
+without extracting, and refuses if a PDF has changed since; a test checks it
+gives `rules.json`.
 
 ### Where it loses, specifically
 
@@ -124,7 +131,9 @@ Saved run: [`evals/results/llm.json`](../evals/results/llm.json). Claude Opus 5
 is still available, so it can be repeated with `ANTHROPIC_MODEL=claude-opus-5`.
 To measure the current default, set `ANTHROPIC_API_KEY` and run
 `uv run revrec eval --extractor llm --mistakes`; `--save` writes to
-`evals/results/llm.json` and would replace this run, so move it first.
+`evals/results/llm.json`, and the claims to `llm.claims.json`, and would
+replace this run, so move it first. A run saved that way keeps its claims,
+so unlike this one it can be scored again.
 
 ### Against the baseline
 
@@ -197,6 +206,60 @@ the current models take no temperature parameter, so the honest reading of any
 single figure above is roughly ±0.05 on the judgment row. Twelve contracts is
 too few for it to be tighter, which is one more reason not to defend a second
 decimal place.
+
+## Development and test sets
+
+The twelve contracts above are the development set. The regexes and the
+prompt were written against them, so every number in the sections above is
+on data the tool was shaped by.
+
+Seven more are held out in [`corpus/test/`](../corpus/test/), with their gold
+records in [`evals/gold/test/`](../evals/gold/test/). They were written on
+18 October 2026, after the rules and the prompt, the same way as the twelve,
+and committed with their gold before either extractor had been run on them
+(commit `8258bb6`; the first results are in the commit after it).
+`corpus/test/README.md` says what each one is for.
+
+**The rule.** Results on the test set are reported and not used. Nothing seen
+there goes back into the rules, the prompt or the scorer. A fix for something
+it shows is made against the development set, and the test set measures it
+again afterwards.
+
+### Rules extractor, both sets
+
+| Measure | Development (12) | Test (7) |
+|---|---|---|
+| Contract fields | 1.00 / 0.91 | 1.00 / 0.89 |
+| Performance obligations | 0.79 / 0.75 | 0.67 / 0.50 |
+| Judgment flags | 0.95 / 0.83 | 1.00 / 0.42 |
+
+Precision / recall. On the test set: unstated fields left blank 8/8, citations
+re-resolved 96/96 (100%), claims dropped for no evidence 0. Saved run:
+[`evals/results/test/rules.json`](../evals/results/test/rules.json), with its
+claims in `rules.claims.json` beside it.
+
+Precision holds and recall falls, most of all on judgments: 5 of the 12
+expected were raised, and none was raised that shouldn't have been. What was
+missed, contract by contract, as `eval --set test --mistakes` lists it:
+
+- **Fenwick** and **Wexford** state their fees in sentences; neither total was
+  read, nor the obligation it prices. Fenwick's service credits were not raised
+  as variable consideration, nor Wexford's allocation question.
+- **Harbourline**'s fixed fee, in a milestone table, was not read as a total,
+  and its late-delivery reduction was not raised as variable consideration.
+- **Larkspur**, **Tamarind** and **Harbourline** say there is no termination
+  for convenience in three different ways ("may not be terminated for
+  convenience", "non-cancellable", "only for ... material breach"), and none
+  was read.
+- Larkspur's configuration services and Tamarind's customisation were read as
+  `other` rather than implementation, and Saltmarsh's third-party feed as
+  `other` rather than resale; Saltmarsh's principal-versus-agent question,
+  Tamarind's distinct-or-not and financing questions and Larkspur's renewal
+  discount were not raised.
+- **Alder**, the control, raised nothing, which is right.
+
+That is the shape of a rule set fitted to the phrasing of the documents it was
+written on. It is reported here and not fixed here.
 
 ## What this harness cannot tell you
 

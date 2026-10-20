@@ -35,6 +35,8 @@ jobs:
           uv run revrec generate-corpus
           uv run revrec review --extractor rules
           uv run revrec eval --extractor rules
+          uv run revrec generate-corpus --set test
+          uv run revrec eval --set test --extractor rules
 
   lowest-versions:
     # The floors in pyproject are a promise the job above never tests: it

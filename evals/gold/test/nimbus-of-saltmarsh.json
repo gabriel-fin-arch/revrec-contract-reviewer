@@ -1,0 +1,29 @@
+{
+  "doc_id": "nimbus-of-saltmarsh",
+  "fields": {
+    "customer": "Saltmarsh Grain Cooperative",
+    "supplier": "Nimbus Analytics, Inc.",
+    "agreement_type": "order_form",
+    "currency": "USD",
+    "effective_date": "2026-01-12",
+    "stated_term_months": 24,
+    "termination_for_convenience": false,
+    "termination_notice_days": null,
+    "net_days": 30,
+    "total_fixed_consideration": "240000"
+  },
+  "obligations": [
+    {
+      "kind": "saas_subscription",
+      "stated_price": "168000"
+    },
+    {
+      "kind": "third_party_resale",
+      "stated_price": "72000"
+    }
+  ],
+  "judgments": [
+    "principal_vs_agent",
+    "ssp_not_observable"
+  ]
+}
