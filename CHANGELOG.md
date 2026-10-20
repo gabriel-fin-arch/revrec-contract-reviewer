@@ -17,6 +17,12 @@
   enforces it, the test that proves it and the output that evidences it, and
   what the review doesn't control. A test fails if anything it names stops
   existing, or if it cites an output a run doesn't write.
+- The published numbers are checked now. The Results table and a new
+  three-line summary near the top of the README are rendered from
+  `evals/results/` by `revrec_contract_reviewer.evaluate.published`, and the
+  tests fail if the README and the saved runs disagree, if the prose's
+  judgment-precision figures drift, or if a fresh rules run no longer matches
+  `rules.json`. The table it renders is the one the README already had.
 - The commit history has its real dates. Every commit's author date is now the
   time it was made, taken from my Claude Code session logs, and no file
   changed. The commits of 13 October are back as they were pushed that day,
