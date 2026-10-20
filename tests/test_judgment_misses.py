@@ -8,7 +8,7 @@ import pytest
 from typer.testing import CliRunner
 
 from revrec_contract_reviewer.cli import app
-from revrec_contract_reviewer.evaluate import SavedRun
+from revrec_contract_reviewer.evaluate import SavedRun, rescore
 from revrec_contract_reviewer.evaluate.misses import judgment_misses, report_lines
 from revrec_contract_reviewer.extract import llm
 
@@ -71,13 +71,54 @@ def test_the_command_reads_a_saved_run_without_extracting(monkeypatch):
     assert "nimbus-of-beacon: distinct_uncertain" in result.output
 
 
-def test_the_evaluation_doc_quotes_the_prompt_and_the_passages_as_they_are():
+def _section() -> str:
     doc = (ROOT / "docs" / "evaluation.md").read_text(encoding="utf-8")
-    section = doc.split("## Judgment precision: one change")[1].split("\n## ")[0]
+    return doc.split("## Judgment precision: one change")[1].split("\n## ")[0]
+
+
+def test_the_evaluation_doc_quotes_the_passages_and_the_prompt_is_back_to_its_old_text():
+    """The change was dropped: the doc keeps what was tried, the prompt doesn't."""
+    section = _section()
     quoted = " ".join(line.removeprefix(">").strip() for line in section.splitlines() if line.startswith(">"))
     prompt = " ".join(llm.SYSTEM.split())
 
-    assert quoted.startswith("Only report integration_language") and quoted in prompt
+    assert quoted.startswith("Only report integration_language")
+    assert "related, not integrated" in quoted and "related, not integrated" not in prompt
+    assert (
+        "Only report integration_language where the contract actually describes one promise as customising, "
+        "integrating with, or depending on another. Do not supply it because the arrangement looks like it "
+        "might be."
+    ) in prompt
     passages = [miss.passages[0] for miss in judgment_misses(_run(OPUS_5_5), GOLD) if miss.raised]
     for passage in passages:
         assert f'"{passage.split(": ", 1)[1]}"' in section, passage
+
+
+def _pr(tp: int, fp: int, fn: int) -> str:
+    return f"{tp / (tp + fp):.2f} / {tp / (tp + fn):.2f}"
+
+
+def test_the_before_and_after_table_is_what_the_saved_runs_score():
+    section = _section()
+    sets = {
+        "Development": (RESULTS, ROOT / "corpus", GOLD),
+        "Test": (RESULTS / "test", ROOT / "corpus" / "test", GOLD / "test"),
+    }
+    for label, (results, corpus, gold) in sets.items():
+        cells = []
+        without_aster = []
+        for name in ("llm-claude-opus-5-5-high", "llm-claude-opus-5-5-high-integration"):
+            report = rescore(_run(results / f"{name}.claims.json"), corpus, gold)
+            judgments = report.judgments
+            cells.append(_pr(judgments.true_positives, judgments.false_positives, judgments.false_negatives))
+            rest = [score.judgments for score in report.per_contract if score.doc_id != "meridian-msa-aster"]
+            without_aster.append(
+                _pr(
+                    sum(t.true_positives for t in rest),
+                    sum(t.false_positives for t in rest),
+                    sum(t.false_negatives for t in rest),
+                )
+            )
+        assert f"| {label} | {cells[0]} | {cells[1]} |" in section, (label, cells)
+        if label == "Development":
+            assert f"| Development without Aster | {without_aster[0]} | {without_aster[1]} |" in section

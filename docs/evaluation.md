@@ -368,7 +368,7 @@ with its reason.
   because of it. The workshop is named among the deliverables, so the gold may
   be the one that's incomplete.
 
-## Judgment precision: one change, argued from the development set
+## Judgment precision: one change, argued from the development set, and dropped
 
 A judgment is raised by a rule in `assess/judgments.py` from what the
 extractor read, so every false positive has a passage behind it.
@@ -396,8 +396,8 @@ database that Cartos, an unaffiliated third party, licenses at a price it
 sets: a product sold separately. The questions it does raise, principal or
 agent on the database and the allocation, are already flagged.
 
-So the change is one paragraph of the prompt's guidance on
-`integration_language`, which now reads:
+So the change was one paragraph of the prompt's guidance on
+`integration_language`, which read:
 
 > Only report integration_language where the contract actually describes one
 > promise as customising, integrating with, or depending on another, so that
@@ -409,7 +409,7 @@ So the change is one paragraph of the prompt's guidance on
 > it in this sense.
 
 The first two sentences were there before, less the clause about benefit.
-It is the tighter definition the comment on `_distinct_uncertain` names as
+It was the tighter definition the comment on `_distinct_uncertain` names as
 the real fix, inseparable rather than related, written into the prompt
 rather than tuned into a rule. That comment also says where to draw the line
 is a risk-appetite call for whoever owns the review, so the line drawn here
@@ -440,16 +440,56 @@ doesn't improve, this file says so and the change is dropped.
 ### Before and after
 
 Same model and effort as the runs of 19 October, Claude Opus 5.5 at `high`;
-those runs are the before. The after runs are saved beside them as
-`llm-claude-opus-5-5-high-integration.json` (`eval --save --name`). Estimated
-with `revrec estimate`, at the prices of 18 October:
+those runs are the before. The after runs were made on 20 October, after an
+estimate of USD 0.77 to 6.44 for the two (`revrec estimate`) and my approval,
+and are saved beside them as `llm-claude-opus-5-5-high-integration.json`
+(`eval --save --name`): 19 calls, USD 0.60 and 0.34, all ending `end_turn`.
+Earlier attempts that day and the day before stopped when the API refused
+requests for lack of credit; nothing from them is used here.
 
-| Run | Calls | Cost (USD) |
+Judgment flags, precision / recall:
+
+| Set | Before | After |
 |---|---|---|
-| Development | 12 | 0.51 to 4.07 |
-| Test | 7 | 0.26 to 2.37 |
+| Development | 0.87 / 0.87 | 0.89 / 0.74 |
+| Development without Aster | 0.84 / 0.84 | 0.89 / 0.89 |
+| Test | 0.85 / 0.92 | 0.85 / 0.92 |
 
-Not run yet: each run waits for its cost estimate to be approved.
+**On the test set, nothing changed.** The same eleven judgments found, the same
+one missed (the allocation question on Wexford), the same two raised against
+the gold (variable consideration on Saltmarsh, the allocation question on
+Harbourline). Claude Opus 5.5 raised no distinct-or-not question on the test
+set it shouldn't have, before or after, so there was nothing there for this
+change to fix. Performance obligations moved from 0.85 / 0.92 to 0.77 / 0.83,
+on Harbourline, where the after run split the work into more promises.
+
+**On the development set, the change did what it was for and one thing it
+wasn't.** The two false positives it was aimed at are gone: no distinct-or-not
+on the Meridian change order or on Beacon. A new one appeared on Tessellate,
+"a single integrated engagement ... not separately saleable", which is the
+open question above: under the new guidance Tessellate reads like Aster. The
+refund on the Calderwood master agreement is still raised, as expected.
+
+And Aster came back nearly empty. The model returned one claim, that the
+document is a master agreement, and nothing else: no parties, no fees, no
+obligation, none of its four judgments. Before, the same contract gave
+twelve fields, the obligation and all four judgments. The call ended
+normally (`end_turn`, 1,127 output tokens against 3,027 before). Nothing in
+the change is about the agreement type, and one run can't say whether the
+change or run-to-run variance did it. Without Aster, the development set went
+from 0.84 / 0.84 to 0.89 / 0.89.
+
+**The change is dropped.** The rule set before the runs was that the test set
+decides, and the test set didn't improve. The prompt is back to its 19
+October text, so the published numbers above are still those of the model
+that runs by default. The after runs stay in `evals/results/` as the record
+of what was tried, and a test scores each one again from its claims.
+
+What the measurement can't separate: one run per set, and a ±0.05 variance on
+the judgment row (see Run-to-run variance), against a change that moved two
+flags out of twenty-three. A larger test set with distinct-or-not questions
+in it is what would decide this kind of change; this one has none that
+Claude Opus 5.5 gets wrong.
 
 ## What this harness cannot tell you
 

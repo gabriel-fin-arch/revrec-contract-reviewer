@@ -140,7 +140,7 @@ MODEL_RUNS = [
         ("evals/results", "corpus", "evals/gold"),
         ("evals/results/test", "corpus/test", "evals/gold/test"),
     )
-    for name in ("llm-claude-opus-5-5-high", "llm-claude-opus-5-high")
+    for name in ("llm-claude-opus-5-5-high", "llm-claude-opus-5-high", "llm-claude-opus-5-5-high-integration")
 ]
 
 

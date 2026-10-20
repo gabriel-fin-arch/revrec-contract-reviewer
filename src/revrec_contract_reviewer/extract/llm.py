@@ -84,11 +84,8 @@ document prints one, and never as anything else.
 - Mark recognition as undetermined unless the contract says something about how control passes. The \
 name of a product is not evidence of a recognition pattern.
 - Only report integration_language where the contract actually describes one promise as customising, \
-integrating with, or depending on another, so that the customer cannot benefit from one without the \
-other. Do not supply it because the arrangement looks like it might be. Services being of the same \
-nature as others, delivered by the same team, or part of the same engagement are related, not \
-integrated; and a product that needs another product sold separately, by the supplier or anyone \
-else, does not depend on it in this sense.
+integrating with, or depending on another. Do not supply it because the arrangement looks like it \
+might be.
 - A milestone payment schedule is a schedule, not a list of performance obligations. Do not turn each \
 milestone row into a separate promise unless the contract describes them as separately deliverable.
 
