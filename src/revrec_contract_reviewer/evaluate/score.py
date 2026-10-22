@@ -243,14 +243,14 @@ def _score_citations(review: ContractReview, document: ContractDocument, score: 
 
     for obligation in extraction.obligations:
         check(obligation.evidence)
-        for field in (
+        for obligation_field in (
             obligation.stated_price,
             obligation.list_price,
             obligation.duration_months,
             obligation.recognition,
             obligation.integration_language,
         ):
-            check(field.citations)
+            check(obligation_field.citations)
 
     for term in extraction.variable_consideration:
         check(term.evidence)

@@ -218,4 +218,4 @@ class ContractExtraction(BaseModel):
     def allocated_total(self) -> Decimal:
         """Sum of the stated prices we could actually read. Not the transaction price --
         variable consideration is deliberately not in here."""
-        return sum((ob.stated_price.value for ob in self.priced_obligations()), Decimal("0"))
+        return sum((ob.stated_price.known() for ob in self.priced_obligations()), Decimal("0"))

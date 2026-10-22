@@ -195,6 +195,20 @@ def test_a_refusal_is_not_read_as_an_empty_extraction(helix: ContractDocument, m
     assert extraction.model is None
 
 
+def test_a_response_with_nothing_parsed_is_treated_like_a_refusal(helix: ContractDocument, monkeypatch):
+    """Not a refusal, but nothing parsed (cut off at max_tokens, say). It used to
+    come back as None and fail later, inside assembly."""
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "test-key-not-used")
+    cut_off = StubClient(None, stop_reason="max_tokens")
+
+    with pytest.raises(llm.ModelDeclined, match="max_tokens"):
+        extract_contract(helix, ExtractorChoice.LLM, client=cut_off)
+
+    extraction = extract_contract(helix, ExtractorChoice.AUTO, client=cut_off)
+
+    assert extraction.extractor == "rules"
+
+
 def test_auto_without_a_key_uses_rules(helix: ContractDocument, monkeypatch):
     monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
 

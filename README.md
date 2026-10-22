@@ -314,17 +314,17 @@ around none. Every party, product, price and person is invented. See
 ## Stack
 
 Python 3.11+ · pydantic · pdfplumber · Anthropic SDK · jinja2 · typer ·
-reportlab · openpyxl · pytest · ruff.
+reportlab · openpyxl · pytest · ruff · mypy.
 
 No agent framework. This is a pipeline with one model call in it, and wrapping
 that in a graph would have added a dependency and a diagram without adding a
 capability.
 
-236 tests. CI runs the pre-commit hooks (ruff among them), the test suite, and
-then the whole pipeline offline over the corpus and the held-out set; the eval
-step exits non-zero if any citation in any memo stops resolving against its
-source document. That is the one regression that leaves the tool untrustworthy
-while still looking like it worked.
+238 tests. CI runs the pre-commit hooks (ruff among them), mypy, the test
+suite with coverage, and then the whole pipeline offline over the corpus and
+the held-out set; the eval step exits non-zero if any citation in any memo
+stops resolving against its source document. That is the one regression that
+leaves the tool untrustworthy while still looking like it worked.
 
 ```bash
 uv run pytest -q
