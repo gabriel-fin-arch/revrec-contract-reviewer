@@ -1,0 +1,51 @@
+name: Pages
+
+# Publishes the corpus reviewed with the offline rules, built from the code at
+# this commit: the run index and a memo per contract. Needs Pages set to
+# "GitHub Actions" in the repo settings; this workflow doesn't turn it on.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      # No key, and `site` pins the rules extractor anyway: no API call.
+      ANTHROPIC_API_KEY: ""
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          python-version: "3.11"
+
+      - name: Build the pages from the corpus, with the offline rules
+        run: uv run revrec site --out site
+
+      - uses: actions/configure-pages@v6
+
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5

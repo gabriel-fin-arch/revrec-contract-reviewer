@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- The rules review of the corpus as static pages, linked from the top of the
+  README as "Try it without installing". `revrec site` builds the corpus,
+  reviews it with the rules extractor pinned and writes the index and a memo
+  per contract, each with a note that the contracts are synthetic, which
+  extractor read them and the commit they came from; without that note a
+  review's output is byte-for-byte what it was. A new workflow publishes it to
+  GitHub Pages on every push to `main`, once Pages is set to GitHub Actions in
+  the repo settings.
 - CI checks types and measures coverage. mypy runs over `src/` with
   `check_untyped_defs` and fails the build on an error, with reportlab's
   stubs installed rather than its imports ignored; coverage (96%, lines and

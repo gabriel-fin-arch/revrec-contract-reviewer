@@ -11,6 +11,9 @@ It does not conclude the accounting. What it does is put the eight judgments a
 contract actually forces in front of the person who can make them, with the
 evidence already pulled.
 
+**Try it without installing:** [the run index and the memos](https://gabriel-fin-arch.github.io/revrec-contract-reviewer/),
+the corpus reviewed with the offline rules by CI on every push to `main`.
+
 > **About the commit history.** I built this with Claude Code in September
 > 2026, after intercompany-close-agent, and first published it that month under
 > an earlier account. The commits were dated back to June–November 2025 to look
@@ -58,6 +61,8 @@ uv run revrec review --extractor rules
 That writes a memo per contract to `out/`, as HTML and as PDF, with an index
 of the run and `worklist.xlsx`, every open item on one sheet with blank
 columns for the reviewer's conclusion. Open `out/index.html`.
+`uv run revrec site` writes the same review, with a note that the contracts
+are synthetic, to `site/`; that is what the Try it link shows.
 
 To use the model extractor, set `ANTHROPIC_API_KEY` (copy `.env.example` to
 `.env`) and drop the flag:
@@ -320,11 +325,12 @@ No agent framework. This is a pipeline with one model call in it, and wrapping
 that in a graph would have added a dependency and a diagram without adding a
 capability.
 
-238 tests. CI runs the pre-commit hooks (ruff among them), mypy, the test
+240 tests. CI runs the pre-commit hooks (ruff among them), mypy, the test
 suite with coverage, and then the whole pipeline offline over the corpus and
-the held-out set; the eval step exits non-zero if any citation in any memo
-stops resolving against its source document. That is the one regression that
-leaves the tool untrustworthy while still looking like it worked.
+the held-out set, and a second workflow publishes the rules review to GitHub
+Pages; the eval step exits non-zero if any citation in any memo stops resolving
+against its source document. That is the one regression that leaves the tool
+untrustworthy while still looking like it worked.
 
 ```bash
 uv run pytest -q
