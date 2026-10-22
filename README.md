@@ -36,6 +36,28 @@ repeat the rules run):
   325 with the model. [Full results](#results).
 <!-- results-headline:end -->
 
+## Quickstart
+
+Runs with no API key. The offline extractor is the default when one isn't set.
+
+```bash
+uv sync --extra dev
+uv run revrec generate-corpus
+uv run revrec review --extractor rules
+```
+
+That writes a memo per contract to `out/`, as HTML and as PDF, with an index
+of the run and `worklist.xlsx`, every open item on one sheet with blank
+columns for the reviewer's conclusion. Open `out/index.html`.
+
+To use the model extractor, set `ANTHROPIC_API_KEY` (copy `.env.example` to
+`.env`) and drop the flag:
+
+```bash
+uv run revrec review
+uv run revrec eval --save
+```
+
 ## Review in 5 minutes
 
 - The business problem and the three places ASC 606 needs domain knowledge.
@@ -46,6 +68,7 @@ repeat the rules run):
 - `docs/controls.md` for each control, the code and test behind it, and what a run
   writes as evidence.
 - How I built this: which decisions are mine and what an AI assistant wrote.
+- The Quickstart above runs the whole review offline.
 
 ![Review memo](docs/images/memo.png)
 
@@ -272,29 +295,46 @@ unstated fields left blank from 0.90 back to 1.00.
 uv run revrec eval --extractor rules --mistakes
 ```
 
-## Quickstart
+## The corpus
 
-Runs with no API key. The offline extractor is the default when one isn't set.
+Twelve synthetic contracts: ten SaaS and software, two clinical services. Ten of
+them are built around a specific ASC 606 question and two are deliberately built
+around none. Every party, product, price and person is invented. See
+[corpus/README.md](corpus/README.md) for what each one is there to exercise.
+
+## Stack
+
+Python 3.11+ · pydantic · pdfplumber · Anthropic SDK · jinja2 · typer ·
+reportlab · openpyxl · pytest · ruff.
+
+No agent framework. This is a pipeline with one model call in it, and wrapping
+that in a graph would have added a dependency and a diagram without adding a
+capability.
+
+235 tests. CI runs the pre-commit hooks (ruff among them), the test suite, and
+then the whole pipeline offline over the corpus and the held-out set; the eval
+step exits non-zero if any citation in any memo stops resolving against its
+source document. That is the one regression that leaves the tool untrustworthy
+while still looking like it worked.
 
 ```bash
-uv sync --extra dev
-uv run revrec generate-corpus
-uv run revrec review --extractor rules
+uv run pytest -q
+
+# install the git hooks once: ruff, whitespace and file checks, and a refusal
+# to commit a .env or an API key; CI runs the same hooks on every file
+uv run pre-commit install
 ```
 
-That writes a memo per contract to `out/`, as HTML and as PDF, with an index
-of the run and `worklist.xlsx`, every open item on one sheet with blank
-columns for the reviewer's conclusion. Open `out/index.html`.
-
-To use the model extractor, set `ANTHROPIC_API_KEY` (copy `.env.example` to
-`.env`) and drop the flag:
+Or without Python or uv, with Docker: the image reviews the committed corpus
+offline and writes the memos to a folder you mount (on Linux, add
+`--user "$(id -u):$(id -g)"`; see the `Dockerfile`).
 
 ```bash
-uv run revrec review
-uv run revrec eval --save
+docker build -t revrec-contract-reviewer .
+docker run --rm -v "$PWD/out:/app/out" revrec-contract-reviewer
 ```
 
-## What this does not do
+## What it does not do
 
 Stated plainly, because an honest scope is more credible than an inflated one.
 
@@ -325,46 +365,6 @@ messages before 14 October 2026 are the assistant's too, written in a casual
 first-person style I asked for; commits it drafts now carry a `Co-Authored-By`
 line.
 
-## The corpus
-
-Twelve synthetic contracts: ten SaaS and software, two clinical services. Ten of
-them are built around a specific ASC 606 question and two are deliberately built
-around none. Every party, product, price and person is invented. See
-[corpus/README.md](corpus/README.md) for what each one is there to exercise.
-
-## Stack
-
-Python 3.11+ · pydantic · pdfplumber · Anthropic SDK · jinja2 · typer ·
-reportlab · openpyxl · pytest · ruff.
-
-No agent framework. This is a pipeline with one model call in it, and wrapping
-that in a graph would have added a dependency and a diagram without adding a
-capability.
-
-235 tests. CI runs the pre-commit hooks (ruff among them), the test suite,
-and then the whole pipeline offline
-over the corpus and the held-out set; the eval step exits non-zero if any
-citation in any memo stops
-resolving against its source document. That is the one regression that leaves
-the tool untrustworthy while still looking like it worked.
-
-```bash
-uv run pytest -q
-
-# install the git hooks once: ruff, whitespace and file checks, and a refusal
-# to commit a .env or an API key; CI runs the same hooks on every file
-uv run pre-commit install
-```
-
-Or without Python or uv, with Docker: the image reviews the committed corpus
-offline and writes the memos to a folder you mount (on Linux, add
-`--user "$(id -u):$(id -g)"`; see the `Dockerfile`).
-
-```bash
-docker build -t revrec-contract-reviewer .
-docker run --rm -v "$PWD/out:/app/out" revrec-contract-reviewer
-```
-
-## Licence
+## License
 
 MIT.

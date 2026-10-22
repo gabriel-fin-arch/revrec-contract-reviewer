@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- The README follows the same order and headings as intercompany-close-agent's:
+  Quickstart near the top, then the review path, the problem, the architecture
+  and where the human is, and "What it does not do" and "How I built this" at
+  the end; "Licence" is "License". Nothing in it was dropped. The paragraph on
+  the tests is rewrapped.
+
 ## 0.1.0 - 2026-10-20
 
 - The development gold for Tessellate was inconsistent with Aster's, and is
