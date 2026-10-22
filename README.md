@@ -84,7 +84,11 @@ uv run revrec eval --save
 - How I built this: which decisions are mine and what an AI assistant wrote.
 - The Quickstart above runs the whole review offline.
 
-![Review memo](docs/images/memo.png)
+![Recording of a review: the demo command's output, the run index, the top of one memo, and a value in it with the words it came from, its clause and its page](docs/images/demo.gif)
+
+*Frame by frame: `revrec demo`'s output, drawn as text; the run index; the top of one memo; a value in it with
+the words it was read from, its clause and its page. These are the pages `revrec site` writes with the offline
+rules; `scripts/record_demo.py` makes the recording from the code as it is.*
 
 ---
 

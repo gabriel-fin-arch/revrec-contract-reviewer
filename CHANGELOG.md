@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- A short recording near the top of the README (`docs/images/demo.gif`, 20 s,
+  0.25 MB) in place of the memo screenshot: the `revrec demo` output, the run
+  index, one memo and a value in it traced to its clause and page.
+  `scripts/record_demo.py` makes it from the code as it is, with Playwright,
+  from the pages `revrec site` writes; the README says frame by frame what it
+  shows.
 - The rules review of the corpus as static pages, linked from the top of the
   README as "Try it without installing". `revrec site` builds the corpus,
   reviews it with the rules extractor pinned and writes the index and a memo
