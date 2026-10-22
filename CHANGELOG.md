@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- `revrec demo`: build the corpus, review it and score it with the offline
+  rules in one command. Every step is pinned to the rules extractor, so it
+  makes no API call whatever key is set; a test runs it with a key in the
+  environment and fails if anything tries to build a client. Quickstart leads
+  with it.
 - The README follows the same order and headings as intercompany-close-agent's:
   Quickstart near the top, then the review path, the problem, the architecture
   and where the human is, and "What it does not do" and "How I built this" at

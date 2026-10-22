@@ -3,7 +3,8 @@
 Seven commands, in the order you'd use them: build the corpus, review it,
 refresh the gold set, score against it, score a saved run again without
 extracting, list the judgments a saved run got wrong with the passages behind
-them, and estimate what a model run would cost before making one.
+them, and estimate what a model run would cost before making one. `demo`
+runs the first, second and fourth with the offline rules, in one go.
 """
 
 from __future__ import annotations
@@ -24,6 +25,7 @@ from revrec_contract_reviewer.evaluate import (
     markdown_table,
     partial_path,
     rescore,
+    run_eval,
     write_gold,
 )
 from revrec_contract_reviewer.evaluate.estimate import estimate_run
@@ -120,6 +122,25 @@ def review(
     # written, but a script running this should not mistake it for a full run.
     if unreadable:
         raise typer.Exit(code=1)
+
+
+@app.command()
+def demo() -> None:
+    """Build the corpus, review it and score it with the offline rules, in one command."""
+    # Every step is pinned to the rules extractor, which never calls out, so
+    # this makes no API call whatever key is in the environment or in .env.
+    generate_corpus_command(DEFAULT_CORPUS, CorpusSet.DEVELOPMENT)
+    typer.echo("")
+    review(DEFAULT_CORPUS, DEFAULT_OUT, ExtractorChoice.RULES)
+    if not DEFAULT_GOLD.exists():  # a clone has it committed; an empty directory doesn't
+        write_gold(DEFAULT_GOLD)
+    typer.echo("")
+    typer.echo(markdown_table(run_eval(DEFAULT_CORPUS, DEFAULT_GOLD, ExtractorChoice.RULES)))
+    typer.echo("")
+    typer.echo(
+        f"Open {DEFAULT_OUT / 'index.html'} for the worklist and a memo per contract. The contracts are "
+        "synthetic, and this run used the offline rules, not a model."
+    )
 
 
 @app.command("build-gold")
