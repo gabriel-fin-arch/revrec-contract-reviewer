@@ -45,7 +45,7 @@ def _footing(extraction: ContractExtraction) -> ReviewCheck:
         )
 
     summed = extraction.allocated_total()
-    difference = summed - total.value
+    difference = summed - total.known()
     evidence = list(total.citations)
 
     if abs(difference) <= FOOTING_TOLERANCE:
@@ -94,7 +94,7 @@ def _effective_date(extraction: ContractExtraction) -> ReviewCheck:
         return ReviewCheck(
             name="Effective date identified",
             outcome=CheckOutcome.PASSED,
-            detail=f"Effective {field.value.isoformat()}.",
+            detail=f"Effective {field.known().isoformat()}.",
             evidence=field.citations[:1],
         )
     return ReviewCheck(

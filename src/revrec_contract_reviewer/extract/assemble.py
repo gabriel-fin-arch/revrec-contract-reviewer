@@ -57,18 +57,18 @@ def assemble(
         )
 
     variable: list[VariableConsideration] = []
-    for proposed in wire.variable_consideration:
-        evidence = ground.citations_for(proposed.quotes)
+    for proposed_term in wire.variable_consideration:
+        evidence = ground.citations_for(proposed_term.quotes)
         if not evidence:
             ground.dropped += 1
             continue
         variable.append(
             VariableConsideration(
-                kind=proposed.kind,
-                description=proposed.description,
+                kind=proposed_term.kind,
+                description=proposed_term.description,
                 evidence=evidence,
-                cap=ground.money_field(one(proposed.cap)),
-                estimable_from_contract=proposed.estimable_from_contract,
+                cap=ground.money_field(one(proposed_term.cap)),
+                estimable_from_contract=proposed_term.estimable_from_contract,
             )
         )
 

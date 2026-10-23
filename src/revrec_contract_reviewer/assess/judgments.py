@@ -244,7 +244,7 @@ def _principal_vs_agent(extraction: ContractExtraction) -> JudgmentFlag | None:
 
 def _significant_financing(extraction: ContractExtraction) -> JudgmentFlag | None:
     spread = extraction.payment.payment_spread_months
-    if not spread.is_known or spread.value <= FINANCING_EXPEDIENT_MONTHS:
+    if not spread.is_known or spread.known() <= FINANCING_EXPEDIENT_MONTHS:
         return None
 
     return JudgmentFlag(

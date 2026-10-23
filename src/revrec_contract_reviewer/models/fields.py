@@ -71,6 +71,17 @@ class ExtractedField(BaseModel, Generic[T]):
         """True when we have a usable answer. Ambiguity is not one."""
         return self.status is FieldStatus.EXTRACTED
 
+    def known(self) -> T:
+        """The value of a field that `is_known`, typed as present.
+
+        `value` is `T | None` on every field, and a check of `is_known` a line
+        earlier doesn't tell a type checker that it's there. Raises on any other
+        field, so a call site that skipped the check fails here, by name, rather
+        than somewhere downstream on a None."""
+        if not self.is_known or self.value is None:
+            raise ValueError(f"field is {self.status.value}, not extracted")
+        return self.value
+
     @classmethod
     def absent(cls, note: str | None = None) -> ExtractedField[T]:
         return cls(value=None, status=FieldStatus.ABSENT, citations=[], note=note)

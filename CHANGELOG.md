@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+- CI checks types and measures coverage. mypy runs over `src/` with
+  `check_untyped_defs` and fails the build on an error, with reportlab's
+  stubs installed rather than its imports ignored; coverage (96%, lines and
+  branches) goes to each run's job summary. What it found: places that read a
+  field's value after checking `is_known`, which a type checker can't follow,
+  now call `known()`, which returns the value typed as present and raises on
+  any other field; and two loop variables reused for different types. It
+  also pointed at a response with nothing parsed and no refusal, which the
+  measured-runs change already turns into an error with its call record; a
+  test now checks that, and the fallback to the rules on `auto`.
 - `revrec demo`: build the corpus, review it and score it with the offline
   rules in one command. Every step is pinned to the rules extractor, so it
   makes no API call whatever key is set; a test runs it with a key in the

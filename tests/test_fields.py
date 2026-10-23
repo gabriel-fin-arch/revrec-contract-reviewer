@@ -39,6 +39,14 @@ def test_ambiguous_is_not_known(citation: Citation):
     assert not field.is_known
 
 
+def test_known_returns_an_extracted_value_and_refuses_anything_else(citation: Citation):
+    assert ExtractedField[str].found("USD", [citation]).known() == "USD"
+    with pytest.raises(ValueError, match="absent"):
+        ExtractedField[str].absent().known()
+    with pytest.raises(ValueError, match="ambiguous"):
+        ExtractedField[bool].ambiguous(True, [citation], "two clauses disagree").known()
+
+
 def test_citation_span_must_be_coherent():
     with pytest.raises(ValidationError):
         Citation(page=1, start=40, end=40, quote="x")
