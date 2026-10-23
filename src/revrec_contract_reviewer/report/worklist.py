@@ -14,6 +14,8 @@ decision down.
 
 from __future__ import annotations
 
+import hashlib
+import json
 from collections.abc import Sequence
 from pathlib import Path
 
@@ -61,6 +63,22 @@ WIDTHS = {
 def _evidence(citations: list[Citation]) -> str:
     """Each citation as 'clause · p.N: the words', one per line."""
     return "\n".join(f"{citation.label()}: {citation.excerpt()}" for citation in citations)
+
+
+def run_id(reviews: Sequence[ContractReview]) -> str:
+    """A short hash over the run's reviews -- what ties a worklist to the run it came from.
+
+    `revrec conclusions` recomputes it from the JSON files beside the workbook
+    and refuses a workbook whose id doesn't match, so a worklist from another
+    run -- or a run the folder no longer holds -- can't have its conclusions
+    recorded against these memos.
+    """
+    payload = json.dumps(
+        [review.model_dump(mode="json") for review in sorted(reviews, key=lambda review: review.doc_id)],
+        sort_keys=True,
+        ensure_ascii=False,
+    )
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()[:12]
 
 
 def worklist_rows(reviews: list[ContractReview], unreadable: Sequence[tuple[str, str]] = ()) -> list[list[str]]:
@@ -126,6 +144,19 @@ def write_worklist(reviews: list[ContractReview], out_dir: Path, unreadable: Seq
     for blank in list(workbook.worksheets):
         workbook.remove(blank)
 
+    run = workbook.create_sheet("run")
+    run.append(["run", run_id(reviews)])
+    run.append(["contracts", len(reviews)])
+    run.append(["open items", len(worklist_rows(reviews, unreadable))])
+    run.append([""])
+    run.append(
+        [
+            "to conclude an item",
+            "fill in its reviewer conclusion, reviewer and date on the open items sheet, "
+            "then run `revrec conclusions` on this file",
+        ]
+    )
+
     items = workbook.create_sheet("open items")
     items.append(list(WORKLIST_COLUMNS))
     for row in worklist_rows(reviews, unreadable):
@@ -144,6 +175,12 @@ def write_worklist(reviews: list[ContractReview], out_dir: Path, unreadable: Seq
             sheet.column_dimensions[column_cells[0].column_letter].width = WIDTHS.get(header, 18)
             for cell in column_cells[1:]:
                 cell.alignment = Alignment(wrap_text=True, vertical="top")
+
+    for cell in run["A"]:
+        cell.font = Font(bold=True)
+    run.column_dimensions["A"].width = 20
+    run.column_dimensions["B"].width = 110
+    run["B5"].alignment = Alignment(wrap_text=True, vertical="top")
 
     out_dir.mkdir(parents=True, exist_ok=True)
     path = out_dir / "worklist.xlsx"

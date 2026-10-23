@@ -45,7 +45,7 @@
 
 <h2>Judgments raised across the run</h2>
 <table>
-  <thead><tr><th>Contract</th><th>Step</th><th>Matter</th></tr></thead>
+  <thead><tr><th>Contract</th><th>Step</th><th>Matter</th>{% if conclusions %}<th>Status</th>{% endif %}</tr></thead>
   <tbody>
   {% for review in reviews %}
   {% for flag in review.flags_in_review_order() %}
@@ -53,6 +53,14 @@
     <td><a href="{{ review.doc_id }}.html">{{ review.doc_id }}</a></td>
     <td>{{ flag.step }}</td>
     <td>{{ flag.judgment_type.value.replace('_', ' ') }}</td>
+    {% if conclusions %}
+    {% set conclusion = conclusions.for_flag(review.doc_id, flag) %}
+    {% if conclusion %}
+    <td><span class="tag concluded">concluded</span> by {{ conclusion.reviewer }} on {{ conclusion.date }}</td>
+    {% else %}
+    <td><span class="tag open">open</span></td>
+    {% endif %}
+    {% endif %}
   </tr>
   {% endfor %}
   {% endfor %}

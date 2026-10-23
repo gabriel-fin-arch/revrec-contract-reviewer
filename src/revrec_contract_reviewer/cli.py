@@ -1,10 +1,11 @@
 """Command line interface.
 
-Seven commands, in the order you'd use them: build the corpus, review it,
-refresh the gold set, score against it, score a saved run again without
-extracting, list the judgments a saved run got wrong with the passages behind
-them, and estimate what a model run would cost before making one. `demo`
-runs the first, second and fourth with the offline rules, in one go, and
+Eight commands, in the order you'd use them: build the corpus, review it,
+record the reviewer's conclusions from the filled-in worklist, refresh the
+gold set, score against it, score a saved run again without extracting, list
+the judgments a saved run got wrong with the passages behind them, and
+estimate what a model run would cost before making one. `demo`
+runs the first, second and fifth with the offline rules, in one go, and
 `site` writes the rules review as the static pages CI publishes.
 """
 
@@ -18,6 +19,11 @@ import anthropic
 import typer
 from dotenv import load_dotenv
 
+from revrec_contract_reviewer.conclusions import (
+    WorklistMismatch,
+    collect_conclusions,
+    write_conclusions,
+)
 from revrec_contract_reviewer.corpus import CorpusSet, generate_corpus
 from revrec_contract_reviewer.evaluate import (
     CorpusChanged,
@@ -132,6 +138,47 @@ def review(
     # written, but a script running this should not mistake it for a full run.
     if unreadable:
         raise typer.Exit(code=1)
+
+
+@app.command()
+def conclusions(
+    worklist: Path = typer.Argument(..., help="The run's worklist.xlsx, filled in by the reviewer."),
+) -> None:
+    """Read the reviewer's conclusions back from a filled-in worklist.
+
+    Writes conclusions.json beside the run's memos -- per contract and item,
+    the conclusion, the reviewer and the date, exactly as typed -- and rewrites
+    the memos and the index so each item shows as concluded, with who and
+    when, or open. The tool concludes nothing itself.
+    """
+    try:
+        read = collect_conclusions(worklist)
+    except (WorklistMismatch, OSError) as exc:
+        typer.echo(f"Cannot read conclusions: {exc}", err=True)
+        raise typer.Exit(code=1) from exc
+
+    out_dir = worklist.parent
+    recorded = write_conclusions(read, out_dir)
+    # The memos and the index now say how each item stands, so the record and
+    # the documents a reviewer reads can't drift apart.
+    for review in read.reviews:
+        write_review(review, out_dir, conclusions=read.conclusions)
+        write_pdf_memo(review, out_dir, conclusions=read.conclusions)
+    write_index(read.reviews, out_dir, read.unreadable, conclusions=read.conclusions)
+
+    accepted = read.conclusions.conclusions
+    typer.echo(
+        f"Recorded {_plural(len(accepted), 'conclusion')} to {recorded}"
+        + (f"; still open: {', '.join(read.open_items)}." if read.open_items else "; nothing left open.")
+    )
+    for problem in read.problems:
+        typer.echo(f"Not recorded -- {problem}", err=True)
+    if read.problems:
+        raise typer.Exit(code=1)
+
+
+def _plural(count: int, word: str) -> str:
+    return f"{count} {word}{'' if count == 1 else 's'}"
 
 
 @app.command()

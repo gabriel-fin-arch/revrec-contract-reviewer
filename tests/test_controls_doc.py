@@ -73,6 +73,7 @@ def test_every_evidence_file_it_cites_is_one_a_run_writes(tmp_path: Path, monkey
     for path in (tmp_path / "out").iterdir():
         written.add(f"<contract>{path.suffix}" if path.stem in contracts else path.name)
     written.add("evals/results/rules.json")  # what `eval --save` writes; it's committed
+    written.add("conclusions.json")  # what `conclusions` writes beside the memos, once a reviewer fills the worklist
     cited = {name for row in _rows() for name in EVIDENCE.findall(row[4])}
 
     assert cited
