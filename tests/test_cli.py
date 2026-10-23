@@ -28,7 +28,7 @@ def test_every_command_prints_its_help():
     """typer below 0.16 renders help through a click API that changed in 8.2, and
     `revrec review --help` died with a traceback while the rest of this file
     passed -- nothing else here asks a subcommand for help."""
-    for command in ([], ["generate-corpus"], ["review"], ["build-gold"], ["eval"]):
+    for command in ([], ["generate-corpus"], ["review"], ["demo"], ["build-gold"], ["eval"]):
         result = CliRunner().invoke(app, [*command, "--help"])
 
         assert result.exit_code == 0, result.output
@@ -51,6 +51,26 @@ def test_the_readme_quickstart_works_from_an_empty_directory(workspace: Path):
     assert evaluation.exit_code == 0
     assert "Precision" in evaluation.stdout
     assert "(100%)" in evaluation.stdout
+
+
+def test_the_demo_is_one_offline_command_whatever_the_environment(workspace: Path, monkeypatch):
+    """From an empty directory, with a key set, and failing loudly if anything
+    tries to build an API client."""
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "not-a-real-key")
+
+    def no_client(*args, **kwargs):
+        raise AssertionError("the demo tried to call the API")
+
+    monkeypatch.setattr("anthropic.Anthropic", no_client)
+
+    result = runner.invoke(app, ["demo"])
+
+    assert result.exit_code == 0, result.output
+    assert "need a reviewer" in result.stdout
+    assert "Precision" in result.stdout
+    assert "(100%)" in result.stdout
+    assert "offline rules, not a model" in result.stdout
+    assert (workspace / "out" / "index.html").exists()
 
 
 def test_reviewing_a_single_contract_writes_one_memo(workspace: Path):

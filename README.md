@@ -38,7 +38,16 @@ repeat the rules run):
 
 ## Quickstart
 
-Runs with no API key. The offline extractor is the default when one isn't set.
+One command, from a clone, with no API key:
+
+```bash
+uv run revrec demo
+```
+
+It builds the corpus, reviews it with the offline rules, prints the evaluation
+table and points at `out/index.html`. It makes no API call, whatever key is
+set. The same steps one at a time (the offline extractor is the default when no
+key is set):
 
 ```bash
 uv sync --extra dev
@@ -311,7 +320,7 @@ No agent framework. This is a pipeline with one model call in it, and wrapping
 that in a graph would have added a dependency and a diagram without adding a
 capability.
 
-235 tests. CI runs the pre-commit hooks (ruff among them), the test suite, and
+236 tests. CI runs the pre-commit hooks (ruff among them), the test suite, and
 then the whole pipeline offline over the corpus and the held-out set; the eval
 step exits non-zero if any citation in any memo stops resolving against its
 source document. That is the one regression that leaves the tool untrustworthy
