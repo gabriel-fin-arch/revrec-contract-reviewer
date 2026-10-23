@@ -67,6 +67,12 @@ uv run revrec review --extractor rules
 That writes a memo per contract to `out/`, as HTML and as PDF, with an index
 of the run and `worklist.xlsx`, every open item on one sheet with blank
 columns for the reviewer's conclusion. Open `out/index.html`.
+Once the reviewer has filled those columns in,
+`uv run revrec conclusions out/worklist.xlsx` records them to
+`out/conclusions.json` — per contract and item, exactly as typed — and rewrites
+the memos and the index so each item shows as concluded, with who and when, or
+open. A workbook from another run is refused, and a row the run didn't raise
+is reported, not recorded.
 `uv run revrec site` writes the same review, with a note that the contracts
 are synthetic, to `site/`; that is what the Try it link shows.
 
@@ -155,6 +161,7 @@ ground    every quote located in the document, or dropped
 assess    five-step checks and the judgment taxonomy     deterministic
 memo      HTML with the evidence inline, the same as a PDF, plus JSON
 worklist  every open item in the run, one row each       xlsx
+conclude  the reviewer's conclusions, read back          xlsx -> conclusions.json
 ```
 
 Four of the five stages are deterministic. A model is involved in exactly one

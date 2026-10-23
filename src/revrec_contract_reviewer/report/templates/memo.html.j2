@@ -34,6 +34,14 @@
   <blockquote>{{ citation | excerpt }}<cite>{{ citation.label() }}</cite></blockquote>
   {% endfor %}
   <p class="why"><b>Why this is not answered here:</b> {{ flag.why_a_human }}</p>
+  {% if conclusions %}
+  {% set conclusion = conclusions.for_flag(review.doc_id, flag) %}
+  {% if conclusion %}
+  <p class="conclusion"><b>Concluded by {{ conclusion.reviewer }} on {{ conclusion.date }}:</b> {{ conclusion.conclusion }}</p>
+  {% else %}
+  <p class="why"><b>Open</b> -- awaiting the reviewer's conclusion.</p>
+  {% endif %}
+  {% endif %}
 </div>
 {% endfor %}
 
@@ -45,7 +53,17 @@
   <tr>
     <td>{{ check.name }}</td>
     <td><span class="tag {{ check.outcome.value }}">{{ check.outcome.value.replace('_', ' ') }}</span></td>
-    <td>{{ check.detail }}</td>
+    <td>
+      {{ check.detail }}
+      {% if conclusions and check.outcome.value == 'failed' %}
+      {% set conclusion = conclusions.for_check(review.doc_id, check) %}
+      {% if conclusion %}
+      <br><span class="tag concluded">concluded</span> by {{ conclusion.reviewer }} on {{ conclusion.date }}: {{ conclusion.conclusion }}
+      {% else %}
+      <br><span class="tag open">open</span> -- awaiting the reviewer's conclusion
+      {% endif %}
+      {% endif %}
+    </td>
   </tr>
   {% endfor %}
   </tbody>

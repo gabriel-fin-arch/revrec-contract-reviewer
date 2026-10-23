@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import io
 from pathlib import Path
+from typing import TYPE_CHECKING
 from xml.sax.saxutils import escape
 
 from reportlab.lib.colors import HexColor
@@ -24,8 +25,11 @@ from reportlab.lib.units import mm
 from reportlab.platypus import Flowable, KeepTogether, Paragraph, SimpleDocTemplate, Spacer
 
 from revrec_contract_reviewer.models.citation import Citation
-from revrec_contract_reviewer.models.review import ContractReview
+from revrec_contract_reviewer.models.review import CheckOutcome, ContractReview
 from revrec_contract_reviewer.report.memo import _fact_groups
+
+if TYPE_CHECKING:
+    from revrec_contract_reviewer.conclusions import Conclusions
 
 _BASE = getSampleStyleSheet()
 STYLES = {
@@ -56,7 +60,14 @@ def _plural(count: int, word: str) -> str:
     return f"{count} {word}{'' if count == 1 else 's'}"
 
 
-def memo_flowables(review: ContractReview) -> list[Flowable]:
+def _conclusion_line(conclusion) -> Paragraph:
+    """How one worklist item stands: concluded, with who and when, or open."""
+    if conclusion is None:
+        return _p("Open -- awaiting the reviewer's conclusion.", "small")
+    return _bold_then(f"Concluded by {conclusion.reviewer} on {conclusion.date}:", conclusion.conclusion, "small")
+
+
+def memo_flowables(review: ContractReview, conclusions: Conclusions | None = None) -> list[Flowable]:
     """The memo's content, in the HTML memo's order."""
     extraction = review.extraction
     flags = review.flags_in_review_order()
@@ -94,13 +105,18 @@ def memo_flowables(review: ContractReview) -> list[Flowable]:
             block.append(_bold_then("Affects:", "; ".join(flag.affects)))
         block.extend(_quote(citation) for citation in flag.evidence)
         block.append(_bold_then("Why this is not answered here:", flag.why_a_human))
+        if conclusions is not None:
+            block.append(_conclusion_line(conclusions.for_flag(review.doc_id, flag)))
         block.append(Spacer(1, 3 * mm))
         story.append(KeepTogether(block))
 
     story.append(_p("Checks", "h2"))
     for check in review.checks:
         outcome = check.outcome.value.replace("_", " ")
-        story.append(KeepTogether([_bold_then(f"{check.name}: {outcome}.", check.detail)]))
+        lines: list[Flowable] = [_bold_then(f"{check.name}: {outcome}.", check.detail)]
+        if conclusions is not None and check.outcome is CheckOutcome.FAILED:
+            lines.append(_conclusion_line(conclusions.for_check(review.doc_id, check)))
+        story.append(KeepTogether(lines))
 
     story.append(_p("Step 2 · Performance obligations", "h2"))
     if not extraction.obligations:
@@ -161,7 +177,7 @@ def memo_flowables(review: ContractReview) -> list[Flowable]:
     return story
 
 
-def render_pdf_memo(review: ContractReview) -> bytes:
+def render_pdf_memo(review: ContractReview, conclusions: Conclusions | None = None) -> bytes:
     """The memo for one contract, as PDF bytes."""
     buffer = io.BytesIO()
 
@@ -182,13 +198,13 @@ def render_pdf_memo(review: ContractReview) -> bytes:
         author="revrec-contract-reviewer",
         invariant=1,
     )
-    document.build(memo_flowables(review), onFirstPage=footer, onLaterPages=footer)
+    document.build(memo_flowables(review, conclusions), onFirstPage=footer, onLaterPages=footer)
     return buffer.getvalue()
 
 
-def write_pdf_memo(review: ContractReview, out_dir: Path) -> Path:
+def write_pdf_memo(review: ContractReview, out_dir: Path, conclusions: Conclusions | None = None) -> Path:
     """Write <doc_id>.pdf next to the HTML memo and return its path."""
     out_dir.mkdir(parents=True, exist_ok=True)
     path = out_dir / f"{review.doc_id}.pdf"
-    path.write_bytes(render_pdf_memo(review))
+    path.write_bytes(render_pdf_memo(review, conclusions))
     return path

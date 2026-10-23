@@ -4,6 +4,18 @@ All notable changes to this project are logged here.
 
 ## [Unreleased]
 
+### Added
+- `revrec conclusions <worklist.xlsx>` reads the reviewer's conclusions back
+  from the worklist's three blank columns and writes `conclusions.json` beside
+  the memos: per contract and item, the conclusion, the reviewer and the date,
+  exactly as typed. The worklist now names the run it came from (a new `run`
+  sheet with a hash over the run's reviews); a workbook from another run is
+  refused, a row the run didn't raise -- or whose contract, item or evidence
+  was edited -- is reported with its row, and a conclusion without a reviewer
+  or a date is reported, not accepted. The memos, the PDFs and the index are
+  rewritten so each item shows as concluded, with who and when, or open. The
+  tool concludes nothing itself.
+
 ### Changed
 - The recording moves to the first screen of the README, right after the
   headline results, instead of sitting below the Quickstart.

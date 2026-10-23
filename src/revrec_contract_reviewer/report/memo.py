@@ -17,7 +17,7 @@ import json
 from collections.abc import Sequence
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
@@ -25,6 +25,9 @@ from revrec_contract_reviewer.fileio import write_lf
 from revrec_contract_reviewer.models.extraction import ContractExtraction
 from revrec_contract_reviewer.models.fields import ExtractedField, FieldStatus
 from revrec_contract_reviewer.models.review import ContractReview
+
+if TYPE_CHECKING:
+    from revrec_contract_reviewer.conclusions import Conclusions
 
 TEMPLATE_DIR = Path(__file__).parent / "templates"
 
@@ -135,7 +138,11 @@ def _environment(site_note: SiteNote | None = None) -> Environment:
     return environment
 
 
-def render_memo(review: ContractReview, site_note: SiteNote | None = None) -> str:
+def render_memo(
+    review: ContractReview,
+    site_note: SiteNote | None = None,
+    conclusions: Conclusions | None = None,
+) -> str:
     """The memo for one contract, as a self-contained HTML document."""
     template = _environment(site_note).get_template("memo.html.j2")
     return template.render(
@@ -143,6 +150,7 @@ def render_memo(review: ContractReview, site_note: SiteNote | None = None) -> st
         extraction=review.extraction,
         groups=_fact_groups(review.extraction),
         flags=review.flags_in_review_order(),
+        conclusions=conclusions,
     )
 
 
@@ -173,6 +181,7 @@ def render_index(
     reviews: list[ContractReview],
     unreadable: Sequence[tuple[str, str]] = (),
     site_note: SiteNote | None = None,
+    conclusions: Conclusions | None = None,
 ) -> str:
     """The run index -- one row per contract, for someone triaging a portfolio.
 
@@ -186,14 +195,20 @@ def render_index(
         total_flags=sum(len(review.flags) for review in reviews),
         total_failed=sum(len(review.failed_checks()) for review in reviews),
         clean=[review for review in reviews if not review.needs_review()],
+        conclusions=conclusions,
     )
 
 
-def write_review(review: ContractReview, out_dir: Path, site_note: SiteNote | None = None) -> tuple[Path, Path]:
+def write_review(
+    review: ContractReview,
+    out_dir: Path,
+    site_note: SiteNote | None = None,
+    conclusions: Conclusions | None = None,
+) -> tuple[Path, Path]:
     """Write the memo and the machine-readable form. Returns both paths."""
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    memo_path = write_lf(out_dir / f"{review.doc_id}.html", render_memo(review, site_note))
+    memo_path = write_lf(out_dir / f"{review.doc_id}.html", render_memo(review, site_note, conclusions))
     json_path = write_lf(
         out_dir / f"{review.doc_id}.json",
         json.dumps(review.model_dump(mode="json"), indent=2, ensure_ascii=False),
@@ -206,6 +221,7 @@ def write_index(
     out_dir: Path,
     unreadable: Sequence[tuple[str, str]] = (),
     site_note: SiteNote | None = None,
+    conclusions: Conclusions | None = None,
 ) -> Path:
     out_dir.mkdir(parents=True, exist_ok=True)
-    return write_lf(out_dir / "index.html", render_index(reviews, unreadable, site_note))
+    return write_lf(out_dir / "index.html", render_index(reviews, unreadable, site_note, conclusions))

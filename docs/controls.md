@@ -4,7 +4,8 @@ What each control in the review is for, where the code enforces it, which
 test proves it, and what a run writes that evidences it. A run is
 `revrec review` on a folder: per contract, `<contract>.html`,
 `<contract>.pdf` and `<contract>.json`; for the run, `index.html` and
-`worklist.xlsx`.
+`worklist.xlsx`. `revrec conclusions` on the filled-in worklist adds
+`conclusions.json` and rewrites the memos and the index with it.
 
 This is a portfolio project on a synthetic corpus. The matrix says what the
 code does and how to check it, not that anyone has audited it.
@@ -28,6 +29,7 @@ evidence file is one a run writes.
 | 10 | Every citation still resolves against its document when the run is scored, and one that doesn't fails the eval. | `cli.py::eval_command` | `tests/test_report_and_eval.py::test_the_eval_runs_end_to_end_and_every_citation_resolves` | `evals/results/rules.json` |
 | 11 | Every open item in a run reaches the reviewer, contracts needing most attention first. | `report/memo.py::attention_order`, `report/worklist.py::worklist_rows` | `tests/test_report_and_eval.py::test_a_document_that_could_not_be_read_does_not_sink_to_the_bottom`, `tests/test_worklist_and_pdf.py::test_every_open_item_in_the_run_is_one_row` | `index.html`, `worklist.xlsx` |
 | 12 | The memo filed as a PDF says what the review says, each quote with its clause and page. | `report/pdf.py::render_pdf_memo` | `tests/test_worklist_and_pdf.py::test_every_pdf_memo_says_what_its_review_says` | `<contract>.pdf` |
+| 13 | A conclusion is the reviewer's, recorded not made: the worklist's reviewer columns are read back against the run row by row, a workbook from another run is refused, an edited or added row is reported with its row, and a conclusion without a reviewer or a date is not accepted. | `conclusions.py::collect_conclusions`, `report/worklist.py::run_id` | `tests/test_conclusions.py::test_a_workbook_from_another_run_is_refused`, `tests/test_conclusions.py::test_an_edited_row_is_reported_with_its_row`, `tests/test_conclusions.py::test_a_conclusion_without_a_reviewer_or_a_date_is_reported_not_accepted` | `conclusions.json`, `index.html`, `<contract>.html` (each item concluded, with who and when, or open) |
 
 ## What this doesn't control
 
@@ -36,7 +38,10 @@ evidence file is one a run writes.
   (`tests/test_grounding.py::test_grounding_does_not_check_whether_the_value_is_right`).
   Accuracy is measured against the gold set, not asserted; see
   `docs/evaluation.md`.
-- **The reviewer's conclusion.** `worklist.xlsx` has columns for it, but the
-  tool doesn't read them back, record who decided, or sign anything off.
+- **Whether a conclusion is right.** `conclusions.json` records who concluded
+  what and when, exactly as typed, and the memos show it; the judgment itself
+  stays the reviewer's. Rows about files the run could not read have no JSON
+  to match against, so a conclusion on one is the reviewer's own record
+  (`conclusions.py`, module docstring).
 - **Scanned contracts.** A PDF with no text layer is reported as unreadable,
   not read.
