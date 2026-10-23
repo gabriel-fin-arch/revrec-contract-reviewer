@@ -330,9 +330,10 @@ consideration on Tessellate). Claude
 Opus 5 raised three it shouldn't have and missed one, Northgate's financing.
 
 The same model at the same effort scored 0.79 on judgment precision in
-September and 0.88 now. The code has changed in between, and the September run
-kept only its counts, so it can't be scored again to separate the code from the
-run-to-run variance described above.
+September — 0.76 as published then, before the Tessellate gold correction
+moved it (see the CHANGELOG) — and 0.88 now. The code has changed in between,
+and the September run kept only its counts, so it can't be scored again to
+separate the code from the run-to-run variance described above.
 
 ### Test set
 
