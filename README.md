@@ -81,6 +81,8 @@ uv run revrec eval --save
 - The results table and `docs/evaluation.md`, including where the model loses.
 - `docs/controls.md` for each control, the code and test behind it, and what a run
   writes as evidence.
+- `docs/adr/`: the main design decisions, one short record each, with what
+  else was considered and who decided.
 - How I built this: which decisions are mine and what an AI assistant wrote.
 - The Quickstart above runs the whole review offline.
 
