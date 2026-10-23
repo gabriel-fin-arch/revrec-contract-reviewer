@@ -1,7 +1,10 @@
 # Changelog
 
-## Unreleased
+## 0.2.0 - 2026-10-23
 
+- `docs/adr/`: the main design decisions as seven short records (context,
+  decision, alternatives, consequences), each drafted from the owner's sketch
+  and naming its decision owner, with an index and a link from the README.
 - A short recording near the top of the README (`docs/images/demo.gif`, 20 s,
   0.25 MB) in place of the memo screenshot: the `revrec demo` output, the run
   index, one memo and a value in it traced to its clause and page.
