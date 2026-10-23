@@ -114,7 +114,16 @@ def _fact_groups(extraction: ContractExtraction) -> list[FactGroup]:
     ]
 
 
-def _environment() -> Environment:
+@dataclass(frozen=True)
+class SiteNote:
+    """A line at the top of every page, when the review is published as a site."""
+
+    text: str
+    link: str
+    link_text: str
+
+
+def _environment(site_note: SiteNote | None = None) -> Environment:
     environment = Environment(
         loader=FileSystemLoader(TEMPLATE_DIR),
         autoescape=select_autoescape(["html"]),
@@ -122,12 +131,13 @@ def _environment() -> Environment:
         lstrip_blocks=True,
     )
     environment.filters["excerpt"] = lambda citation: citation.excerpt()
+    environment.globals["site_note"] = site_note
     return environment
 
 
-def render_memo(review: ContractReview) -> str:
+def render_memo(review: ContractReview, site_note: SiteNote | None = None) -> str:
     """The memo for one contract, as a self-contained HTML document."""
-    template = _environment().get_template("memo.html.j2")
+    template = _environment(site_note).get_template("memo.html.j2")
     return template.render(
         review=review,
         extraction=review.extraction,
@@ -159,13 +169,17 @@ def attention_order(reviews: list[ContractReview]) -> list[ContractReview]:
     )
 
 
-def render_index(reviews: list[ContractReview], unreadable: Sequence[tuple[str, str]] = ()) -> str:
+def render_index(
+    reviews: list[ContractReview],
+    unreadable: Sequence[tuple[str, str]] = (),
+    site_note: SiteNote | None = None,
+) -> str:
     """The run index -- one row per contract, for someone triaging a portfolio.
 
     Files that could not be read at all are listed first, above the worklist:
     they need a person more than anything the review found.
     """
-    template = _environment().get_template("index.html.j2")
+    template = _environment(site_note).get_template("index.html.j2")
     return template.render(
         unreadable=list(unreadable),
         reviews=attention_order(reviews),
@@ -175,11 +189,11 @@ def render_index(reviews: list[ContractReview], unreadable: Sequence[tuple[str, 
     )
 
 
-def write_review(review: ContractReview, out_dir: Path) -> tuple[Path, Path]:
+def write_review(review: ContractReview, out_dir: Path, site_note: SiteNote | None = None) -> tuple[Path, Path]:
     """Write the memo and the machine-readable form. Returns both paths."""
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    memo_path = write_lf(out_dir / f"{review.doc_id}.html", render_memo(review))
+    memo_path = write_lf(out_dir / f"{review.doc_id}.html", render_memo(review, site_note))
     json_path = write_lf(
         out_dir / f"{review.doc_id}.json",
         json.dumps(review.model_dump(mode="json"), indent=2, ensure_ascii=False),
@@ -187,6 +201,11 @@ def write_review(review: ContractReview, out_dir: Path) -> tuple[Path, Path]:
     return memo_path, json_path
 
 
-def write_index(reviews: list[ContractReview], out_dir: Path, unreadable: Sequence[tuple[str, str]] = ()) -> Path:
+def write_index(
+    reviews: list[ContractReview],
+    out_dir: Path,
+    unreadable: Sequence[tuple[str, str]] = (),
+    site_note: SiteNote | None = None,
+) -> Path:
     out_dir.mkdir(parents=True, exist_ok=True)
-    return write_lf(out_dir / "index.html", render_index(reviews, unreadable))
+    return write_lf(out_dir / "index.html", render_index(reviews, unreadable, site_note))

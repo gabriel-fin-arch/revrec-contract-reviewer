@@ -28,7 +28,7 @@ def test_every_command_prints_its_help():
     """typer below 0.16 renders help through a click API that changed in 8.2, and
     `revrec review --help` died with a traceback while the rest of this file
     passed -- nothing else here asks a subcommand for help."""
-    for command in ([], ["generate-corpus"], ["review"], ["demo"], ["build-gold"], ["eval"]):
+    for command in ([], ["generate-corpus"], ["review"], ["demo"], ["site"], ["build-gold"], ["eval"]):
         result = CliRunner().invoke(app, [*command, "--help"])
 
         assert result.exit_code == 0, result.output
@@ -71,6 +71,36 @@ def test_the_demo_is_one_offline_command_whatever_the_environment(workspace: Pat
     assert "(100%)" in result.stdout
     assert "offline rules, not a model" in result.stdout
     assert (workspace / "out" / "index.html").exists()
+
+
+def test_the_site_is_the_rules_review_and_says_so_on_every_page(workspace: Path, monkeypatch):
+    """What CI publishes to GitHub Pages: offline whatever key is set, and every
+    page says the contracts are synthetic and which extractor read them."""
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "not-a-real-key")
+    monkeypatch.setenv("GITHUB_SHA", "0123456789abcdef")
+
+    def no_client(*args, **kwargs):
+        raise AssertionError("the site build tried to call the API")
+
+    monkeypatch.setattr("anthropic.Anthropic", no_client)
+
+    result = runner.invoke(app, ["site", "--out", "site"])
+
+    assert result.exit_code == 0, result.output
+    pages = sorted((workspace / "site").glob("*.html"))
+    assert len(pages) == 13  # the index and twelve memos
+    for page in pages:
+        text = page.read_text(encoding="utf-8")
+        assert "are synthetic" in text, page.name
+        assert "offline rules extractor, not a model, at commit 0123456." in text, page.name
+        assert 'href="https://github.com/gabriel-fin-arch/revrec-contract-reviewer"' in text, page.name
+
+
+def test_a_plain_review_has_no_site_note(workspace: Path):
+    runner.invoke(app, ["generate-corpus"])
+    runner.invoke(app, ["review", "--extractor", "rules"])
+
+    assert "site-note" not in (workspace / "out" / "index.html").read_text(encoding="utf-8")
 
 
 def test_reviewing_a_single_contract_writes_one_memo(workspace: Path):

@@ -4,11 +4,13 @@ Seven commands, in the order you'd use them: build the corpus, review it,
 refresh the gold set, score against it, score a saved run again without
 extracting, list the judgments a saved run got wrong with the passages behind
 them, and estimate what a model run would cost before making one. `demo`
-runs the first, second and fourth with the offline rules, in one go.
+runs the first, second and fourth with the offline rules, in one go, and
+`site` writes the rules review as the static pages CI publishes.
 """
 
 from __future__ import annotations
 
+import os
 import re
 from pathlib import Path
 
@@ -34,7 +36,13 @@ from revrec_contract_reviewer.extract import ExtractorChoice, llm
 from revrec_contract_reviewer.fileio import write_lf
 from revrec_contract_reviewer.ingest import UnreadableContract
 from revrec_contract_reviewer.pipeline import review_contract, review_directory
-from revrec_contract_reviewer.report import write_index, write_pdf_memo, write_review, write_worklist
+from revrec_contract_reviewer.report import (
+    SiteNote,
+    write_index,
+    write_pdf_memo,
+    write_review,
+    write_worklist,
+)
 
 load_dotenv()
 
@@ -47,6 +55,8 @@ app = typer.Typer(
 DEFAULT_CORPUS = Path("corpus")
 DEFAULT_OUT = Path("out")
 DEFAULT_GOLD = Path("evals/gold")
+DEFAULT_SITE = Path("site")
+REPO = "https://github.com/gabriel-fin-arch/revrec-contract-reviewer"
 
 # Where each set lives: its PDFs, its gold records, its saved runs. The test
 # set sits one level down, so a review or an eval of corpus/ never picks it up.
@@ -141,6 +151,31 @@ def demo() -> None:
         f"Open {DEFAULT_OUT / 'index.html'} for the worklist and a memo per contract. The contracts are "
         "synthetic, and this run used the offline rules, not a model."
     )
+
+
+@app.command()
+def site(
+    out_dir: Path = typer.Option(DEFAULT_SITE, "--out", help="Where to write the pages."),
+) -> None:
+    """The corpus reviewed with the offline rules, as static pages (what CI publishes to GitHub Pages)."""
+    generate_corpus(DEFAULT_CORPUS)
+    reviews, unreadable = review_directory(DEFAULT_CORPUS, ExtractorChoice.RULES)
+    # GITHUB_SHA is set in Actions; the pages say which commit they were built from.
+    commit = os.environ.get("GITHUB_SHA")
+    note = SiteNote(
+        text=(
+            f"These {len(reviews)} contracts are synthetic, from the repo's corpus, and were reviewed with the offline "
+            "rules extractor, not a model" + (f", at commit {commit[:7]}." if commit else ".")
+        ),
+        link=REPO,
+        link_text="Source on GitHub",
+    )
+    for result in reviews:
+        write_review(result, out_dir, note)
+    index = write_index(reviews, out_dir, unreadable, note)
+    typer.echo(f"Wrote {len(reviews)} memos and {index}")
+    if unreadable:
+        raise typer.Exit(code=1)
 
 
 @app.command("build-gold")
