@@ -1,14 +1,15 @@
 """The numbers the README publishes, rendered from the saved runs.
 
-Two blocks in the README come from `evals/results/rules.json` and
-`evals/results/llm.json` rather than from a keyboard: the three results near
-the top and the Results table. tests/test_published_results.py fails if the
-README and the saved runs disagree, and reruns the rules evaluation to check
-that `rules.json` is still what the code produces. After a deliberate change,
+Three blocks in the README come from the runs saved under `evals/results/`
+rather than from a keyboard: the three results near the top, the development
+table (every measured run on the 12-contract development set) and the test
+table. tests/test_published_results.py fails if the README and the saved runs
+disagree, and reruns the rules evaluation to check that `rules.json` is still
+what the code produces. After a deliberate change,
 
     uv run python -m revrec_contract_reviewer.evaluate.published --write
 
-rewrites both blocks. Nothing here calls the API.
+rewrites the three blocks. Nothing here calls the API.
 """
 
 from __future__ import annotations
@@ -22,7 +23,17 @@ from revrec_contract_reviewer.evaluate.score import EvalReport, Tally
 ROOT = Path(__file__).resolve().parents[3]
 README = ROOT / "README.md"
 RESULTS = ROOT / "evals" / "results"
-BLOCKS = ("results-headline", "results-table")
+BLOCKS = ("results-headline", "results-table", "test-table")
+
+# The columns of each published table, as (saved-run name, column label).
+# `llm` is the September run, kept as the last development column.
+DEV_COLUMNS = (
+    ("rules", "Rules"),
+    ("llm-claude-opus-5-5-high", "Claude Opus 5.5"),
+    ("llm-claude-opus-5-high", "Claude Opus 5"),
+    ("llm", "Claude Opus 5, September"),
+)
+TEST_COLUMNS = DEV_COLUMNS[:3]
 
 
 def load(extractor: str, results_dir: Path = RESULTS) -> EvalReport:
@@ -35,46 +46,46 @@ def _model_label(report: EvalReport) -> str:
     return names.get(report.model or "", report.model or "the model")
 
 
-def _pair(a: float, b: float) -> tuple[str, str]:
-    """Two values to two decimals, the higher one in bold; a tie stays plain."""
-    sa, sb = f"{a:.2f}", f"{b:.2f}"
-    if sa == sb:
-        return sa, sb
-    return (f"**{sa}**", sb) if a > b else (sa, f"**{sb}**")
-
-
-def _cells(rules: Tally, model: Tally) -> tuple[str, str]:
-    rp, mp = _pair(rules.precision, model.precision)
-    rr, mr = _pair(rules.recall, model.recall)
-    return f"{rp} / {rr}", f"{mp} / {mr}"
-
-
 def _blank(report: EvalReport) -> str:
     s = report.silence
     return f"{s.true_positives} of {s.true_positives + s.false_positives}"
 
 
-def results_table(rules: EvalReport, model: EvalReport) -> str:
-    label = _model_label(model)
+def _cell(tally: Tally) -> str:
+    return f"{tally.precision:.2f} / {tally.recall:.2f}"
+
+
+def _table(reports: list[EvalReport], labels: list[str]) -> list[str]:
+    """One precision / recall table, one column per run. No bold: with more
+    than two columns there is no single winner a bold face could name."""
     rows = [
-        f"| Measure | Rules | {label} |",
-        "|---|---|---|",
-        "| Contract fields | {} | {} |".format(*_cells(rules.fields, model.fields)),
-        f"| Unstated fields left blank | {_blank(rules)} | {_blank(model)} |",
-        "| Performance obligations | {} | {} |".format(*_cells(rules.obligations, model.obligations)),
-        "| Judgment flags | {} | {} |".format(*_cells(rules.judgments, model.judgments)),
+        "| Measure | " + " | ".join(labels) + " |",
+        "|" + "---|" * (len(labels) + 1),
+        "| Contract fields | " + " | ".join(_cell(r.fields) for r in reports) + " |",
+        "| Unstated fields left blank | " + " | ".join(_blank(r) for r in reports) + " |",
+        "| Performance obligations | " + " | ".join(_cell(r.obligations) for r in reports) + " |",
+        "| Judgment flags | " + " | ".join(_cell(r.judgments) for r in reports) + " |",
     ]
-    if rules.citation_rate == model.citation_rate:
-        cites = (
-            f"Citations re-resolved against the source: **{rules.citation_rate:.0%}** on both runs "
-            f"({rules.citations_total} and {model.citations_total})."
-        )
-    else:
-        cites = (
-            f"Citations re-resolved against the source: **{rules.citation_rate:.0%}** with the rules "
-            f"({rules.citations_total}) and **{model.citation_rate:.0%}** with the model ({model.citations_total})."
-        )
-    return "\n".join(rows + ["", *textwrap.wrap(cites, 80), "Saved runs in [`evals/results/`](evals/results/)."])
+    return rows
+
+
+def _citations_line(reports: list[EvalReport]) -> str:
+    rates = {round(r.citation_rate, 4) for r in reports}
+    if len(rates) == 1:
+        return f"Citations re-resolved against the source: **{reports[0].citation_rate:.0%}** on every run."
+    per_run = ", ".join(f"{r.citation_rate:.0%} ({r.citations_total})" for r in reports)
+    return f"Citations re-resolved against the source: {per_run}."
+
+
+def results_table(reports: list[EvalReport], labels: list[str]) -> str:
+    return "\n".join(
+        _table(reports, labels)
+        + ["", _citations_line(reports), "Saved runs in [`evals/results/`](evals/results/)."]
+    )
+
+
+def test_table(reports: list[EvalReport], labels: list[str]) -> str:
+    return "\n".join(_table(reports, labels))
 
 
 def headline(rules: EvalReport, model: EvalReport) -> str:
@@ -103,8 +114,13 @@ def headline(rules: EvalReport, model: EvalReport) -> str:
 
 
 def render(results_dir: Path = RESULTS) -> dict[str, str]:
-    rules, model = load("rules", results_dir), load("llm", results_dir)
-    return {"results-headline": headline(rules, model), "results-table": results_table(rules, model)}
+    dev = [load(name, results_dir) for name, _ in DEV_COLUMNS]
+    test = [load(name, results_dir / "test") for name, _ in TEST_COLUMNS]
+    return {
+        "results-headline": headline(dev[0], dev[-1]),
+        "results-table": results_table(dev, [label for _, label in DEV_COLUMNS]),
+        "test-table": test_table(test, [label for _, label in TEST_COLUMNS]),
+    }
 
 
 def _markers(name: str) -> tuple[str, str]:

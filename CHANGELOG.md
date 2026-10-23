@@ -1,6 +1,23 @@
 # Changelog
 
-## 0.2.0 - 2026-10-23
+All notable changes to this project are logged here.
+
+## [Unreleased]
+
+### Changed
+- The recording moves to the first screen of the README, right after the
+  headline results, instead of sitting below the Quickstart.
+- The development and test tables in the README are generated from the saved
+  runs by `evaluate/published.py` (a `results-table` block with every measured
+  development run and a new `test-table` block), replacing the handwritten
+  four-column table and the handwritten test table; the test that checks the
+  published figures now covers both.
+- The "0.79 in September" prose (README and `docs/evaluation.md`) now says
+  the figure was published as 0.76, before the Tessellate gold correction.
+- The CHANGELOG headings use the same bracketed style as
+  intercompany-close-agent's.
+
+## [0.2.0] - 2026-10-23
 
 - `docs/adr/`: the main design decisions as seven short records (context,
   decision, alternatives, consequences), each drafted from the owner's sketch
@@ -40,7 +57,7 @@
   the end; "Licence" is "License". Nothing in it was dropped. The paragraph on
   the tests is rewrapped.
 
-## 0.1.0 - 2026-10-20
+## [0.1.0] - 2026-10-20
 
 - The development gold for Tessellate was inconsistent with Aster's, and is
   corrected. Tessellate's SOW says "a single integrated engagement", phases

@@ -39,6 +39,12 @@ repeat the rules run):
   325 with the model. [Full results](#results).
 <!-- results-headline:end -->
 
+![Recording of a review: the demo command's output, the run index, the top of one memo, and a value in it with the words it came from, its clause and its page](docs/images/demo.gif)
+
+*Frame by frame: `revrec demo`'s output, drawn as text; the run index; the top of one memo; a value in it with
+the words it was read from, its clause and its page. These are the pages `revrec site` writes with the offline
+rules; `scripts/record_demo.py` makes the recording from the code as it is.*
+
 ## Quickstart
 
 One command, from a clone, with no API key:
@@ -85,12 +91,6 @@ uv run revrec eval --save
   else was considered and who decided.
 - How I built this: which decisions are mine and what an AI assistant wrote.
 - The Quickstart above runs the whole review offline.
-
-![Recording of a review: the demo command's output, the run index, the top of one memo, and a value in it with the words it came from, its clause and its page](docs/images/demo.gif)
-
-*Frame by frame: `revrec demo`'s output, drawn as text; the run index; the top of one memo; a value in it with
-the words it was read from, its clause and its page. These are the pages `revrec site` writes with the offline
-rules; `scripts/record_demo.py` makes the recording from the code as it is.*
 
 ---
 
@@ -231,23 +231,9 @@ a model extractor that can't beat regexes on a corpus this clean isn't earning
 its cost.
 
 **Development set**, the 12 contracts the regexes and the prompt were written
-against:
+against. Every measured run on it, the two of 19 October 2026 included:
 
 <!-- results-table:start -->
-| Measure | Rules | Claude Opus 5 |
-|---|---|---|
-| Contract fields | 1.00 / 0.91 | 1.00 / **0.97** |
-| Unstated fields left blank | 21 of 21 | 21 of 21 |
-| Performance obligations | 0.79 / 0.75 | **0.83** / **0.95** |
-| Judgment flags | **0.95** / 0.79 | 0.79 / **0.96** |
-
-Citations re-resolved against the source: **100%** on both runs (210 and 325).
-Saved runs in [`evals/results/`](evals/results/).
-<!-- results-table:end -->
-
-That published model column is the September run. Every measured run on the
-same set, the two of 19 October 2026 included:
-
 | Measure | Rules | Claude Opus 5.5 | Claude Opus 5 | Claude Opus 5, September |
 |---|---|---|---|---|
 | Contract fields | 1.00 / 0.91 | 0.99 / 0.95 | 1.00 / 0.98 | 1.00 / 0.97 |
@@ -255,15 +241,21 @@ same set, the two of 19 October 2026 included:
 | Performance obligations | 0.79 / 0.75 | 0.95 / 0.95 | 0.83 / 0.95 | 0.83 / 0.95 |
 | Judgment flags | 0.95 / 0.79 | 0.87 / 0.83 | 0.88 / 0.96 | 0.79 / 0.96 |
 
+Citations re-resolved against the source: **100%** on every run.
+Saved runs in [`evals/results/`](evals/results/).
+<!-- results-table:end -->
+
 **Test set**, 7 contracts written afterwards the same way and committed with
 their answers before anything ran on them ([`corpus/test/`](corpus/test/)):
 
+<!-- test-table:start -->
 | Measure | Rules | Claude Opus 5.5 | Claude Opus 5 |
 |---|---|---|---|
 | Contract fields | 1.00 / 0.89 | 0.98 / 0.97 | 0.98 / 0.97 |
 | Unstated fields left blank | 8 of 8 | 8 of 8 | 8 of 8 |
 | Performance obligations | 0.67 / 0.46 | 0.92 / 0.92 | 0.92 / 0.92 |
 | Judgment flags | 1.00 / 0.38 | 0.92 / 0.92 | 0.71 / 0.92 |
+<!-- test-table:end -->
 
 The Claude Opus 5.5 and Claude Opus 5 columns are runs of 19 October 2026 at
 effort `high`, costed at the published prices of 18 October: USD 0.66 and 0.34
@@ -288,7 +280,9 @@ version I pushed here on 1 October. The harness records the model it calls, and
 Opus 4 in a history rewrite to fit the backdated commits. An earlier version of
 this note then called the Opus 5 label wrong. It wasn't
 ([PROVENANCE.md](PROVENANCE.md#the-model-run)). Repeated on 19 October, the
-same model scores 0.88 on judgment precision instead of 0.79. The code has
+same model scores 0.88 on judgment precision instead of 0.79. The 0.79 is
+against today's gold; as published in September the figure was 0.76, before
+the Tessellate gold correction moved it (see the CHANGELOG). The code has
 changed since September and that run kept only its counts, so it can't be
 scored again to say how much of the difference is the code and how much is
 run-to-run variance.
