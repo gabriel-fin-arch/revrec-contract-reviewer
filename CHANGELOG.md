@@ -26,6 +26,14 @@ All notable changes to this project are logged here.
   reviewer conclusions and leaves one item open, then the memo shows who
   concluded an item, when, and the conclusion beside its evidence. The reviewer
   is fictional and the recording still comes from the code as it is.
+- The README and the `Dockerfile` say why the image runs `review` rather than
+  `demo`: `demo` rebuilds the corpus inside the image, which a container run
+  with `--user` need not be able to write, and `review` only reads it. The
+  review of #31 recorded that the README explained this; it didn't until now.
+- "How I built this" links to HOW_I_WORK.md in the profile repo: how a change
+  gets made, who does what, and the rules the assistant works under.
+- The pull request template lists the checks CI runs today: the pre-commit
+  hooks instead of ruff alone, mypy, and three jobs instead of two.
 
 ## [0.3.0] - 2026-10-26
 

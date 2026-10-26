@@ -18,13 +18,15 @@ when I review. -->
 
 ## How it was verified
 
-- [ ] `uv run ruff check .`
+- [ ] `uv run pre-commit run --all-files`: ruff and the other hooks CI runs
+- [ ] `uv run mypy`: no issues
 - [ ] `uv run pytest -q` with `ANTHROPIC_API_KEY` empty
 - [ ] The offline review still runs (`generate-corpus`, `review --extractor
       rules`, `eval --extractor rules`), every citation resolves, and no
       tracked file changes
 - [ ] No call to the Anthropic API, or the call, its cost estimate and my
       approval are noted here
-- [ ] CI green on this PR, in both jobs (`test` and `lowest-versions`)
+- [ ] CI green on this PR, in all three jobs (`test`, `container` and
+      `lowest-versions`)
 - [ ] Every number or claim in the changed text checked against the output it
       comes from

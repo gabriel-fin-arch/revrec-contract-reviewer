@@ -32,4 +32,7 @@ RUN uv sync
 RUN useradd --create-home demo && mkdir -p /app/out && chown -R demo /app
 USER demo
 
+# review, not demo: demo rebuilds the corpus under /app, which a container run
+# with --user as someone other than demo can't write; review only reads it and
+# writes to /app/out.
 CMD ["revrec", "review", "corpus", "--extractor", "rules", "--out", "out"]
