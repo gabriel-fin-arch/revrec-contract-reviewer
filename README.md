@@ -359,6 +359,11 @@ docker build -t revrec-contract-reviewer .
 docker run --rm -v "$PWD/out:/app/out" revrec-contract-reviewer
 ```
 
+The image runs `review` rather than `demo`. `demo` also rebuilds the corpus,
+which sits inside the image, and a container started with `--user` runs as
+your user, who need not own those files; `review` only reads the corpus and
+writes to the folder you mount.
+
 ## What it does not do
 
 Stated plainly, because an honest scope is more credible than an inflated one.
@@ -388,7 +393,9 @@ docs, to that design. I reviewed what it produced and sent back what was
 wrong; every decision listed above is one I can walk you through. The commit
 messages before 14 October 2026 are the assistant's too, written in a casual
 first-person style I asked for; commits it drafts now carry a `Co-Authored-By`
-line.
+line. How a change gets made now, who does what, and the rules the assistant
+works under:
+[HOW_I_WORK.md](https://github.com/gabriel-fin-arch/gabriel-fin-arch/blob/main/HOW_I_WORK.md).
 
 ## License
 
