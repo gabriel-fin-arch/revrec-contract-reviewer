@@ -104,12 +104,11 @@ My profile README made the same claims about the dates in `4593a4f`,
 - **Email.** The versions pushed on 1 October were committed under a personal
   email address, and those orphaned commits still show it. The restored
   history uses the GitHub noreply address throughout.
-- **Contribution graph.** My profile's graph shows 239 commits in 2025 for this
-  repo. There was no work on it in 2025: they are the backdated commits,
-  counted once for every rewritten version. Only GitHub can rebuild the graph.
-  With no commit on the default branch dated 2025 any more, I'll ask GitHub
-  Support to recount it; until they do, it still shows them. Deleting or
-  hiding these repos would also remove the evidence this file points at.
+- **Contribution graph.** The graph used to show 239 commits in 2025 for this
+  repo, counted once for every rewritten version. GitHub has recounted it:
+  measured on 26 October 2026 (GraphQL `contributionsCollection`), it shows no
+  commits in 2025 and only the default-branch work in 2026. The orphaned
+  commits were left in place, so the SHA links in this file still resolve.
 - **`Co-Authored-By`.** `4976f2c`, the first commit as recorded, was drafted by
   the assistant and has no `Co-Authored-By` line. Every commit after it that the
   assistant drafted has one. None of the commits before it has one.
