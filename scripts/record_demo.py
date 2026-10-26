@@ -1,17 +1,22 @@
-"""Record docs/images/demo.gif: the offline demo, the run index and one memo.
+"""Record docs/images/demo.gif: the offline demo, the run index, one memo, and
+the reviewer's conclusions coming back from the worklist.
 
 Every frame comes from the code as it is. The first is the real output of
-`revrec demo`, drawn as text; the rest are screenshots, taken with Playwright,
-of the pages `revrec site` writes from the corpus with the rules extractor: the
-run index, the top of one memo, and a value in that memo with the words it was
-read from, its clause and its page. Run from the repo root with a Python that
-has Playwright (and its Chromium) and Pillow:
+`revrec demo`, drawn as text; the next three are screenshots, taken with
+Playwright, of the pages `revrec site` writes from the corpus with the rules
+extractor: the run index, the top of one memo, and a value in that memo with
+the words it was read from, its clause and its page. The last two are the
+worklist round-trip: a real run in a temporary folder with its reviewer
+columns filled in (all but one row, so the summary shows one item still open),
+the real output of `revrec conclusions`, and the memo with the concluded items
+and who and when. The reviewer name is made up. Run from the repo root with a
+Python that has Playwright (and its Chromium), Pillow and openpyxl:
 
     python scripts/record_demo.py
 
-The commands run through uv with ANTHROPIC_API_KEY set empty, and both pin the
-rules extractor, so nothing calls the API. Nothing here is part of the package
-or its tests.
+The commands run through uv with ANTHROPIC_API_KEY set empty, and the review
+pins the rules extractor, so nothing calls the API. Nothing here is part of
+the package or its tests.
 """
 
 from __future__ import annotations
@@ -22,6 +27,7 @@ import subprocess
 import tempfile
 from pathlib import Path
 
+from openpyxl import load_workbook
 from PIL import Image, ImageDraw, ImageFont
 from playwright.sync_api import sync_playwright
 
@@ -31,10 +37,15 @@ WIDTH, HEIGHT = 1280, 800
 GIF_WIDTH = 960
 MEMO = "nimbus-of-helix"
 OFFLINE = {**os.environ, "ANTHROPIC_API_KEY": ""}
+# Filled into the worklist's reviewer columns for the recording. Made up, as
+# in the tests; the conclusion is generic because every row gets one.
+REVIEWER = "Ada Vidal"
+CONCLUSION = "Checked against the clause and the memo: agreed."
+CONCLUSION_DATE = "2026-10-26"
 
 
-def terminal_frame(command: list[str], prompt: str, lines: int = 30) -> Image.Image:
-    out = subprocess.run(command, cwd=ROOT, env=OFFLINE, capture_output=True, text=True, check=True).stdout
+def terminal_frame(command: list[str], prompt: str, lines: int = 30, cwd: Path = ROOT) -> Image.Image:
+    out = subprocess.run(command, cwd=cwd, env=OFFLINE, capture_output=True, text=True, check=True).stdout
     text = [f"$ {prompt}", ""] + out.splitlines()[:lines]
     try:
         font = ImageFont.truetype("consola.ttf", 17)
@@ -74,12 +85,51 @@ def site_frames() -> list[Image.Image]:
     return frames
 
 
+def conclusions_frames() -> list[Image.Image]:
+    """The worklist round-trip, in a temporary folder with relative paths.
+
+    `uv run --project` keeps the repo's environment while the working
+    directory stays the temporary one, so the terminal frame says `out/...`
+    rather than where this machine keeps anything.
+    """
+    frames: list[Image.Image] = []
+    with tempfile.TemporaryDirectory() as tmp:
+        work = Path(tmp)
+        uv = ["uv", "run", "--project", str(ROOT)]
+        for command in (["revrec", "generate-corpus"], ["revrec", "review", "--extractor", "rules"]):
+            subprocess.run(uv + command, cwd=work, env=OFFLINE, check=True, capture_output=True)
+
+        # Every row but the last concluded, so the summary has one open item.
+        worklist = work / "out" / "worklist.xlsx"
+        workbook = load_workbook(worklist)
+        items = workbook["open items"]
+        for row in items.iter_rows(min_row=2, max_row=items.max_row - 1):
+            row[9].value, row[10].value, row[11].value = CONCLUSION, REVIEWER, CONCLUSION_DATE
+        workbook.save(worklist)
+        workbook.close()
+
+        frames.append(terminal_frame(uv + ["revrec", "conclusions", "out/worklist.xlsx"],
+                                     "revrec conclusions out/worklist.xlsx", cwd=work))
+
+        with sync_playwright() as p:
+            browser = p.chromium.launch()
+            page = browser.new_page(viewport={"width": WIDTH, "height": HEIGHT})
+            page.goto((work / "out" / f"{MEMO}.html").as_uri())
+            concluded = page.locator(".conclusion").first
+            concluded.scroll_into_view_if_needed()
+            page.evaluate("window.scrollBy(0, -160)")  # keep the item's question above the conclusion
+            frames.append(shot(page))
+            browser.close()
+    return frames
+
+
 def main() -> None:
     frames = [terminal_frame(["uv", "run", "revrec", "demo"], "uv run revrec demo")]
     frames += site_frames()
+    frames += conclusions_frames()
     small = [f.resize((GIF_WIDTH, round(f.height * GIF_WIDTH / f.width)), Image.LANCZOS) for f in frames]
     palette = [f.quantize(colors=128, method=Image.Quantize.MEDIANCUT) for f in small]
-    durations = [5000, 4000, 5000, 6000][: len(palette)]
+    durations = [5000, 4000, 5000, 6000, 5000, 6000][: len(palette)]
     OUT.parent.mkdir(parents=True, exist_ok=True)
     palette[0].save(OUT, save_all=True, append_images=palette[1:], duration=durations, loop=0, optimize=True)
     print(f"{OUT}: {len(palette)} frames, {sum(durations) / 1000:.0f} s, {OUT.stat().st_size / 1e6:.2f} MB")
