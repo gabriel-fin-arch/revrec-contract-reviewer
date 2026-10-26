@@ -39,11 +39,14 @@ repeat the rules run):
   325 with the model. [Full results](#results).
 <!-- results-headline:end -->
 
-![Recording of a review: the demo command's output, the run index, the top of one memo, and a value in it with the words it came from, its clause and its page](docs/images/demo.gif)
+![Recording of a review: the demo output, the run index, a memo with its cited evidence, and the Excel worklist conclusions returning to the memo](docs/images/demo.gif)
 
 *Frame by frame: `revrec demo`'s output, drawn as text; the run index; the top of one memo; a value in it with
-the words it was read from, its clause and its page. These are the pages `revrec site` writes with the offline
-rules; `scripts/record_demo.py` makes the recording from the code as it is.*
+the words it was read from, its clause and its page; `revrec conclusions` recording 19 conclusions from the
+Excel worklist and leaving one item open; and the memo showing an item as concluded, with the reviewer's name
+and date beside its evidence. The reviewer is fictional. The site frames come from `revrec site` with the
+offline rules, and the worklist round-trip is a real run in a temporary folder; `scripts/record_demo.py` makes
+the recording from the code as it is.*
 
 ## Quickstart
 

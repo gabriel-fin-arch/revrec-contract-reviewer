@@ -20,6 +20,13 @@ All notable changes to this project are logged here.
   injection itself can ground, and `docs/controls.md` says the guard there is
   the reviewer. New control 14.
 
+### Changed
+- The first-screen recording (`docs/images/demo.gif`, now six frames and 31 s)
+  includes the Excel worklist round-trip: `revrec conclusions` records 19
+  reviewer conclusions and leaves one item open, then the memo shows who
+  concluded an item, when, and the conclusion beside its evidence. The reviewer
+  is fictional and the recording still comes from the code as it is.
+
 ## [0.3.0] - 2026-10-26
 
 ### Added
