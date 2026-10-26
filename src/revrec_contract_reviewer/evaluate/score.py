@@ -18,9 +18,10 @@ free text and a fair scorer should not reward one wording of "Premium Support,
 for the product, because a reviewer's trust is spent by false positives long
 before it is spent by misses.
 
-**Citations.** Every citation in the output is re-resolved against the document.
-This should always be 100% -- grounding already refused anything that failed --
-so it is really an independent check that the invariant holds rather than a
+**Citations.** Every citation in the output is re-resolved against the document:
+its words at its offsets, its page and its clause, worked out again here. This
+should always be 100% -- grounding already refused anything that failed -- so
+it is really an independent check that the invariant holds rather than a
 measure of the extractor. It is here because "the control is enforced" is a
 claim worth being able to prove after the fact rather than by reading the code.
 """
@@ -34,7 +35,7 @@ from typing import Any
 from pydantic import BaseModel, Field
 
 from revrec_contract_reviewer.evaluate.gold import SCORED_FIELDS, GoldRecord
-from revrec_contract_reviewer.ingest.text import NormalizedText
+from revrec_contract_reviewer.models.citation import Citation
 from revrec_contract_reviewer.models.document import ContractDocument
 from revrec_contract_reviewer.models.extraction import ContractExtraction
 from revrec_contract_reviewer.models.fields import ExtractedField
@@ -203,14 +204,30 @@ def _score_judgments(review: ContractReview, gold: GoldRecord, score: ContractSc
         score.mistakes.append(f"judgment expected but not raised: {judgment}")
 
 
+def _resolves(citation: Citation, document: ContractDocument) -> bool:
+    """Whether the citation points at its own words, on the page and in the clause it names.
+
+    Checking only that the words occur somewhere in the document can't fail:
+    grounding cut the quote out of this very text. What a reader relies on is
+    the location -- they open the PDF at the page and look for the clause -- so
+    that is what's re-derived here, from the offsets, independently of how
+    grounding computed it.
+    """
+    if document.text[citation.start : citation.end] != citation.quote:
+        return False
+    if document.page_for_offset(citation.start) != citation.page:
+        return False
+    clause = document.clause_for_offset(citation.start)
+    return (clause.reference() if clause else None) == citation.clause
+
+
 def _score_citations(review: ContractReview, document: ContractDocument, score: ContractScore) -> None:
-    """Re-resolve every citation in the review against the document text."""
-    text = NormalizedText(document.text)
+    """Re-resolve every citation in the review against the document: its words, page and clause."""
 
     def check(citations: list) -> None:
         for citation in citations:
             score.citations_total += 1
-            if text.contains(citation.quote):
+            if _resolves(citation, document):
                 score.citations_resolved += 1
             else:
                 score.mistakes.append(f"citation does not resolve: {citation.excerpt(60)!r}")

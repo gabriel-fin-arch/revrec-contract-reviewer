@@ -41,7 +41,7 @@ for the product: a reviewer's trust is spent by false positives long before it
 is spent by misses.
 
 **Citations.** Every citation in every finished review is re-resolved against
-the document text. This should always be 100%, because grounding already
+the document: its words at its offsets, its page and its clause. This should always be 100%, because grounding already
 refused anything that failed — so it is really an independent check that the
 invariant held, rather than a measure of the extractor. It is here because "the
 control is enforced" is a claim worth being able to prove after the fact rather

@@ -4,7 +4,8 @@ This is the control the whole project is built around, so it's worth being blunt
 about what it does and doesn't do.
 
 It does: take a claim, look for the quoted words in the actual document, and
-refuse to build a field if they aren't there.
+refuse to build a field if they aren't there -- all of them, not just one: a
+claim with one quote that resolves and one that doesn't is dropped too.
 
 It does not: judge whether the value is *right*. A quote that resolves and a
 value that misreads it still gets through -- grounding catches invention, not
@@ -84,6 +85,23 @@ class Grounder:
                 )
         return citations
 
+    def all_quotes_found(self, quotes: list[str]) -> bool:
+        """Whether every quote long enough to identify a passage is in the document.
+
+        A claim can carry several quotes. If one of them can't be found, the
+        claim rests partly on words the contract doesn't contain, which is the
+        invention grounding exists to refuse -- even when another quote, maybe
+        an unrelated one, resolves. So a claim is kept only when all of its
+        quotes are there, and not on the strength of the one that is.
+        """
+        for quote in quotes:
+            trimmed = quote.strip()
+            if len(NormalizedText.normalize(trimmed)) < MIN_QUOTE_LENGTH:
+                continue
+            if not self._text.find_all(trimmed):
+                return False
+        return True
+
     def field(self, claim: Claim | None, parse: Callable[[str | None], T | None]) -> ExtractedField[T]:
         """Build a domain field from a claim, or absent if the claim doesn't hold up."""
         if claim is None:
@@ -94,6 +112,11 @@ class Grounder:
             self.dropped += 1
             return ExtractedField[T].absent(
                 note="Dropped: the supporting quote could not be located in the document."
+            )
+        if not self.all_quotes_found(claim.quotes):
+            self.dropped += 1
+            return ExtractedField[T].absent(
+                note="Dropped: one of the supporting quotes could not be located in the document."
             )
 
         if claim.conflicting and len({NormalizedText.normalize(c.quote) for c in citations}) < 2:

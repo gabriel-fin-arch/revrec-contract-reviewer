@@ -19,7 +19,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
-from jinja2 import Environment, FileSystemLoader, select_autoescape
+from jinja2 import Environment, FileSystemLoader
 
 from revrec_contract_reviewer.fileio import write_lf
 from revrec_contract_reviewer.models.extraction import ContractExtraction
@@ -127,9 +127,13 @@ class SiteNote:
 
 
 def _environment(site_note: SiteNote | None = None) -> Environment:
+    # Every template is HTML, so everything printed is escaped. The templates
+    # are named *.html.j2, and select_autoescape(["html"]) matches on the last
+    # extension, so it had left all three unescaped: contract text, a
+    # reviewer's conclusion or a file name went into the page as markup.
     environment = Environment(
         loader=FileSystemLoader(TEMPLATE_DIR),
-        autoescape=select_autoescape(["html"]),
+        autoescape=True,
         trim_blocks=True,
         lstrip_blocks=True,
     )

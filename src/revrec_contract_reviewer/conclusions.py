@@ -12,7 +12,8 @@ no longer holds, and is refused whole. Within a matching workbook every row is
 checked against the rows the run raised: a row that doesn't match -- added, or
 with its contract, item or evidence edited -- is reported with its row number
 and not recorded. So is a conclusion without a reviewer or a date: half a
-sign-off is no sign-off.
+sign-off is no sign-off. A row the run raised that is missing from the sheet
+is reported too, and stays open.
 
 One gap, stated rather than hidden: rows about files that could not be read
 have no JSON behind them, so they can't be matched against the run the way
@@ -147,6 +148,7 @@ def collect_conclusions(worklist_path: Path) -> ReadBack:
 
     read = ReadBack(run=workbook_run, conclusions=Conclusions(run=workbook_run), reviews=reviews)
     concluded: dict[tuple[str, ...], int] = {}
+    seen: set[tuple[str, ...]] = set()
     items = workbook["open items"]
     for number, sheet_row in enumerate(items.iter_rows(min_row=2, values_only=True), start=2):
         cells = [_typed(value) for value in sheet_row]
@@ -167,6 +169,7 @@ def collect_conclusions(worklist_path: Path) -> ReadBack:
                 "was edited, or the row was added"
             )
             continue
+        seen.add(key)
 
         if not any((conclusion, reviewer, when)):
             read.open_items.append(f"{key[0]} -- {key[3]}")
@@ -195,6 +198,17 @@ def collect_conclusions(worklist_path: Path) -> ReadBack:
             )
         )
     workbook.close()
+    # A row deleted from the sheet, or edited out of recognition, is an item
+    # nobody concluded. It has no row to report as blank, so without this it
+    # would vanish from the summary and the run would read as having nothing
+    # left open.
+    for key in expected:
+        if key not in seen:
+            read.open_items.append(f"{key[0]} -- {key[3]}")
+            read.problems.append(
+                f"{key[0]} -- {key[3]}: no row in the workbook matches it as the run wrote it "
+                "(deleted or edited), so it stays open"
+            )
     return read
 
 
