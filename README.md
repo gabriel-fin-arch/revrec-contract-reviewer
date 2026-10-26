@@ -332,7 +332,7 @@ No agent framework. This is a pipeline with one model call in it, and wrapping
 that in a graph would have added a dependency and a diagram without adding a
 capability.
 
-281 tests. CI runs the pre-commit hooks (ruff among them), mypy, the test
+283 tests. CI runs the pre-commit hooks (ruff among them), mypy, the test
 suite with coverage, and then the whole pipeline offline over the corpus and
 the held-out set, and a second workflow publishes the rules review to GitHub
 Pages; the eval step exits non-zero if any citation in any memo stops resolving
