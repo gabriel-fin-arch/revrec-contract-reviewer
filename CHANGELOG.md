@@ -2,7 +2,7 @@
 
 All notable changes to this project are logged here.
 
-## [Unreleased]
+## [0.3.0] - 2026-10-26
 
 ### Added
 - `revrec conclusions <worklist.xlsx>` reads the reviewer's conclusions back
