@@ -5,6 +5,11 @@ All notable changes to this project are logged here.
 ## [Unreleased]
 
 ### Added
+- The test-set prose figures are protected by tests, not by memory: the
+  README's three judgment figures (0.38, 0.71, 0.92) and `docs/evaluation.md`'s
+  citations, dropped-claims, blank-fields and found-judgments counts are built
+  from the saved runs in `evals/results/test/`, and a drift in either the runs
+  or the prose fails `tests/test_published_results.py`.
 - Prompt-injection tests (`tests/test_prompt_injection.py`): a family of
   injection payloads appended to every corpus contract leaves the offline
   review exactly unchanged and out of the evidence; a model complying with the
