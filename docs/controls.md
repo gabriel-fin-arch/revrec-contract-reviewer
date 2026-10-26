@@ -30,6 +30,7 @@ evidence file is one a run writes.
 | 11 | Every open item in a run reaches the reviewer, contracts needing most attention first. | `report/memo.py::attention_order`, `report/worklist.py::worklist_rows` | `tests/test_report_and_eval.py::test_a_document_that_could_not_be_read_does_not_sink_to_the_bottom`, `tests/test_worklist_and_pdf.py::test_every_open_item_in_the_run_is_one_row` | `index.html`, `worklist.xlsx` |
 | 12 | The memo filed as a PDF says what the review says, each quote with its clause and page. | `report/pdf.py::render_pdf_memo` | `tests/test_worklist_and_pdf.py::test_every_pdf_memo_says_what_its_review_says` | `<contract>.pdf` |
 | 13 | A conclusion is the reviewer's, recorded not made: the worklist's reviewer columns are read back against the run row by row, a workbook from another run is refused, an edited or added row is reported with its row, and a conclusion without a reviewer or a date is not accepted. | `conclusions.py::collect_conclusions`, `report/worklist.py::run_id` | `tests/test_conclusions.py::test_a_workbook_from_another_run_is_refused`, `tests/test_conclusions.py::test_an_edited_row_is_reported_with_its_row`, `tests/test_conclusions.py::test_a_conclusion_without_a_reviewer_or_a_date_is_reported_not_accepted` | `conclusions.json`, `index.html`, `<contract>.html` (each item concluded, with who and when, or open) |
+| 14 | Instruction-shaped text in a contract can't steer the review (prompt injection): the offline review of an injected document is exactly the clean document's review, a model complying with the injection can't produce a clean review, and the document reaches the model as data in the user message, not as instructions. | `extract/llm.py::USER_TEMPLATE`, `extract/grounding.py::Grounder`, `assess/judgments.py::raise_flags` | `tests/test_prompt_injection.py::test_the_offline_review_ignores_instruction_shaped_text`, `tests/test_prompt_injection.py::test_a_model_complying_with_extract_nothing_cannot_produce_a_clean_review`, `tests/test_prompt_injection.py::test_the_document_reaches_the_model_as_data_not_instructions` | `<contract>.html`, `<contract>.json` (the same review, injected document or not) |
 
 ## What this doesn't control
 
@@ -38,6 +39,11 @@ evidence file is one a run writes.
   (`tests/test_grounding.py::test_grounding_does_not_check_whether_the_value_is_right`).
   Accuracy is measured against the gold set, not asserted; see
   `docs/evaluation.md`.
+- **A value quoted from injected text.** Injection text is document text, so
+  a model that quotes it produces a citation that resolves
+  (`tests/test_prompt_injection.py::test_a_quote_taken_from_the_injection_itself_can_ground`).
+  The injection cannot silence the review -- control 14 -- but a value read
+  from it can still be wrong, and the guard there is the reviewer, not the tool.
 - **Whether a conclusion is right.** `conclusions.json` records who concluded
   what and when, exactly as typed, and the memos show it; the judgment itself
   stays the reviewer's. Rows about files the run could not read have no JSON

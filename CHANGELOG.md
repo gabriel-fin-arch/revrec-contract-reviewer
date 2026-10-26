@@ -2,6 +2,19 @@
 
 All notable changes to this project are logged here.
 
+## [Unreleased]
+
+### Added
+- Prompt-injection tests (`tests/test_prompt_injection.py`): a family of
+  injection payloads appended to every corpus contract leaves the offline
+  review exactly unchanged and out of the evidence; a model complying with the
+  injection (stub client, no API call) still cannot produce a clean review,
+  and fabricated reassurance is dropped; the document reaches the model
+  verbatim in the user message, with the instructions in a fixed system
+  prompt. The residual risk is named, not hidden: a quote taken from the
+  injection itself can ground, and `docs/controls.md` says the guard there is
+  the reviewer. New control 14.
+
 ## [0.3.0] - 2026-10-26
 
 ### Added
