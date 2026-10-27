@@ -174,3 +174,54 @@ def test_a_document_that_could_not_be_read_does_not_sink_to_the_bottom(documents
     index = write_index([clean, unread], tmp_path).read_text(encoding="utf-8")
 
     assert index.index(unread.doc_id) < index.index(clean.doc_id)
+
+
+def test_text_from_a_contract_or_a_reviewer_is_escaped_not_rendered(helix: ContractDocument):
+    """Contract text and a reviewer's conclusion are data, never markup.
+
+    A contract is a third party's document and the worklist is typed by hand;
+    either can hold `<` or a script tag, and the memo and the index print them
+    as text.
+    """
+    from revrec_contract_reviewer.conclusions import Conclusion, Conclusions
+    from revrec_contract_reviewer.report import render_index
+
+    review = _review(helix)
+    flag = review.flags_in_review_order()[0]
+    payload = "<script>alert('memo')</script>"
+    conclusions = Conclusions(
+        run="test",
+        conclusions=[
+            Conclusion(
+                contract=review.doc_id,
+                kind="judgment",
+                step=str(flag.step),
+                item=flag.judgment_type.value.replace("_", " "),
+                question=flag.question,
+                conclusion=payload,
+                reviewer="A & B <Reviewers>",
+                date="2026-10-26",
+            )
+        ],
+    )
+
+    memo = render_memo(review, conclusions=conclusions)
+    index = render_index([review], unreadable=[(payload, "could not be read")], conclusions=conclusions)
+
+    for page in (memo, index):
+        assert "<script>" not in page
+    assert "&lt;script&gt;" in memo
+    assert "A &amp; B &lt;Reviewers&gt;" in memo
+    assert "&lt;script&gt;" in index
+
+
+def test_a_citation_with_the_wrong_page_or_clause_does_not_resolve(helix: ContractDocument):
+    """The re-check is of the location a reader relies on, not only of the words."""
+    from revrec_contract_reviewer.evaluate.score import _resolves
+
+    citation = _review(helix).extraction.total_fixed_consideration.citations[0]
+
+    assert _resolves(citation, helix)
+    assert not _resolves(citation.model_copy(update={"page": citation.page + 1}), helix)
+    assert not _resolves(citation.model_copy(update={"clause": "99 Nowhere"}), helix)
+    assert not _resolves(citation.model_copy(update={"start": citation.start + 1}), helix)

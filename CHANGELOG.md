@@ -35,6 +35,30 @@ All notable changes to this project are logged here.
 - The pull request template lists the checks CI runs today: the pre-commit
   hooks instead of ruff alone, mypy, and three jobs instead of two.
 
+### Fixed
+- The memos and the index escaped nothing. The templates are named
+  `*.html.j2` and `select_autoescape(["html"])` matches on the last
+  extension, so autoescaping was off in all three: text from a contract, a
+  file name, or a conclusion typed into the worklist went into the page as
+  markup, a script tag included. Escaping is now on everywhere, and a test
+  puts a script tag in a conclusion and a file name. The corpus's pages read
+  the same; only characters such as quotes are now written as entities.
+- Grounding kept a claim if any one of its quotes was in the document, and
+  dropped the others without counting them, so a value could stand on an
+  unrelated real quote beside an invented one. A field, an obligation or a
+  variable-consideration term is now dropped, and counted, when any of its
+  quotes can't be found. No saved run had such a claim: every figure
+  published from them is unchanged.
+- The citation re-check in the eval only looked for the quote's words
+  anywhere in the document, which can't fail, since grounding cuts the quote
+  out of that text. It now re-derives what a reader relies on: the words at
+  the citation's offsets, its page and its clause. Every saved run still
+  resolves every citation.
+- `revrec conclusions` said "nothing left open" when a row had been deleted
+  from the workbook. An item the run raised that no row matches -- deleted,
+  or edited out of recognition -- is now listed as open and reported.
+- The README's test count is 296, with the tests these fixes add.
+
 ## [0.3.0] - 2026-10-26
 
 ### Added

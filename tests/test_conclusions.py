@@ -125,10 +125,14 @@ def test_an_edited_row_is_reported_with_its_row(reviews: list[ContractReview], t
 
     read = collect_conclusions(worklist)
 
+    original = _item_rows(_write_run(reviews, tmp_path / "unedited"))[0]
     assert read.problems == [
-        "row 2: not a row this run raised -- the contract, item or evidence was edited, or the row was added"
+        "row 2: not a row this run raised -- the contract, item or evidence was edited, or the row was added",
+        f"{original[0]} -- {original[3]}: no row in the workbook matches it as the run wrote it "
+        "(deleted or edited), so it stays open",
     ]
     assert len(read.conclusions.conclusions) == 1
+    assert f"{original[0]} -- {original[3]}" in read.open_items
 
 
 def test_a_row_the_run_did_not_raise_is_reported(reviews: list[ContractReview], tmp_path: Path):
@@ -271,3 +275,28 @@ def test_the_conclusions_command_reports_rejected_rows_but_records_the_rest(tmp_
     assert "row 2" in result.output
     record = json.loads((tmp_path / "out" / CONCLUSIONS_FILE).read_text(encoding="utf-8"))
     assert len(record["conclusions"]) == 1
+
+
+def test_a_row_deleted_from_the_workbook_stays_open_and_is_reported(
+    reviews: list[ContractReview], tmp_path: Path
+):
+    """Deleting a row is not concluding it: the summary must not read "nothing left open"."""
+    worklist = _write_run(reviews, tmp_path)
+    total = len(_item_rows(worklist))
+    _fill(worklist, list(range(2, 2 + total)))
+    first = _item_rows(worklist)[0]
+    workbook = load_workbook(worklist)
+    workbook["open items"].delete_rows(2)
+    workbook.save(worklist)
+    workbook.close()
+
+    read = collect_conclusions(worklist)
+
+    assert len(read.conclusions.conclusions) == total - 1
+    assert read.open_items == [f"{first[0]} -- {first[3]}"]
+    assert read.problems == [
+        f"{first[0]} -- {first[3]}: no row in the workbook matches it as the run wrote it "
+        "(deleted or edited), so it stays open"
+    ]
+    result = CliRunner().invoke(app, ["conclusions", str(worklist)])
+    assert "nothing left open" not in result.output

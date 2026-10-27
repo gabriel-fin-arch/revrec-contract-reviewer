@@ -36,11 +36,12 @@ def assemble(
     obligations: list[PerformanceObligation] = []
     for proposed in wire.obligations:
         evidence = ground.citations_for(proposed.quotes)
-        if not evidence:
+        if not evidence or not ground.all_quotes_found(proposed.quotes):
             # An obligation nobody can point at in the contract is not an
             # obligation. Dropping the whole thing rather than keeping a
             # label with empty fields, because a labelled row in the memo
             # reads as a finding even when every cell under it is blank.
+            # The same if only some of its quotes are there.
             ground.dropped += 1
             continue
         obligations.append(
@@ -59,7 +60,7 @@ def assemble(
     variable: list[VariableConsideration] = []
     for proposed_term in wire.variable_consideration:
         evidence = ground.citations_for(proposed_term.quotes)
-        if not evidence:
+        if not evidence or not ground.all_quotes_found(proposed_term.quotes):
             ground.dropped += 1
             continue
         variable.append(

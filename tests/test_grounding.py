@@ -168,3 +168,60 @@ def test_a_variable_consideration_term_with_no_evidence_is_dropped(helix: Contra
 
     assert extraction.variable_consideration == []
     assert extraction.dropped_for_no_evidence == 1
+
+
+def test_a_claim_with_one_real_quote_and_one_invented_is_dropped(helix: ContractDocument):
+    """One quote that resolves doesn't carry another that doesn't.
+
+    Here the real quote is the total-fees line and the invented one claims a
+    different total; keeping the field on the strength of the real quote would
+    put an invented number in the memo with a genuine citation under it.
+    """
+    ground = Grounder(helix)
+
+    field = ground.field(
+        Claim(
+            value="792000",
+            quotes=["Total committed fees GBP 312,000", "a total contract value of GBP 792,000"],
+        ),
+        parse_decimal,
+    )
+
+    assert field.status is FieldStatus.ABSENT
+    assert field.value is None
+    assert ground.dropped == 1
+    assert "one of the supporting quotes" in field.note
+
+
+def test_an_obligation_or_term_with_an_invented_quote_among_real_ones_is_dropped(helix: ContractDocument):
+    from revrec_contract_reviewer.extract import assemble
+    from revrec_contract_reviewer.extract.schema import (
+        WireExtraction,
+        WireObligation,
+        WireVariableConsideration,
+    )
+    from revrec_contract_reviewer.models.extraction import ObligationKind, VariableConsiderationKind
+
+    real = "Total committed fees GBP 312,000"
+    partly_invented = WireExtraction(
+        obligations=[
+            WireObligation(
+                label="An obligation half made up",
+                kind=next(iter(ObligationKind)),
+                quotes=[real, "Supplier shall provide a dedicated on-site engineer"],
+            )
+        ],
+        variable_consideration=[
+            WireVariableConsideration(
+                kind=VariableConsiderationKind.VOLUME_REBATE,
+                description="A rebate half made up",
+                quotes=[real, "Customer shall receive a rebate of fifteen percent on renewal"],
+            )
+        ],
+    )
+
+    extraction = assemble(helix, partly_invented, extractor="llm", model="stub")
+
+    assert extraction.obligations == []
+    assert extraction.variable_consideration == []
+    assert extraction.dropped_for_no_evidence == 2
