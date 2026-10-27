@@ -2,7 +2,7 @@
 
 All notable changes to this project are logged here.
 
-## [Unreleased]
+## [0.4.0] - 2026-10-27
 
 ### Added
 - The test-set prose figures are protected by tests, not by memory: the
