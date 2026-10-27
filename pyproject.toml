@@ -1,6 +1,6 @@
 [project]
 name = "revrec-contract-reviewer"
-version = "0.3.0"
+version = "0.4.0"
 description = "ASC 606 contract review for group-level revenue assurance, with every extracted fact cited back to the source PDF."
 readme = "README.md"
 requires-python = ">=3.11"
