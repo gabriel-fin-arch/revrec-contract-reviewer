@@ -6,7 +6,6 @@ build/
 dist/
 
 # venv / uv
-uv.lock
 .venv/
 venv/
 

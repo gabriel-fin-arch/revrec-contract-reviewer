@@ -19,14 +19,14 @@ ENV UV_COMPILE_BYTECODE=1 \
 WORKDIR /app
 
 # Runtime dependencies only, in their own layer, so a code change doesn't
-# reinstall them. There is no lock file in the repo; uv resolves the same
-# constraints CI does.
-COPY pyproject.toml README.md ./
-RUN uv sync --no-install-project
+# reinstall them: the versions in uv.lock, the ones CI tests, and the build
+# fails if the lock doesn't match pyproject.
+COPY pyproject.toml README.md uv.lock ./
+RUN uv sync --locked --no-install-project
 
 COPY src ./src
 COPY corpus ./corpus
-RUN uv sync
+RUN uv sync --locked
 
 # Not root. The memos go to /app/out, which is where a host folder is mounted.
 RUN useradd --create-home demo && mkdir -p /app/out && chown -R demo /app

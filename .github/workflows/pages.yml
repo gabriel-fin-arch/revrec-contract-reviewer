@@ -32,7 +32,7 @@ jobs:
           python-version: "3.11"
 
       - name: Build the pages from the corpus, with the offline rules
-        run: uv run revrec site --out site
+        run: uv run --locked revrec site --out site
 
       - uses: actions/configure-pages@v6
 

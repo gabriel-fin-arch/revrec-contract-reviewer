@@ -21,6 +21,13 @@ All notable changes to this project are logged here.
   the reviewer. New control 14.
 
 ### Changed
+- `uv.lock` is in the repo. It pins every dependency at the versions CI
+  tests; CI installs with `--locked`, as do the Pages build and the Docker
+  image, so a new release upstream can't change what a clone, the demo or
+  the image runs until the lock is updated on purpose, and a lock that no
+  longer matches `pyproject.toml` fails the build. The lowest-versions job
+  still resolves afresh, to test the floors. The large-files hook skips the
+  lock, which is generated.
 - The first-screen recording (`docs/images/demo.gif`, now six frames and 31 s)
   includes the Excel worklist round-trip: `revrec conclusions` records 19
   reviewer conclusions and leaves one item open, then the memo shows who

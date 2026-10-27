@@ -62,6 +62,8 @@ set. The same steps one at a time (the offline extractor is the default when no
 key is set):
 
 ```bash
+# the versions pinned in uv.lock, the ones CI tests (after editing
+# pyproject.toml, `uv lock` updates the pins)
 uv sync --extra dev
 uv run revrec generate-corpus
 uv run revrec review --extractor rules
