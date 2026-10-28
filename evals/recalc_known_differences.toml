@@ -1,0 +1,17 @@
+# Differences between recalc/rr_recalc.xlsx, the accountant's own reading of
+# the contracts, and the rules extractor, each looked at by hand and recorded
+# with its issue. The recalc check (src/revrec_contract_reviewer/recalc_check.py)
+# fails on any difference that isn't listed here, and on any entry here that no
+# longer occurs.
+#
+# An entry is Gabriel's decision to leave a difference standing, not a fix:
+# neither side is changed to make the two agree, and what a held-out contract
+# shows never changes the rules or the prompt (#57). recalc and tool are the
+# values exactly as the check's report shows them.
+#
+# [[difference]]
+# doc_id = "nimbus-of-..."
+# field = "..."
+# recalc = "..."
+# tool = "..."
+# issue = 0

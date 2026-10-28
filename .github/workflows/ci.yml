@@ -49,6 +49,30 @@ jobs:
           uv run revrec generate-corpus --set test
           uv run revrec eval --set test --extractor rules
 
+  recalc:
+    # recalc/rr_recalc.xlsx is the accountant's own reading of three contracts,
+    # in Excel (#57). This reviews the same PDFs with the offline rules and
+    # fails on any difference that isn't recorded, with its issue, in
+    # evals/recalc_known_differences.toml, or on a recorded one that no longer
+    # occurs; the job summary shows every row that differs.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: uv sync --locked --extra dev
+
+      - name: Reconcile recalc/ against the tool
+        # An explicit bash runs with -o pipefail, so a failing check isn't
+        # hidden behind tee's exit status.
+        shell: bash
+        run: uv run python -m revrec_contract_reviewer.recalc_check | tee -a "$GITHUB_STEP_SUMMARY"
+
   container:
     # The image a reviewer can run without Python or uv: built from this
     # commit, the offline review run in it with a host folder for the memos,
