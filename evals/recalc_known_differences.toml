@@ -15,3 +15,17 @@
 # recalc = "..."
 # tool = "..."
 # issue = 0
+
+[[difference]]
+doc_id = "nimbus-of-larkspur"
+field = "termination_for_convenience"
+recalc = "False"
+tool = "(empty)"
+issue = 62
+
+[[difference]]
+doc_id = "nimbus-of-larkspur"
+field = "obligation kind, price 45,000"
+recalc = "implementation"
+tool = "other"
+issue = 62
