@@ -117,8 +117,8 @@ matched my reading.
 ## Time
 
 - By hand, reading the PDF and working through the five steps with notes:
-  [GABRIEL: minutos reales, cronometrados]
+  about 50 minutes.
 - Reading the tool memo and extracting the same conclusions from it:
-  [GABRIEL: minutos reales, cronometrados]
+  about 10 minutes.
 
-Both measured with a clock on 28 October 2026, contract read before memo.
+Contract read before memo, on 28 October 2026.
