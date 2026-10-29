@@ -1,0 +1,38 @@
+# What the provenance check (src/revrec_contract_reviewer/provenance_check.py)
+# holds the published history to. Facts only, each one checkable with git.
+
+[history]
+# The first commit, 8 September 2026 07:53:48 UTC: "project skeleton".
+first_commit = "24c411dc9367a91a1c6f762f1043f728de14768f"
+# The tip of main once the real dates were put back on 15 October 2026,
+# 14:19:59 UTC: "docs: restore the real commit dates, and say how".
+# PROVENANCE.md, "Restoring the real dates", says how it was done.
+restored = "974783c2b4b17d2d202155a51d3376c04e6917d4"
+
+# Commit counts published about the history: from (included) to (excluded),
+# by author date in UTC. "What happened" in PROVENANCE.md gives all four;
+# REMEDIATION.md, in the profile repository, the one-second run as well.
+
+[[published]]
+claim = "54 commits on 8 September 2026."
+from = 2026-09-08T00:00:00Z
+to = 2026-09-09T00:00:00Z
+commits = 54
+
+[[published]]
+claim = "47 of them by one script run, all at 8 September 2026 07:53:48 UTC."
+from = 2026-09-08T07:53:48Z
+to = 2026-09-08T07:53:49Z
+commits = 47
+
+[[published]]
+claim = "8 commits on 9 September 2026."
+from = 2026-09-09T00:00:00Z
+to = 2026-09-10T00:00:00Z
+commits = 8
+
+[[published]]
+claim = "4 commits on 10 September 2026."
+from = 2026-09-10T00:00:00Z
+to = 2026-09-11T00:00:00Z
+commits = 4
