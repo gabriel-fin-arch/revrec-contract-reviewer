@@ -34,6 +34,12 @@ repeat the rules run):
   325 with the model. [Full results](#results).
 <!-- results-headline:end -->
 
+Apart from the gold set, three of the contracts (two from development, one held
+out) are read by hand by the accountant, field by field and price by price, in
+Excel ([`recalc/`](recalc/)). CI fails on any difference from the tool that
+isn't recorded, with its issue, in
+[`evals/recalc_known_differences.toml`](evals/recalc_known_differences.toml).
+
 ![Recording of a review: the demo output, the run index, a memo with its cited evidence, and the Excel worklist conclusions returning to the memo](docs/images/demo.gif)
 
 *Frame by frame: `revrec demo`'s output, drawn as text; the run index; the top of one memo; a value in it with
