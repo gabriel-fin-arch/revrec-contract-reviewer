@@ -78,6 +78,12 @@ results said they were measured on. The honest fix was to say the dates were
 invented, which this file did from 14 October, and then to put the real ones
 back, which the last one did.
 
+From 19 November 2026 the "before" states also have permanent refs, so the
+evidence no longer depends on the Activity tab's window: the tags
+`archive/pre-remediation-1` through `archive/pre-remediation-6` point at
+`7b204e7`, `094f074`, `ef6a584`, `d5fa7bf`, `25093c3` and `da26a44` — the
+state of `main` before the force-push of the same row in the table above.
+
 `fbd7cea` puts back the four things the 17:05 rewrite had changed in the
 current files: the corpus, the reportlab floor, the schema rationale and two
 changelog entries.
